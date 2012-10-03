@@ -18,19 +18,21 @@
     <XnaOutputType>Game</XnaOutputType>
     <ApplicationIcon>Game.ico</ApplicationIcon>
     <Thumbnail>GameThumbnail.png</Thumbnail>
-    <PublishUrl>publish\</PublishUrl>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <PublishUrl>C:\Users\Derk-Jan\My Websites\root.derk-jan.org\tetris\files\xna\</PublishUrl>
     <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
     <UpdateMode>Foreground</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>http://tetris.derk-jan.org/xna/</InstallUrl>
+    <UpdateUrl>http://tetris.derk-jan.org/xna/</UpdateUrl>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -113,9 +115,25 @@
     <Compile Include="Data\Field.cs" />
     <Compile Include="Data\Row.cs" />
     <Compile Include="Data\Timeline.cs" />
+    <Compile Include="Drawing\Sprite.cs" />
+    <Compile Include="Drawing\SpriteBlock.cs" />
+    <Compile Include="Drawing\SpritesetField.cs" />
+    <Compile Include="Extension\SpriteBatchExtensions.cs" />
+    <Compile Include="Screens\TitleScreen.cs" />
+    <Compile Include="TetrisGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Game1.cs" />
+    <Compile Include="Services\AudioManager.cs" />
+    <Compile Include="Services\ControllerAction.cs" />
+    <Compile Include="Services\FontManager.cs" />
+    <Compile Include="Services\GamepadController.cs" />
+    <Compile Include="Services\GameScreen.cs" />
+    <Compile Include="Services\GameSettings.cs" />
+    <Compile Include="Services\IController.cs" />
+    <Compile Include="Services\InputManager.cs" />
+    <Compile Include="Services\KeyboardController.cs" />
+    <Compile Include="Services\ScreenManager.cs" />
+    <Compile Include="Services\ScreenState.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

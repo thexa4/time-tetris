@@ -5,19 +5,19 @@ using System.Text;
 
 namespace TimeTetris.Data
 {
-    class Row
+    public class Row
     {
-        public int Width { get; protected set; }
-        public bool[] Values { get; protected set; }
+        public Int32 Width { get; protected set; }
+        public Boolean[] Values { get; protected set; }
 
         public Row Next { get; set; }
         public Row Prev { get; set; }
 
-        public bool IsFull { get { return Values.All(val => val); } }
+        public Boolean IsFull { get { return Values.All(val => val); } }
 
-        public Row(int width)
+        public Row(Int32 width)
         {
-            Values = new bool[width];
+            Values = new Boolean[width];
             Width = width;
         }
 
