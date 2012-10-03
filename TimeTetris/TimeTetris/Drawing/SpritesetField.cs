@@ -5,7 +5,8 @@ using System.Text;
 
 namespace TimeTetris.Drawing
 {
-    class SpritesetField
+    public class SpritesetField
     {
+
     }
 }

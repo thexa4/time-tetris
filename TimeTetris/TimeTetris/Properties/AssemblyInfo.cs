@@ -7,9 +7,9 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("TimeTetris")]
 [assembly: AssemblyProduct("TimeTetris")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyCopyright("Copyright ©  2012")]
+[assembly: AssemblyDescription("Game Programming Practical 2")]
+[assembly: AssemblyCompany("Derk-Jan Karrenbeld & Max Maton")]
+[assembly: AssemblyCopyright("Copyright ©  Derk-Jan Karrenbeld & Max Maton 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

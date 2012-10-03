@@ -13,7 +13,7 @@ namespace TimeTetris.Screens
     /// </summary>
     public class TitleScreen : GameScreen
     {
-        private const String TitleString = "Perfect Pong";
+        private const String TitleString = "Time Tetris";
         private const String HelpString = "Press enter to start.";
 
         protected Vector2 _positionTitle, _positionHelp;
