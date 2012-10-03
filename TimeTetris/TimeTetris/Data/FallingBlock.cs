@@ -7,6 +7,6 @@ namespace TimeTetris.Data
 {
     class FallingBlock
     {
-        
+
     }
 }

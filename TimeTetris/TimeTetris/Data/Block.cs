@@ -5,9 +5,16 @@ using System.Text;
 
 namespace TimeTetris.Data
 {
-    public class Block
+    public partial class Block
     {
+        /// <summary>
+        /// The block description
+        /// </summary>
         public bool[,] Values { get; set; }
+
+        /// <summary>
+        /// The current rotation
+        /// </summary>
         public int Rotation
         {
             get { return _rotation; }
@@ -15,6 +22,16 @@ namespace TimeTetris.Data
             set { _rotation = ((value % 4) + 4) % 4; }
         }
         protected int _rotation = 0;
+
+        public void SetBlockType(BlockType type)
+        {
+            Values = BlockTypes[type];
+        }
+
+        public void SetBlockType(int type)
+        {
+            Values = BlockTypes[(BlockType)type];
+        }   
 
         /// <summary>
         /// Gets the rotated version of the block
@@ -45,21 +62,5 @@ namespace TimeTetris.Data
                 return Values[x,y];
             }
         }
-
-        public static Block BlockI0 = new Block
-        {
-            Values = new bool[4, 4]{ {false, false, false, false},
-                                     {true, true, true, true},
-                                     {false, false, false, false},
-                                     {false, false, false, false} },
-        };
-
-        public static Block BlockI1 = new Block
-        {
-            Values = new bool[4, 4] { { false, false, true, false},
-                {false, false, true, false},
-                {false, false, true, false},
-                {false, false, true, false}},
-        };
     }
 }

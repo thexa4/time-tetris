@@ -107,7 +107,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Block.Blueprint.cs" />
     <Compile Include="Data\Block.cs" />
+    <Compile Include="Data\BlockType.cs" />
     <Compile Include="Data\Event.cs" />
     <Compile Include="Data\FallingBlock.cs" />
     <Compile Include="Data\Field.cs" />
