@@ -5,15 +5,15 @@ using System.Text;
 
 namespace TimeTetris.Data
 {
-    class Field
+    public class Field
     {
-        Row Bottom { get; protected set; }
-        Row Top { get; protected set; }
+        public Row Bottom { get; protected set; }
+        public Row Top { get; protected set; }
 
-        int Width { get; protected set; }
-        int Height { get; protected set; }
+        public Int32 Width { get; protected set; }
+        public Int32 Height { get; protected set; }
 
-        public Field(int width, int height)
+        public Field(Int32 width, Int32 height)
         {
             Width = width;
             Height = height;
