@@ -13,6 +13,15 @@ namespace TimeTetris.Data
         public bool[,] Values { get; set; }
 
         /// <summary>
+        /// The X position of the block
+        /// </summary>
+        public int X { get; set; }
+        /// <summary>
+        /// The Y position of the block
+        /// </summary>
+        public int Y { get; set; }
+
+        /// <summary>
         /// The current rotation
         /// </summary>
         public int Rotation
@@ -23,11 +32,19 @@ namespace TimeTetris.Data
         }
         protected int _rotation = 0;
 
+        /// <summary>
+        /// Sets the block to a certain type
+        /// </summary>
+        /// <param name="type">The type to set it to</param>
         public void SetBlockType(BlockType type)
         {
             Values = BlockTypes[type];
         }
 
+        /// <summary>
+        /// Sets the block to a certain type
+        /// </summary>
+        /// <param name="type">The type to set it to</param>
         public void SetBlockType(int type)
         {
             Values = BlockTypes[(BlockType)type];
