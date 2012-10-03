@@ -13,15 +13,6 @@ namespace TimeTetris.Data
         public bool[,] Values { get; set; }
 
         /// <summary>
-        /// The X position of the block
-        /// </summary>
-        public int X { get; set; }
-        /// <summary>
-        /// The Y position of the block
-        /// </summary>
-        public int Y { get; set; }
-
-        /// <summary>
         /// The current rotation
         /// </summary>
         public int Rotation
