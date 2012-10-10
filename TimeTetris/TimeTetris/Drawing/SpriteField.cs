@@ -12,15 +12,15 @@ namespace TimeTetris.Drawing
         public const Int32 GridSize = 32;
 
         /// <summary>
-        /// 
+        /// Data Field
         /// </summary>
         public Data.Field Source { get; protected set; }
 
         /// <summary>
-        /// 
+        /// Creates a new sprite of a data gield
         /// </summary>
-        /// <param name="game"></param>
-        /// <param name="source"></param>
+        /// <param name="game">Game to bind to</param>
+        /// <param name="source">Field data</param>
         public SpriteField(Game game, Data.Field source)
             : base(game) 
         {
@@ -30,9 +30,9 @@ namespace TimeTetris.Drawing
         }
 
         /// <summary>
-        /// 
+        /// Draw Frame
         /// </summary>
-        /// <param name="gameTime"></param>
+        /// <param name="gameTime">Snapshot of timing values</param>
         public override void Draw(GameTime gameTime)
         {
             var basePosition = this.Position;

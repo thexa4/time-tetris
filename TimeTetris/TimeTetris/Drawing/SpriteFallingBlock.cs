@@ -9,20 +9,20 @@ namespace TimeTetris.Drawing
     public class SpriteFallingBlock : Sprite
     {
         /// <summary>
-        /// 
+        /// Data Falling Block
         /// </summary>
         public Data.FallingBlock Source { get; protected set; }
 
         /// <summary>
-        /// 
+        /// Position + Offset
         /// </summary>
         protected Vector2 OffsetPosition { get; set; }
 
         /// <summary>
-        /// 
+        /// Creates a new sprite of a falling block
         /// </summary>
-        /// <param name="game"></param>
-        /// <param name="source"></param>
+        /// <param name="game">Game to bind to</param>
+        /// <param name="source">Data</param>
         public SpriteFallingBlock(Game game, Data.FallingBlock source) : base(game) 
         {
             this.Source = source;
@@ -32,9 +32,9 @@ namespace TimeTetris.Drawing
         }
 
         /// <summary>
-        /// 
+        /// Frame renewal
         /// </summary>
-        /// <param name="gameTime"></param>
+        /// <param name="gameTime">Snapshot of timing values</param>
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -43,9 +43,9 @@ namespace TimeTetris.Drawing
         }
 
         /// <summary>
-        /// 
+        /// Frame draw
         /// </summary>
-        /// <param name="gameTime"></param>
+        /// <param name="gameTime">Snapshot of timing values</param>
         public override void Draw(GameTime gameTime)
         {
             var basePosition = this.Position;

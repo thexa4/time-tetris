@@ -18,13 +18,25 @@ namespace TimeTetris.Data
         public Int32 Rotation
         {
             get { return _rotation; }
+
             // To compensate for negative numbers:
             set { _rotation = ((value % 4) + 4) % 4; }
         }
         protected Int32 _rotation = 0;
 
+        /// <summary>
+        /// Block Width
+        /// </summary>
         public Int32 Width { get { return Values.GetLength(1); } }
+
+        /// <summary>
+        /// Block Height
+        /// </summary>
         public Int32 Height { get { return Values.GetLength(0); } }
+
+        /// <summary>
+        /// Block Type
+        /// </summary>
         public BlockType Type { get; set; }
 
         /// <summary>

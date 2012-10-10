@@ -53,45 +53,65 @@ namespace TimeTetris.Data
         };
 
         /// <summary>
-        /// 
+        /// Gets the color by the blocktype
         /// </summary>
-        /// <param name="blockType"></param>
-        /// <returns></returns>
+        /// <param name="blockType">Blocktype requested</param>
+        /// <returns>Corresponding Color</returns>
         internal static Color GetColor(BlockType blockType)
         {
             switch (blockType)
             {
                 case BlockType.IBlock:
-                    return Color.Red;
+                    return Color.Blue;
                 case BlockType.JBlock:
-                    return Color.Azure;
+                    return Color.White;
                 case BlockType.LBlock:
-                    return Color.Beige;
+                    return Color.Green;
                 case BlockType.OBlock:
-                    return Color.Brown;
+                    return Color.Yellow;
                 case BlockType.SBlock:
-                    return Color.DarkGoldenrod;
+                    return Color.Purple;
                 case BlockType.TBlock:
-                    return Color.DarkKhaki;
+                    return Color.Red;
                 case BlockType.ZBlock:
-                    return Color.Gainsboro;
+                    return Color.Violet;
                 default:
-                    return Color.White * 0.2f;
+                    return Color.Transparent;
             }
+        }
+
+        /// <summary>
+        /// Gets the color by blocktype in the grid
+        /// </summary>
+        /// <param name="gridValue">Value in the grid</param>
+        /// <returns>Corresponding Color</returns>
+        internal static Color GetColor(Int32 gridValue)
+        {
+            if (gridValue <= 0)
+                return Color.Transparent;
+
+            // Since 0 is used as empty color, we need to convert
+            return GetColor(FromGridValue(gridValue));
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="blockTypeValue"></param>
+        /// <param name="blockType"></param>
         /// <returns></returns>
-        internal static Color GetColor(Int32 blockTypeValue)
+        internal static Int32 ToGridValue(BlockType blockType)
         {
-            if (blockTypeValue <= 0)
-                return Color.Transparent;
+            return ((Int32)blockType) + 1;
+        }
 
-            // Since 0 is used as empty color, we need to convert
-            return GetColor((BlockType)(blockTypeValue - 1));
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gridValue"></param>
+        /// <returns></returns>
+        internal static BlockType FromGridValue(Int32 gridValue)
+        {
+            return (BlockType)(gridValue - 1);
         }
     }
 }
