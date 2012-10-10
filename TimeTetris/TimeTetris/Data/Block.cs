@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TimeTetris.Data
 {
-    public partial class Block
+    public partial class Block : ICloneable
     {
         /// <summary>
         /// The block description
@@ -101,6 +101,15 @@ namespace TimeTetris.Data
                 }
                 return Values[y, x];
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public Object Clone()
+        {
+            return new Block(this.Type) { Rotation = this.Rotation };
         }
     }
 }

@@ -76,7 +76,7 @@ namespace TimeTetris.Drawing
 		/// <summary>
 		/// Initializes Sprite
 		/// </summary>
-		public virtual void Initialize() 
+		public override void Initialize() 
 		{
 			this.Enabled = true;
 			this.Visible = true;
