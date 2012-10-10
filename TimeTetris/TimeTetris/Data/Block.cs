@@ -40,6 +40,11 @@ namespace TimeTetris.Data
         public BlockType Type { get; set; }
 
         /// <summary>
+        /// Event that runs when type is changed
+        /// </summary>
+        public event BlockTypeDelegate OnTypeChanged = delegate { };
+
+        /// <summary>
         /// Creates a new block with a certain type
         /// </summary>
         /// <param name="type">The type to copy</param>
@@ -56,6 +61,7 @@ namespace TimeTetris.Data
         {
             Type = type;
             Values = (Boolean[,]) BlockTypes[type].Clone();
+            OnTypeChanged.Invoke(type);
         }
 
         /// <summary>

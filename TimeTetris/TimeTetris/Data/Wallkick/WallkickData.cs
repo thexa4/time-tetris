@@ -5,9 +5,9 @@ using System.Text;
 
 namespace TimeTetris.Data.Wallkick
 {
-    class WallkickData
+    public class WallkickData
     {
-        Dictionary<Tuple<int, int>, int[,]> RightMovements = new Dictionary<Tuple<int, int>, int[,]>()
+        public static Dictionary<Tuple<int, int>, int[,]> RightMovements = new Dictionary<Tuple<int, int>, int[,]>()
         {
             {new Tuple<int, int>(4, 0), new int[,]{
                 {-2,0},
@@ -66,7 +66,7 @@ namespace TimeTetris.Data.Wallkick
             {new Tuple<int, int>(2, 3), new int[,]{}},
         };
 
-        Dictionary<Tuple<int, int>, int[,]> LeftMovements = new Dictionary<Tuple<int, int>, int[,]>()
+        public static Dictionary<Tuple<int, int>, int[,]> LeftMovements = new Dictionary<Tuple<int, int>, int[,]>()
         {
             {new Tuple<int, int>(4, 0), new int[,]{
                 {2,0},

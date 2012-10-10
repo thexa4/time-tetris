@@ -5,6 +5,8 @@ using System.Text;
 
 namespace TimeTetris.Data
 {
+    public delegate void BlockTypeDelegate(BlockType b);
+
     public enum BlockType
     {
         IBlock = 0,
