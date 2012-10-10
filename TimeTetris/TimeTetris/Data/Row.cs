@@ -8,25 +8,25 @@ namespace TimeTetris.Data
     public class Row
     {
         public Int32 Width { get; protected set; }
-        public Boolean[] Values { get; protected set; }
+        public Int32[] Values { get; protected set; }
 
         public Row Next { get; set; }
         public Row Prev { get; set; }
 
-        public Boolean IsFull { get { return Values.All(val => val); } }
+        public Boolean IsFull { get { return Values.All(val => val != 0); } }
 
         public Row(Int32 width)
         {
-            Values = new Boolean[width];
+            Values = new Int32[width];
             Width = width;
         }
 
-        public bool this[int x]
+        public Int32 this[int x]
         {
             get
             {
                 if (x < 0 || x >= Width)
-                    return true;
+                    return -1;
                 return Values[x];
             }
         }

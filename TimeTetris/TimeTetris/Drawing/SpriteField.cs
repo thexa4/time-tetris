@@ -41,9 +41,15 @@ namespace TimeTetris.Drawing
                 for (Int32 y = 0; y < this.Source.Height - HiddenRows; y++)
                 {
                     this.Position = basePosition + (x * GridSize * Vector2.UnitX) + 
-                        ((this.Source.Height - HiddenRows - y) * GridSize * Vector2.UnitY);
-                    if (this.Source[x, y])
+                        ((this.Source.Height - HiddenRows - 1 - y) * GridSize * Vector2.UnitY);
+                    if (this.Source[x, y] != 0)
                         base.Draw(gameTime);
+
+#if DEBUG
+                    this.ScreenManager.SpriteBatch.DrawString(
+                        this.ScreenManager.SpriteFonts["Default"], 
+                        String.Format("[{0},{1}]", x, y), this.Position, Color.White);
+#endif
                 }
 
             this.Position = basePosition;

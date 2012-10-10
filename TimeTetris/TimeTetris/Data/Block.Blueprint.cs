@@ -7,7 +7,7 @@ namespace TimeTetris.Data
 {
     public partial class Block
     {
-        public static Dictionary<BlockType, bool[,]> BlockTypes = new Dictionary<BlockType,bool[,]>(){
+        public static Dictionary<BlockType, bool[,]> BlockTypes = new Dictionary<BlockType, bool[,]>(){
             { BlockType.IBlock, new bool[,]{
                 {false, false, false, false},
                 {false, false, false, false},

@@ -29,7 +29,7 @@ namespace TimeTetris.Drawing
 		/// <summary>
 		/// Scale
 		/// </summary>
-		public Single Scale { get; set; }
+		public Vector2 Scale { get; set; }
 
 		/// <summary>
 		/// Base Color
@@ -65,7 +65,7 @@ namespace TimeTetris.Drawing
 		public Sprite(Game game) : base(game)
 		{
 			this.Rotation = 0;
-			this.Scale = 1;
+			this.Scale = Vector2.One;
 			this.Position = Vector2.Zero;
 			this.Color = Color.White;
 			this.Origin = Vector2.Zero;
@@ -128,6 +128,8 @@ namespace TimeTetris.Drawing
 					    this.Size = new Vector2(_texture.Bounds.Width, _texture.Bounds.Height);
                     if (this.SourceRectangle == Rectangle.Empty)
 					    this.SourceRectangle = new Rectangle(0, 0, _texture.Bounds.Width, _texture.Bounds.Height);
+                    if (this.Scale == Vector2.One)
+                        this.Scale = this.Size.X / this.SourceRectangle.Width * Vector2.UnitX + this.Size.Y / this.SourceRectangle.Height * Vector2.UnitY;
 				}
 			}
 		}

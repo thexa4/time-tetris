@@ -10,21 +10,21 @@ namespace TimeTetris.Data
         /// <summary>
         /// The block description
         /// </summary>
-        public bool[,] Values { get; set; }
+        public Boolean[,] Values { get; set; }
 
         /// <summary>
         /// The current rotation
         /// </summary>
-        public int Rotation
+        public Int32 Rotation
         {
             get { return _rotation; }
             // To compensate for negative numbers:
             set { _rotation = ((value % 4) + 4) % 4; }
         }
-        protected int _rotation = 0;
+        protected Int32 _rotation = 0;
 
-        public int Width { get { return Values.GetLength(1); } }
-        public int Height { get { return Values.GetLength(0); } }
+        public Int32 Width { get { return Values.GetLength(1); } }
+        public Int32 Height { get { return Values.GetLength(0); } }
 
         /// <summary>
         /// Sets the block to a certain type
@@ -70,7 +70,7 @@ namespace TimeTetris.Data
                         y = Width - 1 - tmp;
                         break;
                 }
-                return Values[x,y];
+                return Values[y, x];
             }
         }
     }
