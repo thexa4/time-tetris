@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TimeTetris.Data
 {
-    class FallingBlock
+    public class FallingBlock
     {
         public Block Type { get; set; }
         public int X { get; set; }

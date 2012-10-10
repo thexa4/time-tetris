@@ -22,6 +22,9 @@ namespace TimeTetris.Screens
         protected SoundEffect _menuSound;
         protected SoundEffectInstance _menuSoundInstance;
 
+        public Drawing.SpriteFallingBlock block;
+        public Data.Field field;
+
         /// <summary>
         /// Initializes the screen
         /// </summary>
@@ -31,6 +34,17 @@ namespace TimeTetris.Screens
             this.TransitionOffTime = TimeSpan.FromSeconds(.5f);
             this.IsPopup = false;
             base.Initialize();
+
+            field = new Data.Field(8, 14);
+            block = new Drawing.SpriteFallingBlock(this.Game, new Data.FallingBlock()
+            {
+                Field = field,
+                Type = new Data.Block() { Values = Data.Block.BlockTypes[Data.BlockType.JBlock] }
+            })
+            {
+                Position = Vector2.One * 100
+            };
+            block.Initialize();
         }
 
         /// <summary>
@@ -53,6 +67,7 @@ namespace TimeTetris.Screens
                Vector2.UnitY * (Single)Math.Round((720f - height) / 2);
             _positionHelp = Vector2.UnitX * (Int32)Math.Round((1280f - helpMeasurement.X) / 2) +
                 Vector2.UnitY * (Single)(Math.Round((720f - height) / 2) + Math.Round(titleMeasurement.Y));
+            block.LoadContent(contentManager);
         }
 
         /// <summary>
@@ -67,6 +82,7 @@ namespace TimeTetris.Screens
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
             _shadowColor = Color.Black;
             _sinusAlpha = (Single)((Math.Sin((Single)gameTime.TotalGameTime.TotalSeconds * 4)) + 1) / 2;
+            block.Update(gameTime);
         }
 
         /// <summary>
@@ -105,6 +121,7 @@ namespace TimeTetris.Screens
             this.ScreenManager.SpriteBatch.Begin();
             this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Title"], TitleString, _positionTitle, Color.White, _shadowColor);
             this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Help"], HelpString, _positionHelp, Color.White * _sinusAlpha, _shadowColor * _sinusAlpha);
+            block.Draw(gameTime);
             this.ScreenManager.SpriteBatch.End();
 
             this.ScreenManager.FadeBackBufferToBlack((Byte)(255 - this.TransitionAlpha));

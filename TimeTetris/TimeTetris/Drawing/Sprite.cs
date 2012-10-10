@@ -69,6 +69,8 @@ namespace TimeTetris.Drawing
 			this.Position = Vector2.Zero;
 			this.Color = Color.White;
 			this.Origin = Vector2.Zero;
+            this.Size = Vector2.Zero;
+            this.SourceRectangle = Rectangle.Empty;
 		}
 
 		/// <summary>
@@ -122,8 +124,10 @@ namespace TimeTetris.Drawing
 
 				if (_texture != null)
 				{
-					this.Size = new Vector2(_texture.Bounds.Width, _texture.Bounds.Height);
-					this.SourceRectangle = new Rectangle(0, 0, _texture.Bounds.Width, _texture.Bounds.Height);
+                    if (this.Size == Vector2.Zero)
+					    this.Size = new Vector2(_texture.Bounds.Width, _texture.Bounds.Height);
+                    if (this.SourceRectangle == Rectangle.Empty)
+					    this.SourceRectangle = new Rectangle(0, 0, _texture.Bounds.Width, _texture.Bounds.Height);
 				}
 			}
 		}
