@@ -10,21 +10,21 @@ namespace TimeTetris.Data
         public static Dictionary<BlockType, bool[,]> BlockTypes = new Dictionary<BlockType,bool[,]>(){
             { BlockType.IBlock, new bool[,]{
                 {false, false, false, false},
-                {true,  true,  true,  true },
                 {false, false, false, false},
+                {true,  true,  true,  true },
                 {false, false, false, false},
             } },
 
             { BlockType.JBlock, new bool[,]{
-                {true,  false, false},
-                {true,  true,  true },
                 {false, false, false},
+                {true,  true,  true },
+                {true,  false, false},
             } },
 
             { BlockType.LBlock, new bool[,]{
-                {false, false, true },
-                {true,  true,  true },
                 {false, false, false},
+                {true,  true,  true },
+                {false, false, true },
             } },
 
             { BlockType.OBlock, new bool[,]{
@@ -33,21 +33,21 @@ namespace TimeTetris.Data
             } },
 
             { BlockType.SBlock, new bool[,]{
-                {false, true,  true },
-                {true,  true,  false},
                 {false, false, false},
+                {true,  true,  false},
+                {false, true,  true },
             } },
 
             { BlockType.TBlock, new bool[,]{
-                {false, true,  false},
-                {true,  true,  true },
                 {false, false, false},
+                {true,  true,  true },
+                {false, true,  false},
             } },
 
             { BlockType.ZBlock, new bool[,]{
-                {true,  true,  false},
-                {false, true,  true },
                 {false, false, false},
+                {false, true,  true },
+                {true,  true,  false},
             } },
         };
     }
