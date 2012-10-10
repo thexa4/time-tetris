@@ -43,16 +43,16 @@ namespace TimeTetris.Data
         public void SetBlockType(BlockType type)
         {
             Type = type;
-            Values = BlockTypes[type];
+            Values = (Boolean[,]) BlockTypes[type].Clone();
         }
 
         /// <summary>
         /// Sets the block to a certain type
         /// </summary>
         /// <param name="type">The type to set it to</param>
-        public void SetBlockType(int type)
+        public void SetBlockType(Int32 type)
         {
-            Values = BlockTypes[(BlockType)type];
+            SetBlockType((BlockType)type);
         }   
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace TimeTetris.Data
         /// <param name="x">The x coordinate</param>
         /// <param name="y">The y coordinate</param>
         /// <returns>Wether there is a block on the current rotated position</returns>
-        public bool this[int x, int y]
+        public Boolean this[int x, int y]
         {
             get
             {

@@ -28,7 +28,7 @@ namespace TimeTetris.Drawing
             this.Source = source;
             this.TextureName = "Graphics/blank";
             this.Size = (SpriteField.GridSize - 1) * Vector2.One;
-            this.Color = 
+            this.Color = Data.Block.GetColor(source.Block.Type);
         }
 
         /// <summary>
@@ -51,15 +51,15 @@ namespace TimeTetris.Drawing
             var basePosition = this.Position;
 
             // Start drawing
-            var width = this.Source.Type.Width;
-            var height = this.Source.Type.Height;
+            var width = this.Source.Block.Width;
+            var height = this.Source.Block.Height;
 
             for (Int32 x = 0; x < width; x++)
                 for (Int32 y = 0; y < height; y++) 
                 {
                     this.Position = this.OffsetPosition + Vector2.UnitX * SpriteField.GridSize * x +
                         Vector2.UnitY * SpriteField.GridSize * (height - y - 1);
-                    if (this.Source.Type[x, y])
+                    if (this.Source.Block[x, y])
                         base.Draw(gameTime);
                 }
 

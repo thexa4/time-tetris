@@ -40,7 +40,7 @@ namespace TimeTetris.Screens
             block = new Drawing.SpriteFallingBlock(this.Game, new Data.FallingBlock()
             {
                 Field = field,
-                Type = new Data.Block() { Values = Data.Block.BlockTypes[Data.BlockType.IBlock] },
+                Block = new Data.Block(Data.BlockType.IBlock),
                 X = 3,
                 Y = 3,
             })
