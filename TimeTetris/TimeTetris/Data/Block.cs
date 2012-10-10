@@ -23,6 +23,9 @@ namespace TimeTetris.Data
         }
         protected int _rotation = 0;
 
+        public int Width { get { return Values.GetLength(1); } }
+        public int Height { get { return Values.GetLength(0); } }
+
         /// <summary>
         /// Sets the block to a certain type
         /// </summary>
@@ -55,16 +58,16 @@ namespace TimeTetris.Data
                 switch (_rotation)
                 {
                     case 1:
-                        x = Values.GetLength(0) - 1 - y;
+                        x = Height - 1 - y;
                         y = tmp;
                         break;
                     case 2:
-                        x = Values.GetLength(0) - 1 - x;
-                        y = Values.GetLength(1) - 1 - y;
+                        x = Width - 1 - x;
+                        y = Height - 1 - y;
                         break;
                     case 3:
                         x = y;
-                        y = Values.GetLength(1) - 1 - tmp;
+                        y = Width - 1 - tmp;
                         break;
                 }
                 return Values[x,y];

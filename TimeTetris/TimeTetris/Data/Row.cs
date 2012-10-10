@@ -21,6 +21,16 @@ namespace TimeTetris.Data
             Width = width;
         }
 
+        public bool this[int x]
+        {
+            get
+            {
+                if (x < 0 || x >= Width)
+                    return true;
+                return Values[x];
+            }
+        }
+
         public void Remove()
         {
             Prev.Next = Next;

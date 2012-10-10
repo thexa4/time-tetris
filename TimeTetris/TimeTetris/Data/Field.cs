@@ -26,5 +26,28 @@ namespace TimeTetris.Data
             for (int i = 0; i < height; i++)
                 Bottom.InsertAfter(new Row(width));
         }
+
+        public bool this[int x, int y]
+        {
+            get {
+                if(x < 0 || x >= Width)
+                    return true;
+                if (y < 0 || y >= Height)
+                    return true;
+                Row cur = Bottom;
+                for (int i = 0; i <= y; i++)
+                    cur = cur.Next;
+                return cur.Values[x];
+            }
+        }
+
+        public bool Collides(Block block, int x, int y)
+        {
+            for (int a = 0; a < block.Width; a++)
+                for (int b = 0; b < block.Height; b++)
+                    if (block[a, b] && this[x + a, y + b])
+                        return true;
+            return false;
+        }
     }
 }
