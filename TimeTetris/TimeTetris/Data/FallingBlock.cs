@@ -7,9 +7,14 @@ namespace TimeTetris.Data
 {
     class FallingBlock
     {
-        public Block Type { get; set; }
+        public Block Block { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
         public Field Field { get; set; }
+
+        public void RotateRight()
+        {
+            Block.Rotation++;
+        }
     }
 }

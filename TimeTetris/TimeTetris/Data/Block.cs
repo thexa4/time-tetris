@@ -25,13 +25,24 @@ namespace TimeTetris.Data
 
         public int Width { get { return Values.GetLength(1); } }
         public int Height { get { return Values.GetLength(0); } }
+        public BlockType Type { get; set; }
 
         /// <summary>
-        /// Sets the block to a certain type
+        /// Creates a new block with a certain type
         /// </summary>
-        /// <param name="type">The type to set it to</param>
+        /// <param name="type">The type to copy</param>
+        public Block(BlockType type)
+        {
+            SetBlockType(type);
+        }
+
+        /// <summary>
+        /// Sets the block to a certain type and copy its shape
+        /// </summary>
+        /// <param name="type">The type to set</param>
         public void SetBlockType(BlockType type)
         {
+            Type = type;
             Values = BlockTypes[type];
         }
 
