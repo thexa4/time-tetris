@@ -32,9 +32,27 @@ namespace TimeTetris.Data
         /// </summary>
         public void RotateRight()
         {
+            Rotate(1);
+        }
+
+        /// <summary>
+        /// Rotates block left
+        /// </summary>
+        public void RotateLeft()
+        {
+            Rotate(-1);
+        }
+
+        protected void Rotate(int dir)
+        {
             int rot = Block.Rotation;
-            Block.Rotation++;
-            int[,] wallkicks = Wallkick.WallkickData.RightMovements[new Tuple<int, int>(Block.Width, rot)];
+            Block.Rotation += dir;
+            int[,] wallkicks;
+            if(dir > 0)
+                wallkicks = Wallkick.WallkickData.RightMovements[new Tuple<int, int>(Block.Width, rot)];
+            else
+                wallkicks = Wallkick.WallkickData.LeftMovements[new Tuple<int, int>(Block.Width, rot)];
+
             for(int i = 0; i < wallkicks.GetLength(0); i++)
             {
                 if (Field.Collides(Block, X + wallkicks[i,0], Y + wallkicks[i,1]))
@@ -51,7 +69,7 @@ namespace TimeTetris.Data
                 };
                 int newx = X + wallkicks[i, 0];
                 int newy = Y + wallkicks[i, 1];
-                int newrot = rot + 1;
+                int newrot = rot + dir;
                 e.Apply = () =>
                 {
                     Field.CurrentBlock.X = newx;
@@ -59,13 +77,14 @@ namespace TimeTetris.Data
                     Field.CurrentBlock.Block.Rotation = newrot;
                 };
                 e.Apply();
-                
+                e.Time = Field.Timeline.CurrentTime;
+                Field.Timeline.Events.Add(e);
                 
                 return;
             }
 
             // Rotation failed
-            Block.Rotation--;
+            Block.Rotation -= dir;
         }
     }
 }
