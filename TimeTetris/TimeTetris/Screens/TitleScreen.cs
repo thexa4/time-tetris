@@ -25,6 +25,7 @@ namespace TimeTetris.Screens
         public Drawing.SpriteFallingBlock block;
         public Drawing.SpriteField fieldspr;
         public Data.Field field;
+        public Drawing.SpritesetWallkick wallkick;
 
         /// <summary>
         /// Initializes the screen
@@ -45,14 +46,19 @@ namespace TimeTetris.Screens
                 Y = 3,
             })
             {
-                Position = Vector2.One * 0
+                Position = Vector2.One * 0,
             };
             fieldspr = new Drawing.SpriteField(this.Game, field)
             {
                 Position = Vector2.One * 0,
             };
+            wallkick = new Drawing.SpritesetWallkick(this.Game, Data.BlockType.IBlock)
+            {
+                Position = Vector2.UnitX * 0,
+            };
             fieldspr.Initialize();
             block.Initialize();
+            wallkick.Initialize();
         }
 
         /// <summary>
@@ -78,6 +84,7 @@ namespace TimeTetris.Screens
 
             block.LoadContent(contentManager);
             fieldspr.LoadContent(contentManager);
+            wallkick.LoadContent(contentManager);
         }
 
         /// <summary>
@@ -95,6 +102,7 @@ namespace TimeTetris.Screens
 
             fieldspr.Update(gameTime);
             block.Update(gameTime);
+            wallkick.Update(gameTime);
         }
 
         /// <summary>
@@ -133,8 +141,9 @@ namespace TimeTetris.Screens
             this.ScreenManager.SpriteBatch.Begin();
             this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Title"], TitleString, _positionTitle, Color.White, _shadowColor);
             this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Help"], HelpString, _positionHelp, Color.White * _sinusAlpha, _shadowColor * _sinusAlpha);
-            fieldspr.Draw(gameTime);
-            block.Draw(gameTime);
+            //fieldspr.Draw(gameTime);
+            //block.Draw(gameTime);
+            wallkick.Draw(gameTime);
             
             this.ScreenManager.SpriteBatch.End();
 

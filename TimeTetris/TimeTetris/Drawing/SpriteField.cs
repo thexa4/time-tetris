@@ -9,7 +9,7 @@ namespace TimeTetris.Drawing
     public class SpriteField : Sprite
     {
         public const Int32 HiddenRows = 4;
-        public const Int32 GridSize = 32;
+        public const Int32 GridSize = 16;
 
         /// <summary>
         /// Data Field
@@ -26,7 +26,7 @@ namespace TimeTetris.Drawing
         {
             this.Source = source;
             this.TextureName = "Graphics/blank";
-            this.Size = SpriteField.GridSize * Vector2.One;
+            this.Size = (SpriteField.GridSize - 1) * Vector2.One;
         }
 
         /// <summary>
@@ -42,14 +42,20 @@ namespace TimeTetris.Drawing
                 {
                     this.Position = basePosition + (x * GridSize * Vector2.UnitX) + 
                         ((this.Source.Height - HiddenRows - 1 - y) * GridSize * Vector2.UnitY);
-                    if (this.Source[x, y] != 0)
-                        base.Draw(gameTime);
 
-#if DEBUG
-                    this.ScreenManager.SpriteBatch.DrawString(
-                        this.ScreenManager.SpriteFonts["Default"], 
-                        String.Format("[{0},{1}]", x, y), this.Position, Color.White);
-#endif
+                    this.Color = Color.White * 0.1f;
+                    this.Size += Vector2.One;
+                    base.Draw(gameTime);
+
+                    this.Color = Color.Transparent;
+                    this.Size -= Vector2.One;
+                    base.Draw(gameTime);
+
+                    if (this.Source[x, y] == 0)
+                        continue;
+
+                    this.Color = Data.Block.GetColor(this.Source[x, y]);
+                    base.Draw(gameTime);
                 }
 
             this.Position = basePosition;

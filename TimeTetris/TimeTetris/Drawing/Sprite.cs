@@ -51,10 +51,20 @@ namespace TimeTetris.Drawing
 		/// </summary>
 		public Single Rotation { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public Single Opacity { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public ScreenManager ScreenManager { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public String TextureName { get; set; }
-
 
         protected Texture2D _texture;
 
@@ -71,6 +81,7 @@ namespace TimeTetris.Drawing
 			this.Origin = Vector2.Zero;
             this.Size = Vector2.Zero;
             this.SourceRectangle = Rectangle.Empty;
+            this.Opacity = 1;
 		}
 
 		/// <summary>
@@ -98,8 +109,8 @@ namespace TimeTetris.Drawing
 
 			this.ScreenManager.SpriteBatch.Draw(
 				_texture, Position, 
-				this.SourceRectangle, 
-				this.Color, 
+				this.SourceRectangle,
+                this.Color * this.Opacity, 
 				this.Rotation, 
 				this.Origin,
 				this.Scale,

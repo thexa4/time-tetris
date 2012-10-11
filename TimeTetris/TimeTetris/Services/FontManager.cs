@@ -59,6 +59,7 @@ namespace TimeTetris.Services
         {
             // Load DefaultSprite
             _spritefontDictionairy["Default"] = _contentManager.Load<SpriteFont>(DefaultFontAsset);
+            _spritefontDictionairy["Small"] = _contentManager.Load<SpriteFont>("Fonts/Small");
 
             // Base Loading
             base.LoadContent();
