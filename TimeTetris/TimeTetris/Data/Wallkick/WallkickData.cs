@@ -12,51 +12,51 @@ namespace TimeTetris.Data.Wallkick
             {new Tuple<int, int>(4, 0), new int[,]{
                 {-2,0},
                 {1,0},
-                {-2,-1},
-                {1,2},
+                {-2,1},
+                {1,-2},
             }},
             {new Tuple<int, int>(4, 1), new int[,]{
                 {-2,0},
                 {1,0},
-                {1,-2},
-                {-2,1},
+                {1,2},
+                {-2,-1},
             }},
             {new Tuple<int, int>(4, 2), new int[,]{
                 {-1,0},
                 {2,0},
-                {-1,-2},
-                {2,1},
+                {-1,2},
+                {2,-1},
             }},
             {new Tuple<int, int>(4, 3), new int[,]{
                 {2,0},
                 {-1,0},
-                {2,-1},
-                {-1,1},
+                {2,1},
+                {-1,-1},
             }},
 
             {new Tuple<int, int>(3, 0), new int[,]{
-                {-1,0},
-                {-1,1},
-                {0,-2},
-                {-1,-2},
-            }},
-            {new Tuple<int, int>(3, 1), new int[,]{
                 {-1,0},
                 {-1,-1},
                 {0,2},
                 {-1,2},
             }},
-            {new Tuple<int, int>(3, 2), new int[,]{
-                {1,0},
-                {1,1},
+            {new Tuple<int, int>(3, 1), new int[,]{
+                {-1,0},
+                {-1,1},
                 {0,-2},
-                {1,-2},
+                {-1,-2},
             }},
-            {new Tuple<int, int>(3, 3), new int[,]{
+            {new Tuple<int, int>(3, 2), new int[,]{
                 {1,0},
                 {1,-1},
                 {0,2},
                 {1,2},
+            }},
+            {new Tuple<int, int>(3, 3), new int[,]{
+                {1,0},
+                {1,1},
+                {0,-2},
+                {1,-2},
             }},
 
             // No wallkick for O block
@@ -71,45 +71,45 @@ namespace TimeTetris.Data.Wallkick
             {new Tuple<int, int>(4, 0), new int[,]{
                 {2,0},
                 {-1,0},
-                {2,-1},
-                {-1,2},
+                {2,1},
+                {-1,-2},
             }},
             {new Tuple<int, int>(4, 1), new int[,]{
                 {-2,0},
                 {1,0},
-                {-1,-1},
-                {1,1},
+                {-2,1},
+                {1,-1},
             }},
             {new Tuple<int, int>(4, 2), new int[,]{
                 {1,0},
                 {-2,0},
-                {1,-2},
-                {-2,1},
+                {1,2},
+                {-2,-1},
             }},
             {new Tuple<int, int>(4, 3), new int[,]{
                 {2,0},
                 {-1,0},
+                {-1,2},
                 {2,-1},
-                {-1,-1},
             }},
 
             {new Tuple<int, int>(3, 0), new int[,]{
                 {1,0},
-                {1,1},
-                {0,-2},
-                {1,-2},
+                {1,-1},
+                {0,2},
+                {1,2},
             }},
             {new Tuple<int, int>(3, 1), new int[,]{
-                {-1,0},
-                {-1,-1},
-                {0,2},
-                {-1,2},
-            }},
-            {new Tuple<int, int>(3, 2), new int[,]{
                 {-1,0},
                 {-1,1},
                 {0,-2},
                 {-1,-2},
+            }},
+            {new Tuple<int, int>(3, 2), new int[,]{
+                {-1,0},
+                {-1,-1},
+                {0,2},
+                {-1,2},
             }},
             {new Tuple<int, int>(3, 3), new int[,]{
                 {1,0},
