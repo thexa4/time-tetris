@@ -6,6 +6,7 @@ using TimeTetris.Services;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using TimeTetris.Drawing;
+using TimeTetris.Data;
 
 namespace TimeTetris.Screens
 {
@@ -16,6 +17,8 @@ namespace TimeTetris.Screens
 
         private SpriteField _spriteField;
         // TODO spriteset level ?
+
+        protected Timeline _timeline;
 
         /// <summary>
         /// Initializes the screen
@@ -28,10 +31,14 @@ namespace TimeTetris.Screens
 
             base.Initialize();
 
-            _field = new Data.Field(10, 32);
+            _timeline = (Timeline)this.Game.Services.GetService(typeof(Timeline));
+            _field = new Data.Field(_timeline, 10, 32);
 
             _spriteField = new SpriteField(this.Game, _field);
             _spriteField.Initialize();
+
+            _timeline.Start();
+
         }
 
         /// <summary>
@@ -63,6 +70,11 @@ namespace TimeTetris.Screens
         public override void HandleInput(GameTime gameTime)
         {
             base.HandleInput(gameTime);
+
+            if (InputManager.Keyboard.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Escape))
+                _timeline.Stop();
+            else if (InputManager.Keyboard.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Escape))
+                _timeline.Resume();
         }
 
         /// <summary>
@@ -75,6 +87,7 @@ namespace TimeTetris.Screens
 
             this.ScreenManager.SpriteBatch.Begin();
             _spriteField.Draw(gameTime);
+            this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["Default"], String.Format("{0} s", Math.Round(_timeline.CurrentTime / 1000, 2)), Vector2.One * 5, Color.White);
             this.ScreenManager.SpriteBatch.End();
         }
     }
