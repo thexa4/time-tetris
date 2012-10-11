@@ -22,10 +22,8 @@ namespace TimeTetris.Screens
         protected SoundEffect _menuSound;
         protected SoundEffectInstance _menuSoundInstance;
 
-        public Drawing.SpriteFallingBlock block;
-        public Drawing.SpriteField fieldspr;
-        public Data.Field field;
-        public Drawing.SpritesetWallkick wallkick;
+        public Drawing.SpritesetWallkick[] wallkicks;
+        public Int32 drawIndex;
 
         /// <summary>
         /// Initializes the screen
@@ -37,28 +35,12 @@ namespace TimeTetris.Screens
             this.IsPopup = false;
             base.Initialize();
 
-            field = new Data.Field(10, 25);
-            block = new Drawing.SpriteFallingBlock(this.Game, new Data.FallingBlock()
-            {
-                Field = field,
-                Block = new Data.Block(Data.BlockType.IBlock),
-                X = 3,
-                Y = 3,
-            })
-            {
-                Position = Vector2.One * 0,
-            };
-            fieldspr = new Drawing.SpriteField(this.Game, field)
-            {
-                Position = Vector2.One * 0,
-            };
-            wallkick = new Drawing.SpritesetWallkick(this.Game, Data.BlockType.IBlock)
-            {
-                Position = Vector2.UnitX * 0,
-            };
-            fieldspr.Initialize();
-            block.Initialize();
-            wallkick.Initialize();
+            wallkicks = new Drawing.SpritesetWallkick[Enum.GetValues(typeof(Data.BlockType)).Length];
+            foreach (var val in (Int32[])Enum.GetValues(typeof(Data.BlockType)))
+                wallkicks[val] = new Drawing.SpritesetWallkick(this.Game, (Data.BlockType)val);
+
+            foreach (var wallkick in wallkicks)
+                wallkick.Initialize();
         }
 
         /// <summary>
@@ -82,9 +64,8 @@ namespace TimeTetris.Screens
             _positionHelp = Vector2.UnitX * (Int32)Math.Round((1280f - helpMeasurement.X) / 2) +
                 Vector2.UnitY * (Single)(Math.Round((720f - height) / 2) + Math.Round(titleMeasurement.Y));
 
-            block.LoadContent(contentManager);
-            fieldspr.LoadContent(contentManager);
-            wallkick.LoadContent(contentManager);
+            foreach(var wallkick in wallkicks)
+                wallkick.LoadContent(contentManager);
         }
 
         /// <summary>
@@ -100,9 +81,8 @@ namespace TimeTetris.Screens
             _shadowColor = Color.Black;
             _sinusAlpha = (Single)((Math.Sin((Single)gameTime.TotalGameTime.TotalSeconds * 4)) + 1) / 2;
 
-            fieldspr.Update(gameTime);
-            block.Update(gameTime);
-            wallkick.Update(gameTime);
+            foreach (var wallkick in wallkicks)
+                wallkick.Update(gameTime);
         }
 
         /// <summary>
@@ -124,6 +104,10 @@ namespace TimeTetris.Screens
                 this.AudioManager.Play("confirm");
                 this.ExitScreenAnd();
             }
+            else if (this.InputManager.Keyboard.IsKeyTriggerd(Keys.Space))
+                wallkicks[drawIndex % wallkicks.Length].IsDrawingRight = !wallkicks[drawIndex % wallkicks.Length].IsDrawingRight;
+            else if (this.InputManager.Keyboard.IsKeyTriggerd(Keys.Right))
+                drawIndex++;
 
         }
 
@@ -143,7 +127,7 @@ namespace TimeTetris.Screens
             this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Help"], HelpString, _positionHelp, Color.White * _sinusAlpha, _shadowColor * _sinusAlpha);
             //fieldspr.Draw(gameTime);
             //block.Draw(gameTime);
-            wallkick.Draw(gameTime);
+            wallkicks[drawIndex % wallkicks.Length].Draw(gameTime);
             
             this.ScreenManager.SpriteBatch.End();
 

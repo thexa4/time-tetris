@@ -127,7 +127,7 @@ namespace TimeTetris.Drawing
                             Block = (Data.Block)block.Clone(),
                             Field = _field,
                             X = 2,
-                            Y = 5,
+                            Y = block.Height + 1,
                         }
                     )
                     {
@@ -145,7 +145,7 @@ namespace TimeTetris.Drawing
                             Block = (Data.Block)block.Clone(),
                             Field = _field,
                             X = 2 + movements[j, 0],
-                            Y = 5 + movements[j, 1],
+                            Y = block.Height + 1 + movements[j, 1],
                         }
                     )
                     {
