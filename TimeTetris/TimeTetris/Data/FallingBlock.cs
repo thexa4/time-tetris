@@ -27,6 +27,41 @@ namespace TimeTetris.Data
         /// </summary>
         public Field Field { get; set; }
 
+        public double LastMoveTime { get; set; }
+
+        public void MoveLeft()
+        {
+            MoveHorizontal(-1);
+        }
+
+        public void MoveRight()
+        {
+            MoveHorizontal(1);
+        }
+
+        protected void MoveHorizontal(int dir)
+        {
+            if(Field.Collides(Block, X + dir, Y))
+                return;
+
+            int prevx = X;
+            int newx = X + dir;
+
+            Event e = new Event();
+            e.Undo = () =>
+            {
+                Field.CurrentBlock.X = prevx;
+            };
+            e.Apply = () =>
+            {
+                Field.CurrentBlock.X = newx;
+            };
+            e.Time = Field.Timeline.CurrentTime;
+            e.Apply();
+
+            LastMoveTime = Field.Timeline.CurrentTime;
+        }
+
         /// <summary>
         /// Rotates block right
         /// </summary>
@@ -79,6 +114,7 @@ namespace TimeTetris.Data
                 e.Apply();
                 e.Time = Field.Timeline.CurrentTime;
                 Field.Timeline.Events.Add(e);
+                LastMoveTime = Field.Timeline.CurrentTime;
                 
                 return;
             }
