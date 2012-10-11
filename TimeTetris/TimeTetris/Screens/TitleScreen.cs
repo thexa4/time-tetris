@@ -35,6 +35,7 @@ namespace TimeTetris.Screens
             this.IsPopup = false;
             base.Initialize();
 
+            // TODO make a help screen with the wallkicks
             wallkicks = new Drawing.SpritesetWallkick[Enum.GetValues(typeof(Data.BlockType)).Length];
             foreach (var val in (Int32[])Enum.GetValues(typeof(Data.BlockType)))
                 wallkicks[val] = new Drawing.SpritesetWallkick(this.Game, (Data.BlockType)val);
@@ -96,7 +97,7 @@ namespace TimeTetris.Screens
             if (this.InputManager.Keyboard.IsKeyReleased(Keys.Enter))
             {
                 this.AudioManager.Play("confirm");
-                //this.Next = new MenuScreen();
+                this.Next = new PlayingScreen();
                 this.ExitScreenAnd();
             }
             else if (this.InputManager.Keyboard.IsKeyReleased(Keys.Escape))

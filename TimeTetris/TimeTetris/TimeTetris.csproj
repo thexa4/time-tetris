@@ -124,6 +124,7 @@
     <Compile Include="Drawing\SpriteField.cs" />
     <Compile Include="Drawing\SpritesetWallkick.cs" />
     <Compile Include="Extension\SpriteBatchExtensions.cs" />
+    <Compile Include="Screens\PlayingScreen.cs" />
     <Compile Include="Screens\TitleScreen.cs" />
     <Compile Include="TetrisGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
