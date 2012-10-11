@@ -13,6 +13,11 @@ namespace TimeTetris.Data
         public Block Block { get; set; }
 
         /// <summary>
+        /// The color id of the block
+        /// </summary>
+        public int Color { get; set; }
+
+        /// <summary>
         /// X Position in the Grid
         /// </summary>
         public Int32 X { get; set; }
@@ -28,38 +33,50 @@ namespace TimeTetris.Data
         public Field Field { get; set; }
 
         public double LastMoveTime { get; set; }
+        public double LastMoveDownTime { get; set; }
 
         public void MoveLeft()
         {
-            MoveHorizontal(-1);
+            Move(-1, 0);
         }
 
         public void MoveRight()
         {
-            MoveHorizontal(1);
+            Move(1, 0);
         }
 
-        protected void MoveHorizontal(int dir)
+        public void MoveDown()
         {
-            if(Field.Collides(Block, X + dir, Y))
-                return;
+            Move(0, -1);
+            LastMoveDownTime = Field.Timeline.CurrentTime;
+        }
+
+        protected bool Move(int xoff, int yoff)
+        {
+            if(Field.Collides(Block, X + xoff, Y + yoff))
+                return false;
 
             int prevx = X;
-            int newx = X + dir;
+            int prevy = Y;
+            int newx = X + yoff;
+            int newy = Y + yoff;
 
             Event e = new Event();
             e.Undo = () =>
             {
                 Field.CurrentBlock.X = prevx;
+                Field.CurrentBlock.Y = prevy;
             };
             e.Apply = () =>
             {
                 Field.CurrentBlock.X = newx;
+                Field.CurrentBlock.Y = newy;
             };
             e.Time = Field.Timeline.CurrentTime;
             e.Apply();
 
             LastMoveTime = Field.Timeline.CurrentTime;
+            return true;
         }
 
         /// <summary>

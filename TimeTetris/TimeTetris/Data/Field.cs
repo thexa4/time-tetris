@@ -14,6 +14,7 @@ namespace TimeTetris.Data
         public Int32 Height { get; protected set; }
 
         public FallingBlock CurrentBlock { get; set; }
+        public Block NextBlock { get; set; }
         public Timeline Timeline { get; protected set; }
 
         public Field(Int32 width, Int32 height)
@@ -43,6 +44,13 @@ namespace TimeTetris.Data
                 for (int i = 0; i <= y; i++)
                     cur = cur.Next;
                 return cur.Values[x];
+            }
+            set
+            {
+                Row cur = Bottom;
+                for (int i = 0; i <= y; i++)
+                    cur = cur.Next;
+                cur.Values[x] = value;
             }
         }
 
