@@ -12,7 +12,7 @@ namespace TimeTetris.Services
             protected set;
         }
 
-        private Keys _up, _down, _left, _right, _drop, _rotateLeft, _rotateRight;
+        private Keys _down, _left, _right, _drop, _rotateLeft, _rotateRight;
         private InputManager _inputManager;
 
         /// <summary>
@@ -21,10 +21,14 @@ namespace TimeTetris.Services
         /// <param name="game"></param>
         /// <param name="up"></param>
         /// <param name="down"></param>
-        public KeyboardController(Game game, Keys up, Keys down, Keys left, Keys right, Keys drop, Keys rotateLeft, Keys rotateRight) : base(game)
+        public KeyboardController(Game game, Keys down, Keys left, Keys right, Keys drop, Keys rotateLeft, Keys rotateRight) : base(game)
         {
-            _up = up;
+            _drop = drop;
             _down = down;
+            _left = left;
+            _right = right;
+            _rotateLeft = rotateLeft;
+            _rotateRight = rotateRight;
         }
 
         /// <summary>
@@ -44,6 +48,24 @@ namespace TimeTetris.Services
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            Direction = ControllerAction.None;
+
+            if (!this.Enabled)
+                return;
+
+            if (_inputManager.Keyboard.IsKeyTriggerd(_left))
+                Direction = ControllerAction.Left;
+            else if (_inputManager.Keyboard.IsKeyTriggerd(_right))
+                Direction = ControllerAction.Right;
+            else if (_inputManager.Keyboard.IsKeyTriggerd(_down))
+                Direction = ControllerAction.Down;
+            else if (_inputManager.Keyboard.IsKeyTriggerd(_drop))
+                Direction = ControllerAction.Drop;
+            else if (_inputManager.Keyboard.IsKeyTriggerd(_rotateLeft))
+                Direction = ControllerAction.RotateCCW;
+            else if (_inputManager.Keyboard.IsKeyTriggerd(_rotateRight))
+                Direction = ControllerAction.RotateCW;
         }
     }
 }
