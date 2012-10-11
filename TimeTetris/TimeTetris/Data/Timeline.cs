@@ -5,8 +5,9 @@ using System.Text;
 
 namespace TimeTetris.Data
 {
-    class Timeline
+    public class Timeline
     {
         public List<Event> Events { get; protected set; }
+        public double CurrentTime { get; protected set; }
     }
 }

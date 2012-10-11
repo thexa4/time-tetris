@@ -13,8 +13,13 @@ namespace TimeTetris.Data
         public Int32 Width { get; protected set; }
         public Int32 Height { get; protected set; }
 
+        public FallingBlock CurrentBlock { get; set; }
+        public Timeline Timeline { get; protected set; }
+
         public Field(Int32 width, Int32 height)
         {
+            Timeline = new Data.Timeline();
+
             Width = width;
             Height = height;
 

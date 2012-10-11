@@ -32,7 +32,40 @@ namespace TimeTetris.Data
         /// </summary>
         public void RotateRight()
         {
+            int rot = Block.Rotation;
             Block.Rotation++;
+            int[,] wallkicks = Wallkick.WallkickData.RightMovements[new Tuple<int, int>(Block.Width, rot)];
+            for(int i = 0; i < wallkicks.GetLength(0); i++)
+            {
+                if (Field.Collides(Block, X + wallkicks[i,0], Y + wallkicks[i,1]))
+                    continue;
+                
+                int prevx = X;
+                int prevy = Y;
+                Event e = new Event();
+                e.Undo = () =>
+                {
+                    Field.CurrentBlock.X = prevx;
+                    Field.CurrentBlock.Y = prevy;
+                    Field.CurrentBlock.Block.Rotation = rot;
+                };
+                int newx = X + wallkicks[i, 0];
+                int newy = Y + wallkicks[i, 1];
+                int newrot = rot + 1;
+                e.Apply = () =>
+                {
+                    Field.CurrentBlock.X = newx;
+                    Field.CurrentBlock.Y = newy;
+                    Field.CurrentBlock.Block.Rotation = newrot;
+                };
+                e.Apply();
+                
+                
+                return;
+            }
+
+            // Rotation failed
+            Block.Rotation--;
         }
     }
 }
