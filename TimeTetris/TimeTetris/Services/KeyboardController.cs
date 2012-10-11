@@ -12,16 +12,21 @@ namespace TimeTetris.Services
             protected set;
         }
 
-        private Keys _down, _left, _right, _drop, _rotateLeft, _rotateRight;
+        private Keys _down, _left, _right, _drop, _rotateLeft, _rotateRight, _time;
         private InputManager _inputManager;
 
         /// <summary>
         /// Creates a new Paddle Controller
         /// </summary>
-        /// <param name="game"></param>
-        /// <param name="up"></param>
-        /// <param name="down"></param>
-        public KeyboardController(Game game, Keys down, Keys left, Keys right, Keys drop, Keys rotateLeft, Keys rotateRight) : base(game)
+        /// <param name="game">Game to bind to</param>
+        /// <param name="down">Soft down button</param>
+        /// <param name="drop">Drop down button</param>
+        /// <param name="left">Move left button</param>
+        /// <param name="right">Move right button</param>
+        /// <param name="rotateLeft">Rotate Left button</param>
+        /// <param name="rotateRight">Rotate Right button</param>
+        /// <param name="time">Rewind time button</param>
+        public KeyboardController(Game game, Keys down, Keys left, Keys right, Keys drop, Keys rotateLeft, Keys rotateRight, Keys time) : base(game)
         {
             _drop = drop;
             _down = down;
@@ -29,6 +34,7 @@ namespace TimeTetris.Services
             _right = right;
             _rotateLeft = rotateLeft;
             _rotateRight = rotateRight;
+            _time = time;
         }
 
         /// <summary>
@@ -66,6 +72,8 @@ namespace TimeTetris.Services
                 Direction = ControllerAction.RotateCCW;
             else if (_inputManager.Keyboard.IsKeyTriggerd(_rotateRight))
                 Direction = ControllerAction.RotateCW;
+            else if (_inputManager.Keyboard.IsKeyPressed(_time))
+                Direction = ControllerAction.Time;
         }
     }
 }
