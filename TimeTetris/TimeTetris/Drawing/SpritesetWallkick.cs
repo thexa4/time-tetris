@@ -62,7 +62,7 @@ namespace TimeTetris.Drawing
             _spritesRight = new List<Sprite>();
 
             var block = new Block(this.Type);
-            _field = new Field(block.Width + 4, block.Height + 4 + SpriteField.HiddenRows);
+            _field = new Field((Timeline)this.Game.Services.GetService(typeof(Timeline)), block.Width + 4, block.Height + 4 + SpriteField.HiddenRows);
 
             // Add for each rotation left
             for (Int32 i = 0; i < 4; i++)

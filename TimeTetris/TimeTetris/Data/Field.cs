@@ -17,9 +17,9 @@ namespace TimeTetris.Data
         public Block NextBlock { get; set; }
         public Timeline Timeline { get; protected set; }
 
-        public Field(Int32 width, Int32 height)
+        public Field(Timeline timeline, Int32 width, Int32 height)
         {
-            Timeline = new Data.Timeline();
+            Timeline = timeline;
 
             Width = width;
             Height = height;

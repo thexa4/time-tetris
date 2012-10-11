@@ -57,6 +57,12 @@ namespace TimeTetris
             private set;
         }
 
+        internal Data.Timeline Timeline
+        {
+            get;
+            private set;
+        }
+
         #region FRAMERATE
         private TimeSpan _elapsedTime;
         private Int32 _frameCount, _frameRate;
@@ -100,6 +106,7 @@ namespace TimeTetris
             this.InputManager = new InputManager(this);
             this.ScreenManager = new ScreenManager(this);
             this.AudioManager = new AudioManager(this);
+            this.Timeline = new Data.Timeline(this);
         }
 
         /// <summary>
@@ -113,6 +120,7 @@ namespace TimeTetris
             this.Components.Add(this.InputManager);
             this.Components.Add(this.ScreenManager);
             this.Components.Add(this.AudioManager);
+            this.Components.Add(this.Timeline);
 
             // Initialize all components
             base.Initialize();
