@@ -33,6 +33,13 @@ namespace TimeTetris.Data
                 Bottom.InsertAfter(new Row(width));
         }
 
+        public void LockFalling()
+        {
+            for(int x = 0; x < CurrentBlock.Block.Width; x++)
+                for (int y = 0; y < CurrentBlock.Block.Height; y++)
+                    this[CurrentBlock.X + x, CurrentBlock.Y + y] = CurrentBlock.Color;
+        }
+
         public Int32 this[int x, int y]
         {
             get {
