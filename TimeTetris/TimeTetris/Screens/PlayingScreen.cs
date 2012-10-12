@@ -14,7 +14,9 @@ namespace TimeTetris.Screens
     {
         private Data.Field _field;
 
+
         private SpriteField _spriteField;
+        private Sprite _spriteNextBlockBoundary;
         private SpriteFallingBlock _spriteFallingBlock;
         private SpriteBlock _spriteNextBlock;
         // TODO spriteset level ?
@@ -39,18 +41,40 @@ namespace TimeTetris.Screens
             _field.Initialize();
 
             // Create Sprites
-            _spriteField = new SpriteField(this.Game, _field);
+            _spriteField = new SpriteField(this.Game, _field) { Position = Vector2.One * SpriteField.GridSize * 5 };
             _spriteField.Initialize();
 
-            _spriteFallingBlock = new SpriteFallingBlock(this.Game, _field.CurrentBlock);
+            _spriteFallingBlock = new SpriteFallingBlock(this.Game, _field.CurrentBlock) { Position = _spriteField.Position };
             _spriteFallingBlock.Initialize();
 
-            _spriteNextBlock = new SpriteBlock(this.Game, _field.NextBlock) { Position = Vector2.UnitX * (_field.Width * SpriteField.GridSize + 20) };
+            // Next Block Boundary Background
+            _spriteNextBlockBoundary = new Sprite(this.Game)
+                {
+                    TextureName = "Graphics/blank",
+                    Size = Vector2.One * SpriteField.GridSize * _field.NextBlock.Width,
+                    Position = _spriteField.Position + Vector2.UnitX * (_field.Width + 2) * SpriteField.GridSize,
+                    Opacity = 0.2f,
+                    Color = Color.White,
+                };
+            _spriteNextBlockBoundary.Initialize();
+
+            // Next BLock
+            _spriteNextBlock = new SpriteBlock(this.Game, _field.NextBlock) { Position = _spriteNextBlockBoundary.Position, };
             _spriteNextBlock.Initialize();
+            _field.NextBlock.OnTypeChanged += new BlockTypeDelegate(NextBlock_OnTypeChanged);
 
             // Start the level
             _timeline.Start();
 
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="b"></param>
+        private void NextBlock_OnTypeChanged(BlockType block)
+        {
+            _spriteNextBlockBoundary.Size = Vector2.One * SpriteField.GridSize * _field.NextBlock.Width;
         }
 
         /// <summary>
@@ -63,6 +87,7 @@ namespace TimeTetris.Screens
             _spriteField.LoadContent(contentManager);
             _spriteFallingBlock.LoadContent(contentManager);
             _spriteNextBlock.LoadContent(contentManager);
+            _spriteNextBlockBoundary.LoadContent(contentManager);
         }
 
         /// <summary>
@@ -80,6 +105,7 @@ namespace TimeTetris.Screens
             _spriteField.Update(gameTime);
             _spriteFallingBlock.Update(gameTime);
             _spriteNextBlock.Update(gameTime);
+            _spriteNextBlockBoundary.Update(gameTime);
         }
 
         /// <summary>
@@ -108,6 +134,7 @@ namespace TimeTetris.Screens
 
             _spriteField.Draw(gameTime);
             _spriteFallingBlock.Draw(gameTime);
+            _spriteNextBlockBoundary.Draw(gameTime);
             _spriteNextBlock.Draw(gameTime);
 
             this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["Default"], String.Format("{0} s", Math.Round(_timeline.CurrentTime / 1000, 2)), Vector2.One * 5, Color.White);

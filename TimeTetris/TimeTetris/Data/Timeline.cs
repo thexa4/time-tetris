@@ -27,6 +27,8 @@ namespace TimeTetris.Data
         {
             this.Events = new List<Event>();
             this.Enabled = false;
+            this.UpdateOrder = 1;
+
             this.Game.Services.AddService(typeof(Timeline), this);
         }
 

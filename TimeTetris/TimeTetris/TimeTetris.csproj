@@ -129,6 +129,7 @@
     <Compile Include="Extension\SpriteBatchExtensions.cs" />
     <Compile Include="Screens\PlayingScreen.cs" />
     <Compile Include="Screens\TitleScreen.cs" />
+    <Compile Include="Screens\WallkickHelpScreen.cs" />
     <Compile Include="TetrisGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />

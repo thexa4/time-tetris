@@ -8,7 +8,7 @@ namespace TimeTetris.Drawing
 {
     public class SpriteField : Sprite
     {
-        public const Int32 HiddenRows = 0;
+        public const Int32 HiddenRows = 4;
         public const Int32 GridSize = 16;
 
         /// <summary>
