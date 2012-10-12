@@ -135,7 +135,7 @@ namespace TimeTetris.Screens
             else if (InputManager.Keyboard.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Escape))
                 _timeline.Resume();
 
-            if (_timeline.RewindDelta > 0)
+            if (_timeline.IsRewindActive || _field.HasEnded)
                 return;
 
             switch (_controller.Action)
@@ -159,7 +159,7 @@ namespace TimeTetris.Screens
                     _field.CurrentBlock.RotateRight();
                     break;
                 case ControllerAction.Time:
-                    _timeline.Rewind(5);
+                    _timeline.RewindFrame(); // TODO score subtract
                     break;
             }
         }
@@ -180,8 +180,9 @@ namespace TimeTetris.Screens
             _spriteNextBlockBoundary.Draw(gameTime);
             _spriteNextBlock.Draw(gameTime);
 
-            this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["Default"], String.Format("{0:0.00}s  {1:####0} points  {2} combo", 
-                Math.Round(_timeline.CurrentTime, 2), _field.Score, _field.ComboCount), Vector2.One * 5, Color.White);
+            this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["Default"], 
+                String.Format("{0:0.00}s  {3:0.00}ls/s  {1:####0} points  {2} combo", 
+                    Math.Round(_timeline.CurrentTime, 2), _field.Score, _field.ComboCount, _timeline.RewindSpeed), Vector2.One * 5, Color.White);
             this.ScreenManager.SpriteBatch.End();
         }
     }

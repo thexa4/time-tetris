@@ -24,7 +24,7 @@ namespace TimeTetris.Data
         public Boolean HasEnded { get; set; }
 
         private Int32 _score;
-        public Int32 Score { get { return _score; } protected set { _score = Math.Max(0, _score); } }
+        public Int32 Score { get { return _score; } protected set { _score = Math.Max(0, value); } }
         public Int32 ComboCount { get; protected set; }
 
         /// <summary>

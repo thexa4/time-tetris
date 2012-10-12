@@ -72,7 +72,7 @@ namespace TimeTetris.Services
                 Action = ControllerAction.RotateCCW;
             else if (_inputManager.Keyboard.IsKeyTriggerd(_rotateRight))
                 Action = ControllerAction.RotateCW;
-            else if (_inputManager.Keyboard.IsKeyPressed(_time))
+            else if (_inputManager.Keyboard.IsKeyDown(_time))
                 Action = ControllerAction.Time;
         }
     }

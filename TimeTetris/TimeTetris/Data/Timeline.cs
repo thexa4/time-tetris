@@ -23,7 +23,20 @@ namespace TimeTetris.Data
         /// 
         /// </summary>
         public Double RewindDelta { get; protected set; }
-        public Double RewindSpeed { get; protected set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Double RewindSpeed { get { return _rewindSpeed; } protected set { _rewindBaseSpeed = value; } }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Boolean IsRewindActive { get { return RewindDelta > 0 || _rewindFrameWasActive; } }
+
+
+        protected Double _rewindSpeed, _rewindBaseSpeed, _rewindTime;
+        protected Boolean _rewindFrameActive, _rewindFrameWasActive;
 
         /// <summary>
         /// Creates the timeline
@@ -35,12 +48,12 @@ namespace TimeTetris.Data
             this.Enabled = false;
             this.UpdateOrder = 1;
             this.RewindSpeed = 3;
-
+            
             this.Game.Services.AddService(typeof(Timeline), this);
         }
 
         /// <summary>
-        /// 
+        /// Initializes Timeline
         /// </summary>
         public override void Initialize()
         {
@@ -74,12 +87,33 @@ namespace TimeTetris.Data
         }
 
         /// <summary>
-        /// 
+        /// Rewinds for certain amount of time. 
+        /// This time value is real life time, not level time.
         /// </summary>
-        /// <param name="time"></param>
+        /// <param name="time">time to rewind</param>
         public void Rewind(Double time)
         {
+            RewindReset();
             this.RewindDelta = time;
+        }
+
+        /// <summary>
+        /// Rewinds for this frame
+        /// </summary>
+        public void RewindFrame()
+        {
+            _rewindFrameActive = true;
+            _rewindFrameWasActive = true;
+        }
+
+        /// <summary>
+        /// Resets rewind
+        /// </summary>
+        public void RewindReset()
+        {
+            _rewindSpeed = _rewindBaseSpeed;
+            _rewindTime = 0;
+            _rewindFrameWasActive = false;
         }
 
         /// <summary>
@@ -104,21 +138,39 @@ namespace TimeTetris.Data
         {
             base.Update(gameTime);
 
-            if (RewindDelta <= 0)
+            var gameTimePassed = gameTime.ElapsedGameTime.TotalSeconds;
+            if (this.RewindDelta <= 0 && !_rewindFrameActive)
             {
-                this.CurrentTime += gameTime.ElapsedGameTime.TotalSeconds;
+                // Forward
+                this.CurrentTime += gameTimePassed;
+                RewindReset();
             }
             else
             {
                 // Rewind amount
-                var rewind = Math.Min(Math.Min(this.RewindDelta, gameTime.ElapsedGameTime.TotalSeconds * this.RewindSpeed), this.CurrentTime);
-                this.RewindDelta = Math.Min(this.CurrentTime, this.RewindDelta - rewind);
+                var rewind = Math.Min(Math.Min(_rewindSpeed, gameTimePassed * _rewindSpeed), this.CurrentTime);
+                
+                // Correct for endlevel, because we want to slow 
+                // down rewinding near the start. It should be near
+                // impossible to reach the beginning and the first 
+                // minute, rewinding is "expensive".
+                rewind = Math.Min(rewind, gameTimePassed * _rewindSpeed * this.CurrentTime / 60);
 
+                // The amount of gametime will still want to rewind.
+                // This won't go under 0 if _rewindFrameActive
+                this.RewindDelta = Math.Min(this.CurrentTime, Math.Max(0, this.RewindDelta - gameTimePassed));
+                
+                // Increase the speed, so the longer you rewind, the 
+                // faster it will go.
+                _rewindSpeed *= 1 + (0.1f * gameTimePassed);
+
+                // Pop the events and undo them
                 while (this.Events.Count > 0 && this.Events.Last().Time >= this.CurrentTime - rewind)
                     this.Events.Pop<Event>().Undo();
 
                 this.CurrentTime -= rewind;
-            }
+                _rewindFrameActive = false;
+            }                
         }
     }
 }
