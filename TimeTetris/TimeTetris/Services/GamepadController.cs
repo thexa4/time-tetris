@@ -5,7 +5,7 @@ namespace TimeTetris.Services
 {
     public class GamepadController : GameComponent, IController
     {
-        public ControllerAction Direction
+        public ControllerAction Action
         {
             get;
             protected set;

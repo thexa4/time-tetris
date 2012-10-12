@@ -10,12 +10,11 @@ namespace TimeTetris.Services
         None = 0,
 
         Left = 1,
-        Up = 2,
-        Right = 3,
-        Down = 4,
-        Drop = 5,
-        RotateCW = 6,
-        RotateCCW = 7,
-        Time = 8,
+        Right = 2,
+        Down = 3,
+        Drop = 4,
+        RotateCW = 5,
+        RotateCCW = 6,
+        Time = 7,
     }
 }

@@ -6,7 +6,7 @@ namespace TimeTetris.Services
     public class KeyboardController : GameComponent, IController
     {
 
-        public ControllerAction Direction
+        public ControllerAction Action
         {
             get;
             protected set;
@@ -55,25 +55,25 @@ namespace TimeTetris.Services
         {
             base.Update(gameTime);
 
-            Direction = ControllerAction.None;
+            Action = ControllerAction.None;
 
             if (!this.Enabled)
                 return;
 
             if (_inputManager.Keyboard.IsKeyTriggerd(_left))
-                Direction = ControllerAction.Left;
+                Action = ControllerAction.Left;
             else if (_inputManager.Keyboard.IsKeyTriggerd(_right))
-                Direction = ControllerAction.Right;
+                Action = ControllerAction.Right;
             else if (_inputManager.Keyboard.IsKeyTriggerd(_down))
-                Direction = ControllerAction.Down;
+                Action = ControllerAction.Down;
             else if (_inputManager.Keyboard.IsKeyTriggerd(_drop))
-                Direction = ControllerAction.Drop;
+                Action = ControllerAction.Drop;
             else if (_inputManager.Keyboard.IsKeyTriggerd(_rotateLeft))
-                Direction = ControllerAction.RotateCCW;
+                Action = ControllerAction.RotateCCW;
             else if (_inputManager.Keyboard.IsKeyTriggerd(_rotateRight))
-                Direction = ControllerAction.RotateCW;
+                Action = ControllerAction.RotateCW;
             else if (_inputManager.Keyboard.IsKeyPressed(_time))
-                Direction = ControllerAction.Time;
+                Action = ControllerAction.Time;
         }
     }
 }
