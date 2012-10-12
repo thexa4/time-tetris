@@ -17,10 +17,11 @@ namespace TimeTetris.Screens
 
 
         private SpriteField _spriteField;
-        private Sprite _spriteNextBlockBoundary;
-        private SpriteFallingBlock _spriteFallingBlock;
-        private SpriteGhostBlock _spriteGhostBlock;
+        private Sprite _spriteNextBlockBoundary, _spriteHoldBlockBoundary;
         private SpriteBlock _spriteNextBlock;
+        private SpriteGhostBlock _spriteGhostBlock;
+        private SpriteNullableBlock _spriteHoldBlock;
+        private SpriteFallingBlock _spriteFallingBlock;
         private KeyboardController _controller;
         // TODO spriteset level ?
 
@@ -49,7 +50,7 @@ namespace TimeTetris.Screens
             _spriteGhostBlock = new SpriteGhostBlock(this.Game, _field.CurrentBlock) { Position = _spriteField.Position };
             _spriteFallingBlock = new SpriteFallingBlock(this.Game, _field.CurrentBlock) { Position = _spriteField.Position };
 
-            // Next Block Boundary Background
+            // Next Block and HoldBlock Boundaries
             _spriteNextBlockBoundary = new Sprite(this.Game)
                 {
                     TextureName = "Graphics/blank",
@@ -59,18 +60,31 @@ namespace TimeTetris.Screens
                     Color = Color.White,
                 };
 
+            _spriteHoldBlockBoundary = new Sprite(this.Game)
+                {
+                    TextureName = "Graphics/blank",
+                    Size = Vector2.One * SpriteField.GridCellSize * (_field.HoldBlock != null ? _field.HoldBlock.Width : 4),
+                    Position = _spriteField.Position + (Vector2.UnitX * (_field.Width + 2) + Vector2.UnitY * (4 + 2)) * SpriteField.GridCellSize,
+                    Opacity = 0.2f,
+                    Color = Color.White,
+                };
+            
+
             // Next BLock
             _spriteNextBlock = new SpriteBlock(this.Game, _field.NextBlock) { Position = _spriteNextBlockBoundary.Position, };
             _field.NextBlock.OnTypeChanged += new BlockTypeDelegate(NextBlock_OnTypeChanged);
-
+            _spriteHoldBlock = new SpriteNullableBlock(this.Game) { Position = _spriteHoldBlockBoundary.Position, };
+            
             _spriteField.Initialize();
             _spriteGhostBlock.Initialize();
             _spriteFallingBlock.Initialize();
             _spriteNextBlockBoundary.Initialize();
+            _spriteHoldBlockBoundary.Initialize();
             _spriteNextBlock.Initialize();
+            _spriteHoldBlock.Initialize();
 
             // Player controller
-            _controller = new KeyboardController(this.Game, Keys.S, Keys.A, Keys.D, Keys.W, Keys.Q, Keys.E, Keys.Space);
+            _controller = new KeyboardController(this.Game, Keys.S, Keys.A, Keys.D, Keys.W, Keys.Q, Keys.E, Keys.Space, Keys.Enter);
             _controller.Initialize();
 
             // Start the level
@@ -89,6 +103,17 @@ namespace TimeTetris.Screens
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="block"></param>
+        private void HoldBlock_OnTypeChanged(BlockType block)
+        {
+            _spriteHoldBlockBoundary.Size = Vector2.One * SpriteField.GridCellSize * _field.HoldBlock.Width;
+            _spriteHoldBlockBoundary.Scale = _spriteHoldBlockBoundary.Size.X / _spriteHoldBlockBoundary.SourceRectangle.Width * Vector2.UnitX +
+                _spriteHoldBlockBoundary.Size.Y / _spriteHoldBlockBoundary.SourceRectangle.Height * Vector2.UnitY;
+        }
+
+        /// <summary>
         /// Loads all content
         /// </summary>
         /// <param name="contentManager"></param>
@@ -99,7 +124,9 @@ namespace TimeTetris.Screens
             _spriteGhostBlock.LoadContent(contentManager);
             _spriteFallingBlock.LoadContent(contentManager);
             _spriteNextBlock.LoadContent(contentManager);
+            _spriteHoldBlock.LoadContent(contentManager);
             _spriteNextBlockBoundary.LoadContent(contentManager);
+            _spriteHoldBlockBoundary.LoadContent(contentManager);
         }
 
         /// <summary>
@@ -120,6 +147,8 @@ namespace TimeTetris.Screens
             _spriteGhostBlock.Update(gameTime);
             _spriteNextBlock.Update(gameTime);
             _spriteNextBlockBoundary.Update(gameTime);
+            _spriteHoldBlock.Update(gameTime);
+            _spriteHoldBlockBoundary.Update(gameTime);
         }
 
         /// <summary>
@@ -167,6 +196,27 @@ namespace TimeTetris.Screens
                 case ControllerAction.RotateCCW:
                     _field.CurrentBlock.RotateRight();
                     break;
+                case ControllerAction.Hold:
+                    var oldHoldBlock = _field.HoldBlock;
+                    if (_field.SwitchHoldingBlock()) {
+                        var holdBlock = _field.HoldBlock;
+                        _timeline.Add(new Event() {
+                        
+                            Apply = () => {
+                                _spriteHoldBlock.SetBlock(holdBlock);
+                                HoldBlock_OnTypeChanged(holdBlock.Type);
+                            },
+
+                            Undo = () => {
+                                _spriteHoldBlock.SetBlock(oldHoldBlock);
+
+                                if (oldHoldBlock != null)
+                                    HoldBlock_OnTypeChanged(oldHoldBlock.Type);
+                            } 
+                        });
+                            
+                    }
+                    break;
             }
         }
 
@@ -185,6 +235,8 @@ namespace TimeTetris.Screens
             _spriteFallingBlock.Draw(gameTime);
             _spriteNextBlockBoundary.Draw(gameTime);
             _spriteNextBlock.Draw(gameTime);
+            _spriteHoldBlockBoundary.Draw(gameTime);
+            _spriteHoldBlock.Draw(gameTime);
 
             this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["Default"], 
                 String.Format("{0:0.00}ls  {3:0.00}ls/s  {1:####0} points  {2} combo  level {5} / {4} lines  ", 

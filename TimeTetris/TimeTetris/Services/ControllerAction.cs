@@ -16,5 +16,6 @@ namespace TimeTetris.Services
         RotateCW = 5,
         RotateCCW = 6,
         Time = 7,
+        Hold = 8,
     }
 }

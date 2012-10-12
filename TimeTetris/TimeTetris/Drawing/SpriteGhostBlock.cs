@@ -6,12 +6,8 @@ using Microsoft.Xna.Framework;
 
 namespace TimeTetris.Drawing
 {
-    public class SpriteGhostBlock : SpriteBlock 
+    public class SpriteGhostBlock : SpriteFallingBlock 
     {
-        /// <summary>
-        /// Data Falling Block
-        /// </summary>
-        public Data.FallingBlock Source { get; protected set; }
         private Int32 _oldSourceX, _oldSourceR, _displayY;
 
         /// <summary>
@@ -20,9 +16,8 @@ namespace TimeTetris.Drawing
         /// <param name="game">Game to bind to</param>
         /// <param name="source">Data</param>
         public SpriteGhostBlock(Game game, Data.FallingBlock source)
-            : base(game, source.Block)
+            : base(game, source)
         {
-            this.Source = source;
             this.Opacity = 0.2f;
             this.Source.Block.OnTypeChanged += new Data.BlockTypeDelegate(Block_OnTypeChanged);
         }
@@ -42,7 +37,6 @@ namespace TimeTetris.Drawing
         /// <param name="gameTime">Snapshot of timing values</param>
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
 
             if (_oldSourceX != this.Source.X || _oldSourceR != this.Source.Block.Rotation || _displayY > this.Source.Y)
             {

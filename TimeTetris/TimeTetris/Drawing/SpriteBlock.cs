@@ -11,11 +11,6 @@ namespace TimeTetris.Drawing
         protected Data.Block _source; 
 
         /// <summary>
-        /// Position + Offset
-        /// </summary>
-        protected Vector2 OffsetPosition { get; set; }
-
-        /// <summary>
         /// Creates a new sprite of a falling block
         /// </summary>
         /// <param name="game">Game to bind to</param>
@@ -25,28 +20,21 @@ namespace TimeTetris.Drawing
             _source = source;
             this.TextureName = "Graphics/blank";
             this.Size = (SpriteField.GridCellSize - 1) * Vector2.One;
-            this.Color = Data.Block.GetColor(source.Type);
 
-            source.OnTypeChanged += new Data.BlockTypeDelegate(source_OnTypeChanged);
+            if (_source != null)
+            {
+                this.Color = Data.Block.GetColor(source.Type);
+                _source.OnTypeChanged += new Data.BlockTypeDelegate(_source_OnTypeChanged);
+            }
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="b"></param>
-        private void source_OnTypeChanged(Data.BlockType b)
+        protected void _source_OnTypeChanged(Data.BlockType b)
         {
             this.Color = Data.Block.GetColor(b);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="gameTime"></param>
-        public override void Update(GameTime gameTime)
-        {
-            this.OffsetPosition = this.Position;
-            base.Update(gameTime);
         }
 
         /// <summary>
@@ -64,7 +52,7 @@ namespace TimeTetris.Drawing
             for (Int32 x = 0; x < width; x++)
                 for (Int32 y = 0; y < height; y++) 
                 {
-                    this.Position = this.OffsetPosition + Vector2.UnitX * SpriteField.GridCellSize * x +
+                    this.Position = basePosition + Vector2.UnitX * SpriteField.GridCellSize * x +
                         Vector2.UnitY * SpriteField.GridCellSize * (height - 1 - y);
                     if (_source[x, y])
                         base.Draw(gameTime);

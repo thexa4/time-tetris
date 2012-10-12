@@ -12,7 +12,7 @@ namespace TimeTetris.Services
             protected set;
         }
 
-        private Keys _down, _left, _right, _drop, _rotateLeft, _rotateRight, _time;
+        private Keys _down, _left, _right, _drop, _rotateLeft, _rotateRight, _time, _hold;
         private InputManager _inputManager;
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace TimeTetris.Services
         /// <param name="rotateLeft">Rotate Left button</param>
         /// <param name="rotateRight">Rotate Right button</param>
         /// <param name="time">Rewind time button</param>
-        public KeyboardController(Game game, Keys down, Keys left, Keys right, Keys drop, Keys rotateLeft, Keys rotateRight, Keys time) : base(game)
+        public KeyboardController(Game game, Keys down, Keys left, Keys right, Keys drop, Keys rotateLeft, Keys rotateRight, Keys time, Keys Hold) : base(game)
         {
             _drop = drop;
             _down = down;
@@ -35,6 +35,7 @@ namespace TimeTetris.Services
             _rotateLeft = rotateLeft;
             _rotateRight = rotateRight;
             _time = time;
+            _hold = Hold;
         }
 
         /// <summary>
@@ -74,6 +75,8 @@ namespace TimeTetris.Services
                 Action = ControllerAction.RotateCW;
             else if (_inputManager.Keyboard.IsKeyDown(_time))
                 Action = ControllerAction.Time;
+            else if (_inputManager.Keyboard.IsKeyPressed(_hold))
+                Action = ControllerAction.Hold;
         }
     }
 }

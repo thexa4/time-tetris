@@ -41,6 +41,12 @@ namespace TimeTetris.Data
         public Block NextBlock { get; set; }
 
         /// <summary>
+        /// Next block
+        /// </summary>
+        public Block HoldBlock { get; set; }
+        private Boolean _holdLocked;
+
+        /// <summary>
         /// Timeline
         /// </summary>
         public Timeline Timeline { get; protected set; }
@@ -112,6 +118,8 @@ namespace TimeTetris.Data
         /// </summary>
         public void LockFalling()
         {
+            _holdLocked = false;
+
             var color = Block.ToGridValue(this.CurrentBlock.Block.Type);
             var startX = this.CurrentBlock.X;
             var startY = this.CurrentBlock.Y;
@@ -294,6 +302,75 @@ namespace TimeTetris.Data
 
             if (this.Timeline.IsRewindActive)
                 this.Score -= Points.Rewind * gameTime.ElapsedGameTime.TotalSeconds;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Boolean SwitchHoldingBlock()
+        {
+            if (_holdLocked)
+                return false;
+            _holdLocked = true;
+
+            var baseY = this.CurrentBlock.Field.Height - 1;
+            var baseX = this.CurrentBlock.Field.Width / 2 - this.CurrentBlock.Block.Width / 2 - 1;
+
+            var oldType = this.CurrentBlock.Block.Type;
+            var oldR = this.CurrentBlock.Block.Rotation;
+            var oldPoints = this.CurrentBlock.BlockPoints;
+            var oldX = baseX;
+            if (oldType == BlockType.OBlock || oldType == BlockType.JBlock || oldType == BlockType.ZBlock)
+                oldX++;
+
+            if (this.HoldBlock == null)
+            {
+                GenerateNextBlock();
+
+                this.Timeline.Add(new Event()
+                {
+                    Apply = () =>
+                        {
+                            this.HoldBlock = new Block(oldType);
+                        },
+
+                    Undo = () =>
+                        {
+                            this.HoldBlock = null;
+                            this.CurrentBlock.Replace(oldX, baseY, oldR);
+                        },
+
+                });
+
+                return true;
+            }
+
+            // New block
+            var newType = this.HoldBlock.Type;
+            var newR = Block.GetStartRotation(newType);
+
+            var newX = baseX;
+            if (newType == BlockType.OBlock || newType == BlockType.JBlock || newType == BlockType.ZBlock)
+                newX++;
+
+            this.Timeline.Add(new Event()
+            {
+                Apply = () =>
+                {
+                    this.HoldBlock.SetBlockType(oldType);
+                    this.CurrentBlock.Block.SetBlockType(newType);
+                    this.CurrentBlock.Replace(newX, baseY, newR);
+                },
+
+                Undo = () =>
+                {
+                    this.HoldBlock.SetBlockType(newType);
+                    this.CurrentBlock.Block.SetBlockType(oldType);
+                    this.CurrentBlock.Replace(oldX, baseY, oldR);
+                },
+            });
+
+            return true;
         }
     }
 }
