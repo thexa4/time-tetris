@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using TimeTetris.Extension;
 
 namespace TimeTetris.Data
 {
@@ -19,15 +20,21 @@ namespace TimeTetris.Data
         public Double CurrentTime { get; protected set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public Double RewindDelta { get; protected set; }
+        public Double RewindSpeed { get; protected set; }
+
+        /// <summary>
         /// Creates the timeline
         /// </summary>
         /// <param name="game">Game to bind to</param>
         public Timeline(Game game)
             : base(game)
         {
-            this.Events = new List<Event>();
             this.Enabled = false;
             this.UpdateOrder = 1;
+            this.RewindSpeed = 3;
 
             this.Game.Services.AddService(typeof(Timeline), this);
         }
@@ -67,6 +74,15 @@ namespace TimeTetris.Data
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="time"></param>
+        public void Rewind(Double time)
+        {
+            this.RewindDelta = time;
+        }
+
+        /// <summary>
         /// Adds an event
         /// </summary>
         /// <param name="action">event to register</param>
@@ -87,7 +103,20 @@ namespace TimeTetris.Data
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            this.CurrentTime += gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (RewindDelta <= 0)
+            {
+                this.CurrentTime += gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            else
+            {
+                var rewind = Math.Min(Math.Min(this.RewindDelta, gameTime.ElapsedGameTime.TotalSeconds * this.RewindSpeed), this.CurrentTime);
+                while (this.Events.Count > 0 && this.Events.Last().Time >= this.CurrentTime - rewind)
+                    this.Events.Pop<Event>().Undo();
+
+                this.CurrentTime -= rewind;
+                this.RewindDelta -= rewind;
+            }
         }
     }
 }

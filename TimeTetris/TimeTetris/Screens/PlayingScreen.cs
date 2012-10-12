@@ -128,6 +128,9 @@ namespace TimeTetris.Screens
             else if (InputManager.Keyboard.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Escape))
                 _timeline.Resume();
 
+            if (_timeline.RewindDelta > 0)
+                return;
+
             switch (_controller.Action)
             {
                 case ControllerAction.Down:
@@ -149,6 +152,7 @@ namespace TimeTetris.Screens
                     _field.CurrentBlock.RotateRight();
                     break;
                 case ControllerAction.Time:
+                    _timeline.Rewind(5);
                     break;
             }
         }
