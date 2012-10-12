@@ -125,7 +125,7 @@ namespace TimeTetris
             // Initialize all components
             base.Initialize();
 
-            this.ScreenManager.AddScreen(new TitleScreen());
+            this.ScreenManager.AddScreen(new WallkickHelpScreen());
         }
 
         /// <summary>

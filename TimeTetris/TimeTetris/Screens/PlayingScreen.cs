@@ -139,8 +139,9 @@ namespace TimeTetris.Screens
                 case ControllerAction.Right:
                     _field.CurrentBlock.MoveRight();
                     break;
-                //case ControllerAction.Up:
-                //    _field.CurrentBlock.DropDown();
+                case ControllerAction.Drop:
+                    _field.CurrentBlock.Drop();
+                    break;
                 case ControllerAction.RotateCW:
                     _field.CurrentBlock.RotateLeft();
                     break;
