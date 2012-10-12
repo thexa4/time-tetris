@@ -11,16 +11,19 @@ namespace TimeTetris.Screens
     /// <summary>
     /// 
     /// </summary>
-    public class TitleScreen : GameScreen
+    public class WallkickHelpScreen : GameScreen
     {
-        private const String TitleString = "Time Tetris";
-        private const String HelpString = "Press enter to start.";
+        //private const String TitleString = "Time Tetris";
+        //private const String HelpString = "Press enter to start.";
 
-        protected Vector2 _positionTitle, _positionHelp;
-        protected Color _shadowColor;
-        protected Single _sinusAlpha;
+        //protected Vector2 _positionTitle, _positionHelp;
+        //protected Color _shadowColor;
+        //protected Single _sinusAlpha;
         protected SoundEffect _menuSound;
         protected SoundEffectInstance _menuSoundInstance;
+
+        public Drawing.SpritesetWallkick[] _wallkicks;
+        public Int32 _drawIndex;
 
         /// <summary>
         /// Initializes the screen
@@ -31,6 +34,13 @@ namespace TimeTetris.Screens
             this.TransitionOffTime = TimeSpan.FromSeconds(.5f);
             this.IsPopup = false;
             base.Initialize();
+
+            _wallkicks = new Drawing.SpritesetWallkick[Enum.GetValues(typeof(Data.BlockType)).Length];
+            foreach (var val in (Int32[])Enum.GetValues(typeof(Data.BlockType)))
+                _wallkicks[val] = new Drawing.SpritesetWallkick(this.Game, (Data.BlockType)val);
+
+            foreach (var wallkick in _wallkicks)
+                wallkick.Initialize();
         }
 
         /// <summary>
@@ -45,14 +55,17 @@ namespace TimeTetris.Screens
             this.ScreenManager.SpriteFonts.LoadFont("Help", "Fonts/Default");
             this.AudioManager.Load("blip", "confirm", 1f, .5f);
 
-            var titleMeasurement = this.ScreenManager.SpriteFonts["Title"].MeasureString(TitleString);
-            var helpMeasurement = this.ScreenManager.SpriteFonts["Help"].MeasureString(HelpString);
-            var height = titleMeasurement.Y + helpMeasurement.Y;
+            //var titleMeasurement = this.ScreenManager.SpriteFonts["Title"].MeasureString(TitleString);
+            //var helpMeasurement = this.ScreenManager.SpriteFonts["Help"].MeasureString(HelpString);
+            //var height = titleMeasurement.Y + helpMeasurement.Y;
 
-            _positionTitle = Vector2.UnitX * (Int32)Math.Round((1280 - titleMeasurement.X) / 2) +
-               Vector2.UnitY * (Single)Math.Round((720f - height) / 2);
-            _positionHelp = Vector2.UnitX * (Int32)Math.Round((1280f - helpMeasurement.X) / 2) +
-                Vector2.UnitY * (Single)(Math.Round((720f - height) / 2) + Math.Round(titleMeasurement.Y));
+            //_positionTitle = Vector2.UnitX * (Int32)Math.Round((1280 - titleMeasurement.X) / 2) +
+            //   Vector2.UnitY * (Single)Math.Round((720f - height) / 2);
+            //_positionHelp = Vector2.UnitX * (Int32)Math.Round((1280f - helpMeasurement.X) / 2) +
+            //    Vector2.UnitY * (Single)(Math.Round((720f - height) / 2) + Math.Round(titleMeasurement.Y));
+
+            foreach (var wallkick in _wallkicks)
+                wallkick.LoadContent(contentManager);
         }
 
         /// <summary>
@@ -65,8 +78,11 @@ namespace TimeTetris.Screens
         {
 
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
-            _shadowColor = Color.Black;
-            _sinusAlpha = (Single)((Math.Sin((Single)gameTime.TotalGameTime.TotalSeconds * 4)) + 1) / 2;
+            //_shadowColor = Color.Black;
+            //_sinusAlpha = (Single)((Math.Sin((Single)gameTime.TotalGameTime.TotalSeconds * 4)) + 1) / 2;
+
+            foreach (var wallkick in _wallkicks)
+                wallkick.Update(gameTime);
         }
 
         /// <summary>
@@ -88,6 +104,13 @@ namespace TimeTetris.Screens
                 this.AudioManager.Play("confirm");
                 this.ExitScreenAnd();
             }
+            else if (this.InputManager.Keyboard.IsKeyTriggerd(Keys.Space))
+                _wallkicks[_drawIndex % _wallkicks.Length].IsDrawingRight = !_wallkicks[_drawIndex % _wallkicks.Length].IsDrawingRight;
+            else if (this.InputManager.Keyboard.IsKeyTriggerd(Keys.Left))
+                _drawIndex = (_drawIndex == 0 ? _wallkicks.Length - 1 : _drawIndex - 1);
+            else if (this.InputManager.Keyboard.IsKeyTriggerd(Keys.Right))
+                _drawIndex++;
+
         }
 
         /// <summary>
@@ -102,8 +125,12 @@ namespace TimeTetris.Screens
             base.Draw(gameTime);
 
             this.ScreenManager.SpriteBatch.Begin();
-            this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Title"], TitleString, _positionTitle, Color.White, _shadowColor);
-            this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Help"], HelpString, _positionHelp, Color.White * _sinusAlpha, _shadowColor * _sinusAlpha);            
+            //this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Title"], TitleString, _positionTitle, Color.White, _shadowColor);
+            //this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Help"], HelpString, _positionHelp, Color.White * _sinusAlpha, _shadowColor * _sinusAlpha);
+            //fieldspr.Draw(gameTime);
+            //block.Draw(gameTime);
+            _wallkicks[_drawIndex % _wallkicks.Length].Draw(gameTime);
+
             this.ScreenManager.SpriteBatch.End();
 
             this.ScreenManager.FadeBackBufferToBlack((Byte)(255 - this.TransitionAlpha));
