@@ -194,11 +194,11 @@ namespace TimeTetris.Data
         /// <returns>Rotation succeeded</returns>
         protected Boolean Rotate(Int32 dir)
         {
-            Int32 rot = this.Block.Rotation;
+            int rot = this.Block.Rotation;
             this.Block.Rotation += dir;
 
-            Int32[,] wallkicks = (dir > 0) ? Wallkick.WallkickData.RightMovements[new Tuple<int, int>(this.Block.Width, rot)]
-                    : Wallkick.WallkickData.LeftMovements[new Tuple<int, int>(this.Block.Width, rot)];
+            Int32[,] wallkicks = (dir > 0) ? Wallkick.WallkickData.RightMovements[new Tuple<int, int>(this.Block.Width, this.Block.Rotation)]
+                    : Wallkick.WallkickData.LeftMovements[new Tuple<int, int>(this.Block.Width, this.Block.Rotation)];
 
             // Tries to wall kick until block doesn't collide
             for(Int32 i = 0; i < wallkicks.GetLength(0); i++)
