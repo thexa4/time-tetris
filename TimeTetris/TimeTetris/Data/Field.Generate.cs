@@ -27,11 +27,13 @@ namespace TimeTetris.Data
 
             // Generate as a block
             this.CurrentBlock = new FallingBlock(this.Game, new Block(_blockTypeQueue.UnShift<BlockType>()), this);
-            this.CurrentBlock.X = this.CurrentBlock.Field.Width / 2 - this.CurrentBlock.Block.Width / 2 - 1;
-            if (this.CurrentBlock.Block.Type == BlockType.OBlock || this.CurrentBlock.Block.Type == BlockType.JBlock)
-                this.CurrentBlock.X++;
-            this.CurrentBlock.Y = this.CurrentBlock.Field.Height - 1;
-            this.CurrentBlock.Block.Rotation = Block.GetStartRotation(this.CurrentBlock.Block.Type);
+            this.CurrentBlock.Replace(
+                this.CurrentBlock.Field.Width / 2 - this.CurrentBlock.Block.Width / 2 - 1 + 
+                    ((this.CurrentBlock.Block.Type == BlockType.OBlock || this.CurrentBlock.Block.Type == BlockType.JBlock ||
+                        this.CurrentBlock.Block.Type == BlockType.ZBlock) ? 1 : 0),
+                this.CurrentBlock.Field.Height - 1,
+                Block.GetStartRotation(this.CurrentBlock.Block.Type)
+                );
 
             // Set next block
             this.NextBlock = new Block(_blockTypeQueue.UnShift<BlockType>());
@@ -47,10 +49,15 @@ namespace TimeTetris.Data
             var oldX = this.CurrentBlock.X;
             var oldY = this.CurrentBlock.Y;
             var oldR = this.CurrentBlock.Block.Rotation;
+            var oldPoints = this.CurrentBlock.BlockPoints;
 
             var newType = this.NextBlock.Type;
             var newR = Block.GetStartRotation(newType);
             var nextType = _blockTypeQueue.UnShift<BlockType>();
+            var newY = this.CurrentBlock.Field.Height - 1;
+            var newX = this.CurrentBlock.Field.Width / 2 - this.CurrentBlock.Block.Width / 2 - 1;
+            if (newType == BlockType.OBlock || newType == BlockType.JBlock || newType == BlockType.ZBlock)
+                newX++;
 
             this.Timeline.Add(new Event()
             {
@@ -58,11 +65,7 @@ namespace TimeTetris.Data
                     {
                         // Sets currentblock
                         this.CurrentBlock.Block.SetBlockType(newType);
-                        this.CurrentBlock.X = this.CurrentBlock.Field.Width / 2 - this.CurrentBlock.Block.Width / 2 - 1;
-                        if (newType == BlockType.OBlock || newType == BlockType.JBlock)
-                            this.CurrentBlock.X++;
-                        this.CurrentBlock.Y = this.CurrentBlock.Field.Height - 1;
-                        this.CurrentBlock.Block.Rotation = newR;
+                        this.CurrentBlock.Replace(newX, newY, newR);
 
                         // Sets the next block
                         this.NextBlock.SetBlockType(nextType);
@@ -82,9 +85,8 @@ namespace TimeTetris.Data
 
                         // Restore current block
                         this.CurrentBlock.Block.SetBlockType(oldType);
-                        this.CurrentBlock.X = oldX;
-                        this.CurrentBlock.Y = oldY;
-                        this.CurrentBlock.Block.Rotation = oldR;
+                        this.CurrentBlock.Replace(oldX, oldY, oldR);
+                        this.CurrentBlock.BlockPoints = oldPoints;
                     },
             });
 

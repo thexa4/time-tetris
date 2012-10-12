@@ -16,12 +16,12 @@ namespace TimeTetris.Data
         /// <summary>
         /// X Position in the Grid
         /// </summary>
-        public Int32 X { get; set; }
+        public Int32 X { get; protected set; }
 
         /// <summary>
         /// Y Position in the Grid
         /// </summary>
-        public Int32 Y { get; set; }
+        public Int32 Y { get; protected set; }
 
         /// <summary>
         /// The Grid
@@ -31,12 +31,17 @@ namespace TimeTetris.Data
         /// <summary>
         /// Timeline time last move succeeded
         /// </summary>
-        public double LastMoveTime { get; set; }
+        public double LastMoveTime { get; protected set; }
 
         /// <summary>
         /// Timeline time last move down succeeded
         /// </summary>
-        public Double LastMoveDownTime { get; set; }
+        public Double LastMoveDownTime { get; protected set; }
+
+        /// <summary>
+        /// Points accumulated by block
+        /// </summary>
+        public Int32 BlockPoints { get; set; }
 
         /// <summary>
         /// Creates a new Falling block
@@ -46,6 +51,22 @@ namespace TimeTetris.Data
             : base(game)
         {
 
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public void Replace(Int32 x, Int32 y, Int32 r) 
+        {
+            this.X = x;
+            this.Y = y;
+            this.Block.Rotation = r;
+            this.BlockPoints = 0;
+
+            this.LastMoveTime = this.Field.Timeline.CurrentTime;
+            this.LastMoveDownTime = this.Field.Timeline.CurrentTime;
         }
 
         /// <summary>
@@ -108,9 +129,9 @@ namespace TimeTetris.Data
         /// Moves block down
         /// </summary>
         /// <returns>Movement succes</returns>
-        public Boolean MoveDown()
+        public Boolean MoveDown(Boolean isHardDrop = false)
         {
-            var res = Move(0, -1);
+            var result = Move(0, -1);
             double prevtime = LastMoveDownTime;
             double newtime = Field.Timeline.CurrentTime;
             Field.Timeline.Add(new Event()
@@ -118,20 +139,32 @@ namespace TimeTetris.Data
                 Apply = () =>
                 {
                     LastMoveDownTime = newtime;
+                    if (result)
+                        this.BlockPoints += isHardDrop ? Points.HardDrop : Points.SoftDrop;
                 },
                 Undo = () =>
                 {
                     LastMoveDownTime = prevtime;
+                    if (result)
+                        this.BlockPoints -= isHardDrop? Points.HardDrop : Points.SoftDrop;
                 },
             });
             this.LastMoveDownTime = this.LastMoveTime;
-            return res;
+
+            
+
+            return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public Boolean Drop()
         {
-            while (MoveDown()) { }
-            Field.LockFalling();
+            while (MoveDown(true)) {  }
+            this.Field.LockFalling();
+
             return true;
         }
 
@@ -149,8 +182,8 @@ namespace TimeTetris.Data
             Event e = new Event();
             Int32 prevx = X;
             Int32 prevy = Y;
-            double prevtime = LastMoveTime;
-            double newtime = Field.Timeline.CurrentTime;
+            Double prevtime = LastMoveTime;
+            Double newtime = Field.Timeline.CurrentTime;
             e.Undo = () =>
             {
                 this.Field.CurrentBlock.X = prevx;
@@ -209,8 +242,8 @@ namespace TimeTetris.Data
                 Event e = new Event();
                 Int32 prevx = X;
                 Int32 prevy = Y;
-                double prevtime = this.LastMoveTime;
-                double newtime = Field.Timeline.CurrentTime;
+                Double prevtime = this.LastMoveTime;
+                Double newtime = Field.Timeline.CurrentTime;
 
                 e.Undo = () =>
                 {
@@ -247,6 +280,9 @@ namespace TimeTetris.Data
         /// <param name="gameTime">Snapshot of timing values</param>
         public override void Update(GameTime gameTime)
         {
+            if (this.Field.HasEnded)
+                return;
+
             double downElapsed = Field.Timeline.CurrentTime - LastMoveDownTime;
             if (downElapsed > 1.0 / Field.Level)
                 MoveDown();

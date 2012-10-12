@@ -21,7 +21,11 @@ namespace TimeTetris.Data
         public Timeline Timeline { get; protected set; }
 
         public Int32 Level { get; set; }
-        public Boolean IsEnded { get; set; }
+        public Boolean HasEnded { get; set; }
+
+        private Int32 _score;
+        public Int32 Score { get { return _score; } protected set { _score = Math.Max(0, _score); } }
+        public Int32 ComboCount { get; protected set; }
 
         /// <summary>
         /// Creates a new field
@@ -68,12 +72,15 @@ namespace TimeTetris.Data
             var startX = this.CurrentBlock.X;
             var startY = this.CurrentBlock.Y;
             var block = this.CurrentBlock.Block;
+            var score = this.CurrentBlock.BlockPoints;
 
             this.Timeline.Add(new Event()
             {
                 // Puts the block in the grid
                 Apply = () =>
                     {
+                        this.Score += score;
+
                         for (Int32 x = 0; x < block.Width; x++)
                             for (Int32 y = 0; y < block.Height; y++)
                                 if (block[x, block.Height - 1 - y])
@@ -81,8 +88,7 @@ namespace TimeTetris.Data
                                     if (startY - y >= Height - SpriteField.HiddenRows)
                                     {
                                         // Game over!
-                                        IsEnded = true;
-                                        ((ScreenManager)Game.Services.GetService(typeof(ScreenManager))).ExitAll();
+                                        HasEnded = true;
                                     }
                                     this[startX + x, startY - y] = color;
                                 }
@@ -91,40 +97,72 @@ namespace TimeTetris.Data
                 // Removes the block from the grid
                 Undo = () =>
                     {
+                        this.Score -= score;
+
                         for (Int32 x = 0; x < block.Width; x++)
                             for (Int32 y = 0; y < block.Height; y++)
                                 if (block[x, block.Height - 1 - y])
                                 {
                                     if (startY - y >= Height - SpriteField.HiddenRows)
-                                        IsEnded = false;
+                                        HasEnded = false;
                                     this[startX + x, startY - y] = 0;
                                 }
                     }
             });
 
-            if(!IsEnded)
+            if(!HasEnded)
                 GenerateNextBlock();
 
             Row cur = Bottom;
-            int futurey = 0;
-            for (int y = 0; y < Height; y++)
+            Int32 futurey = 0;
+            Int32 rows = 0;
+            for (Int32 y = 0; y < Height; y++)
             {
                 cur = cur.Next;
                 futurey++;
                 if (cur.IsFull)
                 {
+                    rows++;
+
                     futurey--;
-                    int storedy = futurey;
-                    int[] values = cur.Values;
-                    Timeline.Add(new Event()
+                    Int32 storedy = futurey;
+                    Int32[] values = (Int32[])cur.Values.Clone();
+
+                    this.Timeline.Add(new Event()
                     {
                         Undo = () => CreateFullRow(storedy, values),
                         Apply = () => RemoveRow(storedy),
                     });
                 }
             }
+
+            var clearScore = Points.ClearLines(rows, this.Level);
+            var comboScore = this.ComboCount * Points.ClearCombo(this.Level);
+            var oldComboCount = this.ComboCount;
+
+            this.Timeline.Add(new Event()
+                {
+                    Apply = () => 
+                    { 
+                        this.ComboCount = (rows == 0) ? 0 : oldComboCount + 1;
+                        this.Score += clearScore + ((rows == 0) ? 0 : comboScore);
+                    },
+                    Undo = () => 
+                    {
+                        this.ComboCount = oldComboCount;
+                        this.Score -= clearScore + ((rows == 0) ? 0 : comboScore); 
+                    },
+                });
+
+            
+
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="y"></param>
+        /// <param name="values"></param>
         protected void CreateFullRow(int y, int[] values)
         {
             Row cur = Bottom;
@@ -137,6 +175,10 @@ namespace TimeTetris.Data
             Top.Prev.Remove();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="y"></param>
         protected void RemoveRow(int y)
         {
             Row cur = Bottom;
