@@ -18,6 +18,8 @@ namespace TimeTetris.Data
         public Block NextBlock { get; set; }
         public Timeline Timeline { get; protected set; }
 
+        public Int32 Level { get; set; }
+
         /// <summary>
         /// Creates a new field
         /// </summary>
@@ -29,6 +31,7 @@ namespace TimeTetris.Data
             : base(game)
         {
             this.Timeline = timeline;
+            this.Level = 1;
 
             this.Width = width;
             this.Height = height;
