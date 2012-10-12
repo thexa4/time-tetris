@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace TimeTetris.Data
 {
-    public partial class Field
+    public partial class Field : GameComponent
     {
         public Row Bottom { get; protected set; }
         public Row Top { get; protected set; }
@@ -20,10 +21,12 @@ namespace TimeTetris.Data
         /// <summary>
         /// Creates a new field
         /// </summary>
-        /// <param name="timeline"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        public Field(Timeline timeline, Int32 width, Int32 height)
+        /// <param name="game">Game to bind to</param>
+        /// <param name="timeline">Timeline service</param>
+        /// <param name="width">Field width</param>
+        /// <param name="height">Field height</param>
+        public Field(Game game, Timeline timeline, Int32 width, Int32 height)
+            : base(game)
         {
             this.Timeline = timeline;
 
@@ -37,8 +40,17 @@ namespace TimeTetris.Data
 
             for (int i = 0; i < height; i++)
                 this.Bottom.InsertAfter(new Row(width));
+        }
+
+        /// <summary>
+        /// Intializes the field
+        /// </summary>
+        public override void Initialize()
+        {
+            base.Initialize();
 
             SetupBlockGenerator();
+            this.CurrentBlock.Initialize();
         }
 
         /// <summary>
@@ -119,6 +131,16 @@ namespace TimeTetris.Data
                     if (block[a, b] && this[x + a, y + b] != 0)
                         return true;
             return false;
+        }
+
+        /// <summary>
+        /// Frame Renewal
+        /// </summary>
+        /// <param name="gameTime">Snapshot of Timing Values</param>
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            this.CurrentBlock.Update(gameTime);
         }
     }
 }

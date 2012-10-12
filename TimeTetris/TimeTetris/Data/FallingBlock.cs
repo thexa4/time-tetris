@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace TimeTetris.Data
 {
-    public class FallingBlock
+    public class FallingBlock : GameComponent
     {
         /// <summary>
         /// Block blueprint
@@ -36,6 +37,54 @@ namespace TimeTetris.Data
         /// Timeline time last move down succeeded
         /// </summary>
         public Double LastMoveDownTime { get; set; }
+
+        /// <summary>
+        /// Creates a new Falling block
+        /// </summary>
+        /// <param name="game"></param>
+        public FallingBlock(Game game)
+            : base(game)
+        {
+
+        }
+
+        /// <summary>
+        /// Creates a new Falling Block with base block
+        /// </summary>
+        /// <param name="game">Game to bind to</param>
+        /// <param name="block">Base block</param>
+        public FallingBlock(Game game, Block block) 
+            : this(game)
+        {
+            this.Block = block;
+        }
+
+        /// <summary>
+        /// Creates a new Falling Block with base block and field
+        /// </summary>
+        /// <param name="game">Game to bind to</param>
+        /// <param name="block">Base block</param>
+        /// <param name="field">Field container</param>
+        public FallingBlock(Game game, Block block, Field field)
+            : this(game, block)
+        {
+            this.Field = field;
+        }
+
+        /// <summary>
+        /// Creates a new Falling Block with base block, field and position
+        /// </summary>
+        /// <param name="game">Game to bind to</param>
+        /// <param name="block">Base block</param>
+        /// <param name="field">Field container</param>
+        /// <param name="x">X Grid position</param>
+        /// <param name="y">Y Grid position</param>
+        public FallingBlock(Game game, Block block, Field field, Int32 x, Int32 y) 
+            : this(game, block, field)
+        {
+            this.X = x;
+            this.Y = y;
+        }
 
         /// <summary>
         /// Moves block left
@@ -163,6 +212,15 @@ namespace TimeTetris.Data
             // Rotation failed
             this.Block.Rotation -= dir;
             return false;
+        }
+
+        /// <summary>
+        /// Frame Renewal
+        /// </summary>
+        /// <param name="gameTime">Snapshot of timing values</param>
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
         }
     }
 }

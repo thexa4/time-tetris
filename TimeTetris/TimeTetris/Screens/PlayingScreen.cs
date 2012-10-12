@@ -13,7 +13,6 @@ namespace TimeTetris.Screens
     public class PlayingScreen : GameScreen
     {
         private Data.Field _field;
-        // TODO Data level ?
 
         private SpriteField _spriteField;
         private SpriteFallingBlock _spriteFallingBlock;
@@ -34,8 +33,12 @@ namespace TimeTetris.Screens
             base.Initialize();
 
             _timeline = (Timeline)this.Game.Services.GetService(typeof(Timeline));
-            _field = new Data.Field(_timeline, 10, 32);
 
+            // Create Field
+            _field = new Data.Field(this.Game, _timeline, 10, 32);
+            _field.Initialize();
+
+            // Create Sprites
             _spriteField = new SpriteField(this.Game, _field);
             _spriteField.Initialize();
 
@@ -45,6 +48,7 @@ namespace TimeTetris.Screens
             _spriteNextBlock = new SpriteBlock(this.Game, _field.NextBlock) { Position = Vector2.UnitX * (_field.Width * SpriteField.GridSize + 20) };
             _spriteNextBlock.Initialize();
 
+            // Start the level
             _timeline.Start();
 
         }
@@ -70,6 +74,9 @@ namespace TimeTetris.Screens
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+
+            _field.Update(gameTime);
+
             _spriteField.Update(gameTime);
             _spriteFallingBlock.Update(gameTime);
             _spriteNextBlock.Update(gameTime);
@@ -98,6 +105,7 @@ namespace TimeTetris.Screens
             base.Draw(gameTime);
 
             this.ScreenManager.SpriteBatch.Begin();
+
             _spriteField.Draw(gameTime);
             _spriteFallingBlock.Draw(gameTime);
             _spriteNextBlock.Draw(gameTime);

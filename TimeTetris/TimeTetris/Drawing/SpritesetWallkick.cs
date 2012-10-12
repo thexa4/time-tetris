@@ -65,7 +65,7 @@ namespace TimeTetris.Drawing
             _spritesRight = new List<Sprite>();
 
             var block = new Block(this.Type);
-            _field = new Field((Timeline)this.Game.Services.GetService(typeof(Timeline)), block.Width + 4, block.Height + 4 + SpriteField.HiddenRows);
+            _field = new Field(this.Game, (Timeline)this.Game.Services.GetService(typeof(Timeline)), block.Width + 4, block.Height + 4 + SpriteField.HiddenRows);
 
             // Add for each rotation left
             for (Int32 i = 0; i < 4; i++)
@@ -130,13 +130,7 @@ namespace TimeTetris.Drawing
 
                 sprites.Add(
                     new SpriteFallingBlock(this.Game,
-                        new Data.FallingBlock()
-                        {
-                            Block = baseBlock,
-                            Field = _field,
-                            X = 2,
-                            Y = block.Height + 1,
-                        }
+                        new Data.FallingBlock(this.Game, baseBlock, _field, 2, block.Height + 1)
                     )
                     {
                         Position = this.Position + SpriteField.GridSize * ((_field.Height - SpriteField.HiddenRows + 1) * iteration) * Vector2.UnitY +
@@ -148,13 +142,7 @@ namespace TimeTetris.Drawing
                 // Add kicked sprite
                 sprites.Add(
                     new SpriteFallingBlock(this.Game,
-                        new Data.FallingBlock()
-                        {
-                            Block = (Data.Block)block.Clone(),
-                            Field = _field,
-                            X = 2 + movements[j, 0],
-                            Y = block.Height + 1 + movements[j, 1],
-                        }
+                        new Data.FallingBlock(this.Game, (Data.Block)block.Clone(), _field,  2 + movements[j, 0], block.Height + 1 + movements[j, 1])
                     )
                     {
                         Position = this.Position + SpriteField.GridSize * ((_field.Height - SpriteField.HiddenRows + 1) * iteration) * Vector2.UnitY +

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace TimeTetris.Data
 {
-    public partial class Field
+    public partial class Field : GameComponent
     {
         protected static Random Randomizer = new Random();
         protected Queue<BlockType> _blockTypeQueue;
@@ -24,7 +25,7 @@ namespace TimeTetris.Data
                 _blockTypeQueue.Enqueue(_blockTypeQueue.Dequeue());
 
             // Generate as a block
-            this.CurrentBlock = new FallingBlock() { Block = new Block(_blockTypeQueue.Dequeue()), Field = this };
+            this.CurrentBlock = new FallingBlock(this.Game, new Block(_blockTypeQueue.Dequeue()), this);
             this.CurrentBlock.X = this.CurrentBlock.Field.Width / 2 - this.CurrentBlock.Block.Width / 2 - 1;
             this.CurrentBlock.Y = this.CurrentBlock.Field.Height - 1;
             this.CurrentBlock.Block.Rotation = Block.GetStartRotation(this.CurrentBlock.Block.Type);
