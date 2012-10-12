@@ -16,6 +16,8 @@ namespace TimeTetris.Screens
         // TODO Data level ?
 
         private SpriteField _spriteField;
+        private SpriteFallingBlock _spriteFallingBlock;
+        private SpriteBlock _spriteNextBlock;
         // TODO spriteset level ?
 
         protected Timeline _timeline;
@@ -37,6 +39,12 @@ namespace TimeTetris.Screens
             _spriteField = new SpriteField(this.Game, _field);
             _spriteField.Initialize();
 
+            _spriteFallingBlock = new SpriteFallingBlock(this.Game, _field.CurrentBlock);
+            _spriteFallingBlock.Initialize();
+
+            _spriteNextBlock = new SpriteBlock(this.Game, _field.NextBlock) { Position = Vector2.UnitX * (_field.Width * SpriteField.GridSize + 20) };
+            _spriteNextBlock.Initialize();
+
             _timeline.Start();
 
         }
@@ -49,6 +57,8 @@ namespace TimeTetris.Screens
         {
             base.LoadContent(contentManager);
             _spriteField.LoadContent(contentManager);
+            _spriteFallingBlock.LoadContent(contentManager);
+            _spriteNextBlock.LoadContent(contentManager);
         }
 
         /// <summary>
@@ -61,6 +71,8 @@ namespace TimeTetris.Screens
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
             _spriteField.Update(gameTime);
+            _spriteFallingBlock.Update(gameTime);
+            _spriteNextBlock.Update(gameTime);
         }
 
         /// <summary>
@@ -87,6 +99,8 @@ namespace TimeTetris.Screens
 
             this.ScreenManager.SpriteBatch.Begin();
             _spriteField.Draw(gameTime);
+            _spriteFallingBlock.Draw(gameTime);
+            _spriteNextBlock.Draw(gameTime);
             this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["Default"], String.Format("{0} s", Math.Round(_timeline.CurrentTime / 1000, 2)), Vector2.One * 5, Color.White);
             this.ScreenManager.SpriteBatch.End();
         }

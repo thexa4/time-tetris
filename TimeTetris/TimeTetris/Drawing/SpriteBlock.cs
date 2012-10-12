@@ -40,6 +40,16 @@ namespace TimeTetris.Drawing
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public override void Update(GameTime gameTime)
+        {
+            this.OffsetPosition = this.Position;
+            base.Update(gameTime);
+        }
+
+        /// <summary>
         /// Frame draw
         /// </summary>
         /// <param name="gameTime">Snapshot of timing values</param>

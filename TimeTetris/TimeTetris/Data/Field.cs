@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TimeTetris.Data
 {
-    public class Field
+    public partial class Field
     {
         public Row Bottom { get; protected set; }
         public Row Top { get; protected set; }
@@ -17,27 +17,43 @@ namespace TimeTetris.Data
         public Block NextBlock { get; set; }
         public Timeline Timeline { get; protected set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="timeline"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
         public Field(Timeline timeline, Int32 width, Int32 height)
         {
-            Timeline = timeline;
+            this.Timeline = timeline;
 
-            Width = width;
-            Height = height;
+            this.Width = width;
+            this.Height = height;
 
-            Bottom = new Row(width);
-            Top = new Row(width);
-            Bottom.Next = Top;
-            Top.Prev = Bottom;
+            this.Bottom = new Row(width);
+            this.Top = new Row(width);
+            this.Bottom.Next = Top;
+            this.Top.Prev = Bottom;
 
             for (int i = 0; i < height; i++)
-                Bottom.InsertAfter(new Row(width));
+                this.Bottom.InsertAfter(new Row(width));
+
+            SetupBlockGenerator();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void LockFalling()
         {
-            for(int x = 0; x < CurrentBlock.Block.Width; x++)
+            // TODO timeline event
+
+            var color = Block.ToGridValue(CurrentBlock.Block.Type);
+            for (int x = 0; x < CurrentBlock.Block.Width; x++)
                 for (int y = 0; y < CurrentBlock.Block.Height; y++)
-                    this[CurrentBlock.X + x, CurrentBlock.Y + y] = CurrentBlock.Color;
+                    this[CurrentBlock.X + x, CurrentBlock.Y + y] = color;
+
+            GenerateNextBlock();
         }
 
         public Int32 this[int x, int y]

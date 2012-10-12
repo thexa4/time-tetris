@@ -62,19 +62,19 @@ namespace TimeTetris.Data
             switch (blockType)
             {
                 case BlockType.IBlock:
-                    return Color.Blue;
+                    return Color.Cyan;
                 case BlockType.JBlock:
-                    return Color.White;
+                    return Color.Blue;
                 case BlockType.LBlock:
-                    return Color.Green;
+                    return Color.Orange;
                 case BlockType.OBlock:
                     return Color.Yellow;
                 case BlockType.SBlock:
-                    return Color.Purple;
+                    return Color.Green;
                 case BlockType.TBlock:
-                    return Color.Red;
+                    return Color.Purple;
                 case BlockType.ZBlock:
-                    return Color.Violet;
+                    return Color.Red;
                 default:
                     return Color.Transparent;
             }

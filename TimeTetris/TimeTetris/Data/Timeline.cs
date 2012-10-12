@@ -8,13 +8,20 @@ namespace TimeTetris.Data
 {
     public class Timeline : GameComponent
     {
+        /// <summary>
+        /// Events that occured
+        /// </summary>
         public List<Event> Events { get; protected set; }
-        public double CurrentTime { get; protected set; }
 
         /// <summary>
-        /// 
+        /// Current time
         /// </summary>
-        /// <param name="game"></param>
+        public Double CurrentTime { get; protected set; }
+
+        /// <summary>
+        /// Creates the timeline
+        /// </summary>
+        /// <param name="game">Game to bind to</param>
         public Timeline(Game game)
             : base(game)
         {
@@ -23,7 +30,7 @@ namespace TimeTetris.Data
         }
 
         /// <summary>
-        /// 
+        /// Starts the timeline
         /// </summary>
         public void Start()
         {
@@ -32,7 +39,7 @@ namespace TimeTetris.Data
         }
 
         /// <summary>
-        /// 
+        /// Stops the timeline
         /// </summary>
         public void Stop()
         {
@@ -40,7 +47,7 @@ namespace TimeTetris.Data
         }
 
         /// <summary>
-        /// 
+        /// Resumes the timeline froma stopped state
         /// </summary>
         public void Resume()
         {
@@ -48,9 +55,23 @@ namespace TimeTetris.Data
         }
 
         /// <summary>
-        /// 
+        /// Adds an event
         /// </summary>
-        /// <param name="gameTime"></param>
+        /// <param name="action">event to register</param>
+        /// <returns>Event time</returns>
+        public Double Add(Event action)
+        {
+            action.Time = this.CurrentTime;
+            action.Apply();
+            this.Events.Add(action);
+
+            return action.Time;
+        }
+
+        /// <summary>
+        /// Frame Renewal
+        /// </summary>
+        /// <param name="gameTime">Snapshot of Timing Values</param>
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);

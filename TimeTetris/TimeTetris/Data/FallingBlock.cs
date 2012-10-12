@@ -13,11 +13,6 @@ namespace TimeTetris.Data
         public Block Block { get; set; }
 
         /// <summary>
-        /// The color id of the block
-        /// </summary>
-        public int Color { get; set; }
-
-        /// <summary>
         /// X Position in the Grid
         /// </summary>
         public Int32 X { get; set; }
@@ -25,119 +20,149 @@ namespace TimeTetris.Data
         /// <summary>
         /// Y Position in the Grid
         /// </summary>
-        public int Y { get; set; }
+        public Int32 Y { get; set; }
 
         /// <summary>
         /// The Grid
         /// </summary>
         public Field Field { get; set; }
 
+        /// <summary>
+        /// Timeline time last move succeeded
+        /// </summary>
         public double LastMoveTime { get; set; }
-        public double LastMoveDownTime { get; set; }
 
-        public void MoveLeft()
+        /// <summary>
+        /// Timeline time last move down succeeded
+        /// </summary>
+        public Double LastMoveDownTime { get; set; }
+
+        /// <summary>
+        /// Moves block left
+        /// </summary>
+        /// <returns>Movement succes</returns>
+        public Boolean MoveLeft()
         {
-            Move(-1, 0);
+            return Move(-1, 0);
         }
 
-        public void MoveRight()
+        /// <summary>
+        /// Moves block right
+        /// </summary>
+        /// <returns>Movement succes</returns>
+        public Boolean MoveRight()
         {
-            Move(1, 0);
+            return Move(1, 0);
         }
 
-        public void MoveDown()
+        /// <summary>
+        /// Moves block down
+        /// </summary>
+        /// <returns>Movement succes</returns>
+        public Boolean MoveDown()
         {
-            Move(0, -1);
-            LastMoveDownTime = Field.Timeline.CurrentTime;
+            var res = Move(0, -1);
+
+            if (res)
+                this.LastMoveDownTime = this.LastMoveTime;
+            return res;
         }
 
-        protected bool Move(int xoff, int yoff)
+        /// <summary>
+        /// Moves block over an arbitrairy vector
+        /// </summary>
+        /// <param name="xoff">x movement</param>
+        /// <param name="yoff">y movement</param>
+        /// <returns>Movement succeeded</returns>
+        protected Boolean Move(Int32 xoff, Int32 yoff)
         {
-            if(Field.Collides(Block, X + xoff, Y + yoff))
+            if(this.Field.Collides(this.Block, this.X + xoff, this.Y + yoff))
                 return false;
 
-            int prevx = X;
-            int prevy = Y;
-            int newx = X + yoff;
-            int newy = Y + yoff;
-
             Event e = new Event();
+            Int32 prevx = X;
+            Int32 prevy = Y;
             e.Undo = () =>
             {
-                Field.CurrentBlock.X = prevx;
-                Field.CurrentBlock.Y = prevy;
+                this.Field.CurrentBlock.X = prevx;
+                this.Field.CurrentBlock.Y = prevy;
             };
+
+            Int32 newx = X + yoff;
+            Int32 newy = Y + yoff;
             e.Apply = () =>
             {
-                Field.CurrentBlock.X = newx;
-                Field.CurrentBlock.Y = newy;
+                this.Field.CurrentBlock.X = newx;
+                this.Field.CurrentBlock.Y = newy;
             };
-            e.Time = Field.Timeline.CurrentTime;
-            e.Apply();
 
-            LastMoveTime = Field.Timeline.CurrentTime;
+            this.LastMoveTime = this.Field.Timeline.Add(e);
             return true;
         }
 
         /// <summary>
         /// Rotates block right
         /// </summary>
-        public void RotateRight()
+        public Boolean RotateRight()
         {
-            Rotate(1);
+            return Rotate(1);
         }
 
         /// <summary>
         /// Rotates block left
         /// </summary>
-        public void RotateLeft()
+        public Boolean RotateLeft()
         {
-            Rotate(-1);
+            return Rotate(-1);
         }
 
-        protected void Rotate(int dir)
+        /// <summary>
+        /// Rotates a block an arbitrary direction
+        /// </summary>
+        /// <param name="dir">Direction to rotate</param>
+        /// <returns>Rotation succeeded</returns>
+        protected Boolean Rotate(Int32 dir)
         {
-            int rot = Block.Rotation;
-            Block.Rotation += dir;
-            int[,] wallkicks;
-            if(dir > 0)
-                wallkicks = Wallkick.WallkickData.RightMovements[new Tuple<int, int>(Block.Width, rot)];
-            else
-                wallkicks = Wallkick.WallkickData.LeftMovements[new Tuple<int, int>(Block.Width, rot)];
+            Int32 rot = this.Block.Rotation;
+            this.Block.Rotation += dir;
 
-            for(int i = 0; i < wallkicks.GetLength(0); i++)
+            Int32[,] wallkicks = (dir > 0) ? Wallkick.WallkickData.RightMovements[new Tuple<int, int>(this.Block.Width, rot)]
+                    : Wallkick.WallkickData.LeftMovements[new Tuple<int, int>(this.Block.Width, rot)];
+
+            // Tries to wall kick until block doesn't collide
+            for(Int32 i = 0; i < wallkicks.GetLength(0); i++)
             {
-                if (Field.Collides(Block, X + wallkicks[i,0], Y + wallkicks[i,1]))
+                if (this.Field.Collides(Block, X + wallkicks[i, 0], Y + wallkicks[i, 1]))
                     continue;
                 
-                int prevx = X;
-                int prevy = Y;
                 Event e = new Event();
+                Int32 prevx = X;
+                Int32 prevy = Y;
                 e.Undo = () =>
                 {
-                    Field.CurrentBlock.X = prevx;
-                    Field.CurrentBlock.Y = prevy;
-                    Field.CurrentBlock.Block.Rotation = rot;
+                    this.Field.CurrentBlock.X = prevx;
+                    this.Field.CurrentBlock.Y = prevy;
+                    this.Field.CurrentBlock.Block.Rotation = rot;
                 };
-                int newx = X + wallkicks[i, 0];
-                int newy = Y + wallkicks[i, 1];
-                int newrot = rot + dir;
+
+                Int32 newx = X + wallkicks[i, 0];
+                Int32 newy = Y + wallkicks[i, 1];
+                Int32 newrot = rot + dir;
                 e.Apply = () =>
                 {
-                    Field.CurrentBlock.X = newx;
-                    Field.CurrentBlock.Y = newy;
-                    Field.CurrentBlock.Block.Rotation = newrot;
+                    this.Field.CurrentBlock.X = newx;
+                    this.Field.CurrentBlock.Y = newy;
+                    this.Field.CurrentBlock.Block.Rotation = newrot;
                 };
-                e.Apply();
-                e.Time = Field.Timeline.CurrentTime;
-                Field.Timeline.Events.Add(e);
-                LastMoveTime = Field.Timeline.CurrentTime;
+
+                this.LastMoveTime = this.Field.Timeline.Add(e);
                 
-                return;
+                return true;
             }
 
             // Rotation failed
-            Block.Rotation -= dir;
+            this.Block.Rotation -= dir;
+            return false;
         }
     }
 }

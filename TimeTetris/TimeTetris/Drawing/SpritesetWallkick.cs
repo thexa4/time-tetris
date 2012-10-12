@@ -15,6 +15,9 @@ namespace TimeTetris.Drawing
         protected Data.Field _field;
         protected Int32 _rotation = 0;
 
+        /// <summary>
+        /// Is currently drawing right rotations
+        /// </summary>
         public Boolean IsDrawingRight { get; set; }
 
         /// <summary>
@@ -23,12 +26,12 @@ namespace TimeTetris.Drawing
         public BlockType Type { get; protected set; }
 
         /// <summary>
-        /// ContentManager
+        /// ContentManager Reference
         /// </summary>
         public ContentManager ContentManager { get; set; }
 
         /// <summary>
-        /// 
+        /// Current Position
         /// </summary>
         public Vector2 Position { get; set; }
 
@@ -68,7 +71,7 @@ namespace TimeTetris.Drawing
             for (Int32 i = 0; i < 4; i++)
             {
                 // Get kick values and make sprites
-                _spritesLeft.AddRange(GetMovementSprites(block, WallkickData.LeftMovements[new Tuple<int, int>(block.Width, block.Rotation)]));
+                _spritesLeft.AddRange(GetMovementSprites(block, WallkickData.LeftMovements[new Tuple<int, int>(block.Width, block.Rotation)], block.Rotation + 1, i));
                 block.Rotation--;
             }
 
@@ -76,7 +79,7 @@ namespace TimeTetris.Drawing
             for (Int32 i = 0; i < 4; i++)
             {
                 // Get kick values and make sprites
-                _spritesRight.AddRange(GetMovementSprites(block, WallkickData.RightMovements[new Tuple<int, int>(block.Width, block.Rotation)]));
+                _spritesRight.AddRange(GetMovementSprites(block, WallkickData.RightMovements[new Tuple<int, int>(block.Width, block.Rotation)], block.Rotation - 1, i));
                 block.Rotation++;
             }
 
@@ -90,8 +93,10 @@ namespace TimeTetris.Drawing
         /// Gets a serie of sprites according to movement offsets
         /// </summary>
         /// <param name="block">base block</param>
-        /// <param name="movements"></param>
-        protected virtual List<Sprite> GetMovementSprites(Data.Block block, Int32[,] movements)
+        /// <param name="movements">wall kicks</param>
+        /// <param name="baseRotation">original rotation</param>
+        /// <param name="iteration">display iteration</param>
+        protected virtual List<Sprite> GetMovementSprites(Data.Block block, Int32[,] movements, Int32 baseRotation, Int32 iteration)
         {
             var sprites = new List<Sprite>();
 
@@ -102,7 +107,7 @@ namespace TimeTetris.Drawing
                     new SpriteField(this.Game, _field)
                     {
                         Position = this.Position + SpriteField.GridSize * ((_field.Width + 1) * j) * Vector2.UnitX +
-                            SpriteField.GridSize * ((_field.Height - SpriteField.HiddenRows  + 1) * block.Rotation) * Vector2.UnitY,
+                            SpriteField.GridSize * ((_field.Height - SpriteField.HiddenRows + 1) * iteration) * Vector2.UnitY,
                     }
                 );
 
@@ -112,7 +117,7 @@ namespace TimeTetris.Drawing
                     {
                         TextureName = "Graphics/blank",
                         Size = Vector2.One * SpriteField.GridSize * block.Width,
-                        Position = this.Position + SpriteField.GridSize * (2 + (_field.Height - SpriteField.HiddenRows + 1) * block.Rotation) * Vector2.UnitY +
+                        Position = this.Position + SpriteField.GridSize * (2 + (_field.Height - SpriteField.HiddenRows + 1) * iteration) * Vector2.UnitY +
                             SpriteField.GridSize * (2 + (_field.Width + 1) * j) * Vector2.UnitX,
                         Opacity = 0.1f,
                         Color = Color.White,
@@ -120,18 +125,21 @@ namespace TimeTetris.Drawing
                 );
 
                 // Add base sprite
+                var baseBlock = (Data.Block)block.Clone();
+                baseBlock.Rotation = baseRotation;
+
                 sprites.Add(
                     new SpriteFallingBlock(this.Game,
                         new Data.FallingBlock()
                         {
-                            Block = (Data.Block)block.Clone(),
+                            Block = baseBlock,
                             Field = _field,
                             X = 2,
                             Y = block.Height + 1,
                         }
                     )
                     {
-                        Position = this.Position + SpriteField.GridSize * ((_field.Height - SpriteField.HiddenRows + 1) * block.Rotation) * Vector2.UnitY +
+                        Position = this.Position + SpriteField.GridSize * ((_field.Height - SpriteField.HiddenRows + 1) * iteration) * Vector2.UnitY +
                             SpriteField.GridSize * ((_field.Width + 1) * j) * Vector2.UnitX,
                         Opacity = 0.2f,
                     }
@@ -149,7 +157,7 @@ namespace TimeTetris.Drawing
                         }
                     )
                     {
-                        Position = this.Position + SpriteField.GridSize * ((_field.Height - SpriteField.HiddenRows + 1) * block.Rotation) * Vector2.UnitY +
+                        Position = this.Position + SpriteField.GridSize * ((_field.Height - SpriteField.HiddenRows + 1) * iteration) * Vector2.UnitY +
                             SpriteField.GridSize * ((_field.Width + 1) * j) * Vector2.UnitX
                     }
                 );
