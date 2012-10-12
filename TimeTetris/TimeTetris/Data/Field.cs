@@ -114,11 +114,12 @@ namespace TimeTetris.Data
                 if (cur.IsFull)
                 {
                     futurey--;
+                    int storedy = futurey;
                     int[] values = cur.Values;
                     Timeline.Add(new Event()
                     {
-                        Undo = () => CreateFullRow(futurey, values),
-                        Apply = () => RemoveRow(futurey),
+                        Undo = () => CreateFullRow(storedy, values),
+                        Apply = () => RemoveRow(storedy),
                     });
                 }
             }
