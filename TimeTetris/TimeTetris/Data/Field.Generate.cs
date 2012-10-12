@@ -3,35 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using TimeTetris.Extension;
 
 namespace TimeTetris.Data
 {
     public partial class Field : GameComponent
     {
         protected static Random Randomizer = new Random();
-        protected Queue<BlockType> _blockTypeQueue;
+        protected List<BlockType> _blockTypeQueue; // Queue is one way
 
         /// <summary>
         /// Setups the randomizer
         /// </summary>
         protected void SetupBlockGenerator() 
         {
-            _blockTypeQueue = new Queue<BlockType>();
+            _blockTypeQueue = new List<BlockType>();
             GenerateNextPermutation();
 
             // First block of first bag is always I J L or T
             var firstAllowed = new BlockType[] { BlockType.IBlock, BlockType.JBlock, BlockType.LBlock, BlockType.TBlock };
-            while (!firstAllowed.Contains(_blockTypeQueue.Peek()))
-                _blockTypeQueue.Enqueue(_blockTypeQueue.Dequeue());
+            while (!firstAllowed.Contains(_blockTypeQueue.First()))
+                _blockTypeQueue.Push(_blockTypeQueue.UnShift<BlockType>());
 
             // Generate as a block
-            this.CurrentBlock = new FallingBlock(this.Game, new Block(_blockTypeQueue.Dequeue()), this);
+            this.CurrentBlock = new FallingBlock(this.Game, new Block(_blockTypeQueue.UnShift<BlockType>()), this);
             this.CurrentBlock.X = this.CurrentBlock.Field.Width / 2 - this.CurrentBlock.Block.Width / 2 - 1;
             this.CurrentBlock.Y = this.CurrentBlock.Field.Height - 1;
             this.CurrentBlock.Block.Rotation = Block.GetStartRotation(this.CurrentBlock.Block.Type);
 
             // Set next block
-            this.NextBlock = new Block(_blockTypeQueue.Dequeue());
+            this.NextBlock = new Block(_blockTypeQueue.UnShift<BlockType>());
             this.NextBlock.Rotation = Block.GetStartRotation(this.NextBlock.Type);
         }
 
@@ -47,7 +48,7 @@ namespace TimeTetris.Data
 
             var newType = this.NextBlock.Type;
             var newR = Block.GetStartRotation(newType);
-            var nextType = _blockTypeQueue.Dequeue();
+            var nextType = _blockTypeQueue.UnShift<BlockType>();
 
             this.Timeline.Add(new Event()
             {
@@ -68,12 +69,7 @@ namespace TimeTetris.Data
                 Undo = () =>
                     {
                         // Restore next type
-                        var oldQueue = new Queue<BlockType>();
-                        while (_blockTypeQueue.Count != 0)
-                            oldQueue.Enqueue(_blockTypeQueue.Dequeue());
-                        _blockTypeQueue.Enqueue(nextType);
-                        while (oldQueue.Count != 0)
-                            _blockTypeQueue.Enqueue(oldQueue.Dequeue());
+                        _blockTypeQueue.Shift(nextType);
 
                         // Retore new block
                         this.NextBlock.SetBlockType(newType);
@@ -103,7 +99,7 @@ namespace TimeTetris.Data
                 var chosen = options[index];
 
                 // And enqueue it
-                _blockTypeQueue.Enqueue(chosen);
+                _blockTypeQueue.Push(chosen);
                 options.Remove(chosen);
             }
         }

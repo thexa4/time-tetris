@@ -110,6 +110,7 @@ namespace TimeTetris.Data
             }
             else
             {
+                // Rewind amount
                 var rewind = Math.Min(Math.Min(this.RewindDelta, gameTime.ElapsedGameTime.TotalSeconds * this.RewindSpeed), this.CurrentTime);
                 this.RewindDelta = Math.Min(this.CurrentTime, this.RewindDelta - rewind);
 
@@ -117,7 +118,6 @@ namespace TimeTetris.Data
                     this.Events.Pop<Event>().Undo();
 
                 this.CurrentTime -= rewind;
-                
             }
         }
     }
