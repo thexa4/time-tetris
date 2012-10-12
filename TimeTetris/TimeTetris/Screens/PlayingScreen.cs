@@ -101,6 +101,7 @@ namespace TimeTetris.Screens
             _spriteField.Draw(gameTime);
             _spriteFallingBlock.Draw(gameTime);
             _spriteNextBlock.Draw(gameTime);
+
             this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["Default"], String.Format("{0} s", Math.Round(_timeline.CurrentTime / 1000, 2)), Vector2.One * 5, Color.White);
             this.ScreenManager.SpriteBatch.End();
         }

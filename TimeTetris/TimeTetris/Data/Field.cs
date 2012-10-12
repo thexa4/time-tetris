@@ -18,7 +18,7 @@ namespace TimeTetris.Data
         public Timeline Timeline { get; protected set; }
 
         /// <summary>
-        /// 
+        /// Creates a new field
         /// </summary>
         /// <param name="timeline"></param>
         /// <param name="width"></param>
@@ -42,21 +42,48 @@ namespace TimeTetris.Data
         }
 
         /// <summary>
-        /// 
+        /// Locks a falling block
         /// </summary>
         public void LockFalling()
         {
-            // TODO timeline event
+            var color = Block.ToGridValue(this.CurrentBlock.Block.Type);
+            var startX = this.CurrentBlock.X;
+            var startY = this.CurrentBlock.Y;
+            var block = this.CurrentBlock.Block;
 
-            var color = Block.ToGridValue(CurrentBlock.Block.Type);
-            for (int x = 0; x < CurrentBlock.Block.Width; x++)
-                for (int y = 0; y < CurrentBlock.Block.Height; y++)
-                    this[CurrentBlock.X + x, CurrentBlock.Y + y] = color;
+            this.Timeline.Add(new Event()
+            {
+                // Puts the block in the grid
+                Apply = () =>
+                    {
+                        for (Int32 x = 0; x < block.Width; x++)
+                            for (Int32 y = 0; y < block.Height; y++)
+                                if (block[x, y])
+                                    this[startX + x, startY + y] = color;
+                    },
+
+                // Removes the block from the grid
+                Undo = () =>
+                    {
+                        for (Int32 x = 0; x < block.Width; x++)
+                            for (Int32 y = 0; y < block.Height; y++)
+                                if (block[x, y])
+                                    this[startX + x, startY + y] = 0;
+                    }
+            });
 
             GenerateNextBlock();
+
+            // TODO CHECK ROW FULL
         }
 
-        public Int32 this[int x, int y]
+        /// <summary>
+        /// Returns the value on a position
+        /// </summary>
+        /// <param name="x">x position</param>
+        /// <param name="y">y position</param>
+        /// <returns>Grid color value</returns>
+        public Int32 this[Int32 x, Int32 y]
         {
             get {
                 if(x < 0 || x >= Width)
@@ -64,23 +91,31 @@ namespace TimeTetris.Data
                 if (y < 0 || y >= Height)
                     return -1;
                 Row cur = Bottom;
-                for (int i = 0; i <= y; i++)
+                for (Int32 i = 0; i <= y; i++)
                     cur = cur.Next;
                 return cur.Values[x];
             }
+
             set
             {
                 Row cur = Bottom;
-                for (int i = 0; i <= y; i++)
+                for (Int32 i = 0; i <= y; i++)
                     cur = cur.Next;
                 cur.Values[x] = value;
             }
         }
 
-        public bool Collides(Block block, int x, int y)
+        /// <summary>
+        /// Checks if a block collides if placed on a position
+        /// </summary>
+        /// <param name="block">block to check</param>
+        /// <param name="x">x position</param>
+        /// <param name="y">y position</param>
+        /// <returns>Collision flag</returns>
+        public Boolean Collides(Block block, Int32 x, Int32 y)
         {
-            for (int a = 0; a < block.Width; a++)
-                for (int b = 0; b < block.Height; b++)
+            for (Int32 a = 0; a < block.Width; a++)
+                for (Int32 b = 0; b < block.Height; b++)
                     if (block[a, b] && this[x + a, y + b] != 0)
                         return true;
             return false;

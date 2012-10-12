@@ -113,5 +113,30 @@ namespace TimeTetris.Data
         {
             return (BlockType)(gridValue - 1);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="blockType"></param>
+        /// <returns></returns>
+        internal static Int32 GetStartRotation(BlockType blockType)
+        {
+            switch (blockType)
+            {
+                case BlockType.IBlock:
+                case BlockType.LBlock:
+                    return 1;
+                case BlockType.TBlock:
+                case BlockType.SBlock:
+                    return 2;
+                case BlockType.JBlock:
+                    return 3;
+                case BlockType.ZBlock:
+                case BlockType.OBlock:
+                    return 0;
+                default:
+                    return 1;
+            }
+        }
     }
 }
