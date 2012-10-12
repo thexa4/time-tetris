@@ -129,7 +129,7 @@ namespace TimeTetris.Data
                             for (Int32 y = 0; y < block.Height; y++)
                                 if (block[x, block.Height - 1 - y])
                                 {
-                                    if (startY - y > Height - SpriteField.HiddenRows)
+                                    if (startY - y >= Height - SpriteField.HiddenRows)
                                     {
                                         // Game over!
                                         HasEnded = true;
