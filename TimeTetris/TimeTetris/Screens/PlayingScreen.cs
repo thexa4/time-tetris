@@ -187,8 +187,9 @@ namespace TimeTetris.Screens
             _spriteNextBlock.Draw(gameTime);
 
             this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["Default"], 
-                String.Format("{0:0.00}s  {3:0.00}ls/s  {1:####0} points  {2} combo", 
-                    Math.Round(_timeline.CurrentTime, 2), _field.Score, _field.CurrentCombo, _timeline.RewindSpeed), Vector2.One * 5, Color.White);
+                String.Format("{0:0.00}ls  {3:0.00}ls/s  {1:####0} points  {2} combo  level {5} / {4} lines  ", 
+                    Math.Round(_timeline.CurrentTime, 2), _field.Score, _field.CurrentCombo, _timeline.RewindSpeed, 
+                    _field.LinesCleared, _field.Level), Vector2.One * 5, Color.White);
             this.ScreenManager.SpriteBatch.End();
         }
     }

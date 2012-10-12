@@ -283,13 +283,13 @@ namespace TimeTetris.Data
             if (this.Field.HasEnded)
                 return;
 
-            double downElapsed = Field.Timeline.CurrentTime - LastMoveDownTime;
-            if (downElapsed > 1.0 / Field.Level)
+            var downElapsed = this.Field.Timeline.CurrentTime - LastMoveDownTime;
+            if (downElapsed > 1.0 / Math.Min(20, Field.Level)) // 20 G max
                 MoveDown();
 
-            double lockElapsed = Field.Timeline.CurrentTime - LastMoveTime;
-            if (lockElapsed > 3.0 / Field.Level)
-                Field.LockFalling();
+            var lockElapsed = this.Field.Timeline.CurrentTime - LastMoveTime;
+            if (lockElapsed > Math.Max(0.5f, 3.0 / Field.Level)) 
+                this.Field.LockFalling();
         }
     }
 }
