@@ -25,6 +25,7 @@ namespace TimeTetris.Data
         public Timeline(Game game)
             : base(game)
         {
+            this.Events = new List<Event>();
             this.Enabled = false;
             this.UpdateOrder = 1;
 
@@ -86,7 +87,7 @@ namespace TimeTetris.Data
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            this.CurrentTime += gameTime.ElapsedGameTime.TotalMilliseconds;
+            this.CurrentTime += gameTime.ElapsedGameTime.TotalSeconds;
         }
     }
 }
