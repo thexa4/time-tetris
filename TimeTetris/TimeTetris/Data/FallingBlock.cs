@@ -128,6 +128,13 @@ namespace TimeTetris.Data
             return res;
         }
 
+        public Boolean Drop()
+        {
+            while (MoveDown()) { }
+            Field.LockFalling();
+            return true;
+        }
+
         /// <summary>
         /// Moves block over an arbitrairy vector
         /// </summary>
