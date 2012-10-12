@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using TimeTetris.Drawing;
+using TimeTetris.Services;
 
 namespace TimeTetris.Data
 {
@@ -19,6 +21,7 @@ namespace TimeTetris.Data
         public Timeline Timeline { get; protected set; }
 
         public Int32 Level { get; set; }
+        public Boolean IsEnded { get; set; }
 
         /// <summary>
         /// Creates a new field
@@ -31,7 +34,7 @@ namespace TimeTetris.Data
             : base(game)
         {
             this.Timeline = timeline;
-            this.Level = 1;
+            this.Level = 3;
 
             this.Width = width;
             this.Height = height;
@@ -73,8 +76,16 @@ namespace TimeTetris.Data
                     {
                         for (Int32 x = 0; x < block.Width; x++)
                             for (Int32 y = 0; y < block.Height; y++)
-                                if (block[x, y])
-                                    this[startX + x, startY + y] = color;
+                                if (block[x, block.Height - 1 - y])
+                                {
+                                    if (startY - y >= Height - SpriteField.HiddenRows)
+                                    {
+                                        // Game over!
+                                        IsEnded = true;
+                                        ((ScreenManager)Game.Services.GetService(typeof(ScreenManager))).ExitAll();
+                                    }
+                                    this[startX + x, startY - y] = color;
+                                }
                     },
 
                 // Removes the block from the grid
@@ -82,12 +93,17 @@ namespace TimeTetris.Data
                     {
                         for (Int32 x = 0; x < block.Width; x++)
                             for (Int32 y = 0; y < block.Height; y++)
-                                if (block[x, y])
-                                    this[startX + x, startY + y] = 0;
+                                if (block[x, block.Height - 1 - y])
+                                {
+                                    if (startY - y >= Height - SpriteField.HiddenRows)
+                                        IsEnded = false;
+                                    this[startX + x, startY - y] = 0;
+                                }
                     }
             });
 
-            GenerateNextBlock();
+            if(!IsEnded)
+                GenerateNextBlock();
 
             // TODO CHECK ROW FULL
         }
@@ -131,7 +147,7 @@ namespace TimeTetris.Data
         {
             for (Int32 a = 0; a < block.Width; a++)
                 for (Int32 b = 0; b < block.Height; b++)
-                    if (block[a, b] && this[x + a, y + b] != 0)
+                    if (block[a, block.Height - 1 - b] && this[x + a, y - b] != 0)
                         return true;
             return false;
         }

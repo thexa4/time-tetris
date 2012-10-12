@@ -151,7 +151,7 @@ namespace TimeTetris.Data
                 LastMoveTime = prevtime;
             };
 
-            Int32 newx = X + yoff;
+            Int32 newx = X + xoff;
             Int32 newy = Y + yoff;
             e.Apply = () =>
             {
