@@ -125,6 +125,7 @@
     <Compile Include="Drawing\SpriteBlock.cs" />
     <Compile Include="Drawing\SpriteFallingBlock.cs" />
     <Compile Include="Drawing\SpriteField.cs" />
+    <Compile Include="Drawing\SpriteGhostBlock.cs" />
     <Compile Include="Drawing\SpritesetWallkick.cs" />
     <Compile Include="Extension\ListExtensions.cs" />
     <Compile Include="Extension\SpriteBatchExtensions.cs" />

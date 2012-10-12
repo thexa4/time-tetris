@@ -19,6 +19,7 @@ namespace TimeTetris.Screens
         private SpriteField _spriteField;
         private Sprite _spriteNextBlockBoundary;
         private SpriteFallingBlock _spriteFallingBlock;
+        private SpriteGhostBlock _spriteGhostBlock;
         private SpriteBlock _spriteNextBlock;
         private KeyboardController _controller;
         // TODO spriteset level ?
@@ -45,10 +46,8 @@ namespace TimeTetris.Screens
 
             // Create Sprites
             _spriteField = new SpriteField(this.Game, _field) { Position = Vector2.One * SpriteField.GridCellSize * 5 };
-            _spriteField.Initialize();
-
+            _spriteGhostBlock = new SpriteGhostBlock(this.Game, _field.CurrentBlock) { Position = _spriteField.Position };
             _spriteFallingBlock = new SpriteFallingBlock(this.Game, _field.CurrentBlock) { Position = _spriteField.Position };
-            _spriteFallingBlock.Initialize();
 
             // Next Block Boundary Background
             _spriteNextBlockBoundary = new Sprite(this.Game)
@@ -59,12 +58,16 @@ namespace TimeTetris.Screens
                     Opacity = 0.2f,
                     Color = Color.White,
                 };
-            _spriteNextBlockBoundary.Initialize();
 
             // Next BLock
             _spriteNextBlock = new SpriteBlock(this.Game, _field.NextBlock) { Position = _spriteNextBlockBoundary.Position, };
-            _spriteNextBlock.Initialize();
             _field.NextBlock.OnTypeChanged += new BlockTypeDelegate(NextBlock_OnTypeChanged);
+
+            _spriteField.Initialize();
+            _spriteGhostBlock.Initialize();
+            _spriteFallingBlock.Initialize();
+            _spriteNextBlockBoundary.Initialize();
+            _spriteNextBlock.Initialize();
 
             // Player controller
             _controller = new KeyboardController(this.Game, Keys.S, Keys.A, Keys.D, Keys.W, Keys.Q, Keys.E, Keys.Space);
@@ -81,6 +84,8 @@ namespace TimeTetris.Screens
         private void NextBlock_OnTypeChanged(BlockType block)
         {
             _spriteNextBlockBoundary.Size = Vector2.One * SpriteField.GridCellSize * _field.NextBlock.Width;
+            _spriteNextBlockBoundary.Scale = _spriteNextBlockBoundary.Size.X / _spriteNextBlockBoundary.SourceRectangle.Width * Vector2.UnitX + 
+                _spriteNextBlockBoundary.Size.Y / _spriteNextBlockBoundary.SourceRectangle.Height * Vector2.UnitY;
         }
 
         /// <summary>
@@ -91,6 +96,7 @@ namespace TimeTetris.Screens
         {
             base.LoadContent(contentManager);
             _spriteField.LoadContent(contentManager);
+            _spriteGhostBlock.LoadContent(contentManager);
             _spriteFallingBlock.LoadContent(contentManager);
             _spriteNextBlock.LoadContent(contentManager);
             _spriteNextBlockBoundary.LoadContent(contentManager);
@@ -110,7 +116,8 @@ namespace TimeTetris.Screens
             _controller.Update(gameTime);
 
             _spriteField.Update(gameTime);
-            _spriteFallingBlock.Update(gameTime);
+            _spriteFallingBlock.Update(gameTime);            
+            _spriteGhostBlock.Update(gameTime);
             _spriteNextBlock.Update(gameTime);
             _spriteNextBlockBoundary.Update(gameTime);
         }
@@ -168,6 +175,7 @@ namespace TimeTetris.Screens
             this.ScreenManager.SpriteBatch.Begin();
 
             _spriteField.Draw(gameTime);
+            _spriteGhostBlock.Draw(gameTime);
             _spriteFallingBlock.Draw(gameTime);
             _spriteNextBlockBoundary.Draw(gameTime);
             _spriteNextBlock.Draw(gameTime);

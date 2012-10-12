@@ -125,6 +125,7 @@ namespace TimeTetris.Data
             {
                 case BlockType.IBlock:
                 case BlockType.LBlock:
+                
                     return 1;
                 case BlockType.TBlock:
                 case BlockType.SBlock:

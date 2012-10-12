@@ -28,6 +28,8 @@ namespace TimeTetris.Data
             // Generate as a block
             this.CurrentBlock = new FallingBlock(this.Game, new Block(_blockTypeQueue.UnShift<BlockType>()), this);
             this.CurrentBlock.X = this.CurrentBlock.Field.Width / 2 - this.CurrentBlock.Block.Width / 2 - 1;
+            if (this.CurrentBlock.Block.Type == BlockType.OBlock || this.CurrentBlock.Block.Type == BlockType.JBlock)
+                this.CurrentBlock.X++;
             this.CurrentBlock.Y = this.CurrentBlock.Field.Height - 1;
             this.CurrentBlock.Block.Rotation = Block.GetStartRotation(this.CurrentBlock.Block.Type);
 
@@ -57,11 +59,14 @@ namespace TimeTetris.Data
                         // Sets currentblock
                         this.CurrentBlock.Block.SetBlockType(newType);
                         this.CurrentBlock.X = this.CurrentBlock.Field.Width / 2 - this.CurrentBlock.Block.Width / 2 - 1;
+                        if (newType == BlockType.OBlock || newType == BlockType.JBlock)
+                            this.CurrentBlock.X++;
                         this.CurrentBlock.Y = this.CurrentBlock.Field.Height - 1;
+                        this.CurrentBlock.Block.Rotation = newR;
 
                         // Sets the next block
                         this.NextBlock.SetBlockType(nextType);
-                        this.NextBlock.Rotation = Block.GetStartRotation(this.NextBlock.Type);
+                        this.NextBlock.Rotation = Block.GetStartRotation(nextType);
                         if (_blockTypeQueue.Count == 0)
                             GenerateNextPermutation();
                     },
@@ -73,7 +78,7 @@ namespace TimeTetris.Data
 
                         // Retore new block
                         this.NextBlock.SetBlockType(newType);
-                        this.NextBlock.Rotation = Block.GetStartRotation(this.NextBlock.Type);
+                        this.NextBlock.Rotation = Block.GetStartRotation(newType);
 
                         // Restore current block
                         this.CurrentBlock.Block.SetBlockType(oldType);
