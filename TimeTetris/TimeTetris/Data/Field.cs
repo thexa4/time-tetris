@@ -105,7 +105,45 @@ namespace TimeTetris.Data
             if(!IsEnded)
                 GenerateNextBlock();
 
-            // TODO CHECK ROW FULL
+            Row cur = Bottom;
+            int futurey = 0;
+            for (int y = 0; y < Height; y++)
+            {
+                cur = cur.Next;
+                futurey++;
+                if (cur.IsFull)
+                {
+                    futurey--;
+                    int[] values = cur.Values;
+                    Timeline.Add(new Event()
+                    {
+                        Undo = () => CreateFullRow(futurey, values),
+                        Apply = () => RemoveRow(futurey),
+                    });
+                }
+            }
+        }
+
+        protected void CreateFullRow(int y, int[] values)
+        {
+            Row cur = Bottom;
+            for (; y > 0; y--)
+                cur = cur.Next;
+            Row f = new Row(Width);
+            f.Values = values;
+            cur.InsertAfter(f);
+
+            Top.Prev.Remove();
+        }
+
+        protected void RemoveRow(int y)
+        {
+            Row cur = Bottom;
+            for (; y >= 0; y--)
+                cur = cur.Next;
+            cur.Remove();
+
+            Top.Prev.InsertAfter(new Row(Width));
         }
 
         /// <summary>

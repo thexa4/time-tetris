@@ -8,7 +8,7 @@ namespace TimeTetris.Data
     public class Row
     {
         public Int32 Width { get; protected set; }
-        public Int32[] Values { get; protected set; }
+        public Int32[] Values { get; set; }
 
         public Row Next { get; set; }
         public Row Prev { get; set; }
