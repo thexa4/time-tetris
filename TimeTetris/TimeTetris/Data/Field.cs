@@ -10,22 +10,66 @@ namespace TimeTetris.Data
 {
     public partial class Field : GameComponent
     {
+        /// <summary>
+        /// Bewlo lowest row in the field
+        /// </summary>
         public Row Bottom { get; protected set; }
+
+        /// <summary>
+        /// Above highest row in the field
+        /// </summary>
         public Row Top { get; protected set; }
 
+        /// <summary>
+        /// Grid Width
+        /// </summary>
         public Int32 Width { get; protected set; }
-        public Int32 Height { get; protected set; }
 
+        /// <summary>
+        /// Grid Height
+        /// </summary>
+        public Int32 Height { get; protected set; }
+        
+        /// <summary>
+        /// Active falling block
+        /// </summary>
         public FallingBlock CurrentBlock { get; set; }
+
+        /// <summary>
+        /// Next block
+        /// </summary>
         public Block NextBlock { get; set; }
+
+        /// <summary>
+        /// Timeline
+        /// </summary>
         public Timeline Timeline { get; protected set; }
 
-        public Int32 Level { get; set; }
+        /// <summary>
+        /// Current Level
+        /// </summary>
+        public Int32 Level { get { return this.LinesCleared / 10; } }
+
+        /// <summary>
+        /// Number of lines cleared
+        /// </summary>
+        public Int32 LinesCleared { get; set; }
+
+        /// <summary>
+        /// Game has ended (died) flag
+        /// </summary>
         public Boolean HasEnded { get; set; }
 
-        private Int32 _score;
-        public Int32 Score { get { return _score; } protected set { _score = Math.Max(0, value); } }
-        public Int32 ComboCount { get; protected set; }
+        /// <summary>
+        /// Current score (double so we can subtract partial points)
+        /// </summary>
+        public Double Score { get { return _score; } protected set { _score = Math.Max(0, value); } }
+        private Double _score;
+
+        /// <summary>
+        /// Current Combo count
+        /// </summary>
+        public Int32 CurrentCombo { get; protected set; }
 
         /// <summary>
         /// Creates a new field
@@ -38,7 +82,7 @@ namespace TimeTetris.Data
             : base(game)
         {
             this.Timeline = timeline;
-            this.Level = 3;
+            this.LinesCleared = 30;
 
             this.Width = width;
             this.Height = height;
@@ -85,10 +129,11 @@ namespace TimeTetris.Data
                             for (Int32 y = 0; y < block.Height; y++)
                                 if (block[x, block.Height - 1 - y])
                                 {
-                                    if (startY - y >= Height - SpriteField.HiddenRows)
+                                    if (startY - y > Height - SpriteField.HiddenRows)
                                     {
                                         // Game over!
                                         HasEnded = true;
+                                        this.Timeline.Stop();
                                     }
                                     this[startX + x, startY - y] = color;
                                 }
@@ -104,7 +149,11 @@ namespace TimeTetris.Data
                                 if (block[x, block.Height - 1 - y])
                                 {
                                     if (startY - y >= Height - SpriteField.HiddenRows)
+                                    {
+                                        // Game un-over
                                         HasEnded = false;
+                                        this.Timeline.Resume();
+                                    }
                                     this[startX + x, startY - y] = 0;
                                 }
                     }
@@ -137,25 +186,26 @@ namespace TimeTetris.Data
             }
 
             var clearScore = Points.ClearLines(rows, this.Level);
-            var comboScore = this.ComboCount * Points.ClearCombo(this.Level);
-            var oldComboCount = this.ComboCount;
+            var comboScore = this.CurrentCombo * Points.ClearCombo(this.Level);
+            var oldComboCount = this.CurrentCombo;
 
             this.Timeline.Add(new Event()
                 {
                     Apply = () => 
                     { 
-                        this.ComboCount = (rows == 0) ? 0 : oldComboCount + 1;
+                        this.CurrentCombo = (rows == 0) ? 0 : oldComboCount + 1;
                         this.Score += clearScore + ((rows == 0) ? 0 : comboScore);
+                        this.LinesCleared += rows;
                     },
                     Undo = () => 
                     {
-                        this.ComboCount = oldComboCount;
-                        this.Score -= clearScore + ((rows == 0) ? 0 : comboScore); 
+                        this.CurrentCombo = oldComboCount;
+                        this.Score -= clearScore + ((rows == 0) ? 0 : comboScore);
+                        this.LinesCleared -= rows;
                     },
                 });
-
             
-
+            
         }
 
         /// <summary>
@@ -241,6 +291,9 @@ namespace TimeTetris.Data
         {
             base.Update(gameTime);
             this.CurrentBlock.Update(gameTime);
+
+            if (this.Timeline.IsRewindActive)
+                this.Score -= Points.Rewind * gameTime.ElapsedGameTime.TotalSeconds;
         }
     }
 }

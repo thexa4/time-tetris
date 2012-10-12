@@ -163,7 +163,7 @@ namespace TimeTetris.Data
                 // Increase the speed, so the longer you rewind, the 
                 // faster it will go.
                 _rewindSpeed *= 1 + (0.1f * gameTimePassed);
-
+                
                 // Pop the events and undo them
                 while (this.Events.Count > 0 && this.Events.Last().Time >= this.CurrentTime - rewind)
                     this.Events.Pop<Event>().Undo();

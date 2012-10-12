@@ -16,6 +16,7 @@ namespace TimeTetris.Data
         public const Int32 Tetris = 800;
 
         public const Int32 Combo = 50;
+        public const Int32 Rewind = 100;
         
         // TODO T-Spin
         
@@ -51,5 +52,6 @@ namespace TimeTetris.Data
         {
             return Points.Combo * level;
         }
+
     }
 }

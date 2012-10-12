@@ -288,7 +288,7 @@ namespace TimeTetris.Data
                 MoveDown();
 
             double lockElapsed = Field.Timeline.CurrentTime - LastMoveTime;
-            if (lockElapsed > 3 / Field.Level)
+            if (lockElapsed > 3.0 / Field.Level)
                 Field.LockFalling();
         }
     }
