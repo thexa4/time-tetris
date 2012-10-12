@@ -30,8 +30,8 @@ namespace TimeTetris.Drawing
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            this.OffsetPosition = this.Position + Vector2.UnitX * this.Source.X * SpriteField.GridSize +
-                ((this.Source.Field.Height - SpriteField.HiddenRows - 1 - this.Source.Y) * SpriteField.GridSize * Vector2.UnitY);
+            this.OffsetPosition = this.Position + Vector2.UnitX * this.Source.X * SpriteField.GridCellSize +
+                ((this.Source.Field.Height - SpriteField.HiddenRows - 1 - this.Source.Y) * SpriteField.GridCellSize * Vector2.UnitY);
         }
         
     }

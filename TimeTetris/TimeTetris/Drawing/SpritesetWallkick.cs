@@ -106,8 +106,8 @@ namespace TimeTetris.Drawing
                 sprites.Add(
                     new SpriteField(this.Game, _field)
                     {
-                        Position = this.Position + SpriteField.GridSize * ((_field.Width + 1) * j) * Vector2.UnitX +
-                            SpriteField.GridSize * ((_field.Height - SpriteField.HiddenRows + 1) * iteration) * Vector2.UnitY,
+                        Position = this.Position + SpriteField.GridCellSize * ((_field.Width + 1) * j) * Vector2.UnitX +
+                            SpriteField.GridCellSize * ((_field.Height - SpriteField.HiddenRows + 1) * iteration) * Vector2.UnitY,
                     }
                 );
 
@@ -116,9 +116,9 @@ namespace TimeTetris.Drawing
                     new Sprite(this.Game)
                     {
                         TextureName = "Graphics/blank",
-                        Size = Vector2.One * SpriteField.GridSize * block.Width,
-                        Position = this.Position + SpriteField.GridSize * (2 + (_field.Height - SpriteField.HiddenRows + 1) * iteration) * Vector2.UnitY +
-                            SpriteField.GridSize * (2 + (_field.Width + 1) * j) * Vector2.UnitX,
+                        Size = Vector2.One * SpriteField.GridCellSize * block.Width,
+                        Position = this.Position + SpriteField.GridCellSize * (2 + (_field.Height - SpriteField.HiddenRows + 1) * iteration) * Vector2.UnitY +
+                            SpriteField.GridCellSize * (2 + (_field.Width + 1) * j) * Vector2.UnitX,
                         Opacity = 0.1f,
                         Color = Color.White,
                     }
@@ -133,8 +133,8 @@ namespace TimeTetris.Drawing
                         new Data.FallingBlock(this.Game, baseBlock, _field, 2, block.Height + 1)
                     )
                     {
-                        Position = this.Position + SpriteField.GridSize * ((_field.Height - SpriteField.HiddenRows + 1) * iteration) * Vector2.UnitY +
-                            SpriteField.GridSize * ((_field.Width + 1) * j) * Vector2.UnitX,
+                        Position = this.Position + SpriteField.GridCellSize * ((_field.Height - SpriteField.HiddenRows + 1) * iteration) * Vector2.UnitY +
+                            SpriteField.GridCellSize * ((_field.Width + 1) * j) * Vector2.UnitX,
                         Opacity = 0.2f,
                     }
                 );
@@ -145,8 +145,8 @@ namespace TimeTetris.Drawing
                         new Data.FallingBlock(this.Game, (Data.Block)block.Clone(), _field,  2 + movements[j, 0], block.Height + 1 + movements[j, 1])
                     )
                     {
-                        Position = this.Position + SpriteField.GridSize * ((_field.Height - SpriteField.HiddenRows + 1) * iteration) * Vector2.UnitY +
-                            SpriteField.GridSize * ((_field.Width + 1) * j) * Vector2.UnitX
+                        Position = this.Position + SpriteField.GridCellSize * ((_field.Height - SpriteField.HiddenRows + 1) * iteration) * Vector2.UnitY +
+                            SpriteField.GridCellSize * ((_field.Width + 1) * j) * Vector2.UnitX
                     }
                 );
             }

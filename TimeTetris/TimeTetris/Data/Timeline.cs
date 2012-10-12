@@ -32,6 +32,15 @@ namespace TimeTetris.Data
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public override void Initialize()
+        {
+            base.Initialize();
+            this.Events = new List<Event>();
+        }
+
+        /// <summary>
         /// Starts the timeline
         /// </summary>
         public void Start()

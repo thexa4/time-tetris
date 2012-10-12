@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using TimeTetris.Drawing;
 using TimeTetris.Data;
+using Microsoft.Xna.Framework.Input;
 
 namespace TimeTetris.Screens
 {
@@ -19,6 +20,7 @@ namespace TimeTetris.Screens
         private Sprite _spriteNextBlockBoundary;
         private SpriteFallingBlock _spriteFallingBlock;
         private SpriteBlock _spriteNextBlock;
+        private KeyboardController _controller;
         // TODO spriteset level ?
 
         protected Timeline _timeline;
@@ -34,14 +36,15 @@ namespace TimeTetris.Screens
 
             base.Initialize();
 
+            // Get service
             _timeline = (Timeline)this.Game.Services.GetService(typeof(Timeline));
 
             // Create Field
-            _field = new Data.Field(this.Game, _timeline, 10, 32);
+            _field = new Data.Field(this.Game, _timeline, 10, 24);
             _field.Initialize();
 
             // Create Sprites
-            _spriteField = new SpriteField(this.Game, _field) { Position = Vector2.One * SpriteField.GridSize * 5 };
+            _spriteField = new SpriteField(this.Game, _field) { Position = Vector2.One * SpriteField.GridCellSize * 5 };
             _spriteField.Initialize();
 
             _spriteFallingBlock = new SpriteFallingBlock(this.Game, _field.CurrentBlock) { Position = _spriteField.Position };
@@ -51,8 +54,8 @@ namespace TimeTetris.Screens
             _spriteNextBlockBoundary = new Sprite(this.Game)
                 {
                     TextureName = "Graphics/blank",
-                    Size = Vector2.One * SpriteField.GridSize * _field.NextBlock.Width,
-                    Position = _spriteField.Position + Vector2.UnitX * (_field.Width + 2) * SpriteField.GridSize,
+                    Size = Vector2.One * SpriteField.GridCellSize * _field.NextBlock.Width,
+                    Position = _spriteField.Position + Vector2.UnitX * (_field.Width + 2) * SpriteField.GridCellSize,
                     Opacity = 0.2f,
                     Color = Color.White,
                 };
@@ -63,9 +66,12 @@ namespace TimeTetris.Screens
             _spriteNextBlock.Initialize();
             _field.NextBlock.OnTypeChanged += new BlockTypeDelegate(NextBlock_OnTypeChanged);
 
+            // Player controller
+            _controller = new KeyboardController(this.Game, Keys.S, Keys.A, Keys.D, Keys.W, Keys.Q, Keys.E, Keys.Space);
+            _controller.Initialize();
+
             // Start the level
             _timeline.Start();
-
         }
 
         /// <summary>
@@ -74,7 +80,7 @@ namespace TimeTetris.Screens
         /// <param name="b"></param>
         private void NextBlock_OnTypeChanged(BlockType block)
         {
-            _spriteNextBlockBoundary.Size = Vector2.One * SpriteField.GridSize * _field.NextBlock.Width;
+            _spriteNextBlockBoundary.Size = Vector2.One * SpriteField.GridCellSize * _field.NextBlock.Width;
         }
 
         /// <summary>
@@ -101,6 +107,7 @@ namespace TimeTetris.Screens
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
             _field.Update(gameTime);
+            _controller.Update(gameTime);
 
             _spriteField.Update(gameTime);
             _spriteFallingBlock.Update(gameTime);
@@ -120,6 +127,29 @@ namespace TimeTetris.Screens
                 _timeline.Stop();
             else if (InputManager.Keyboard.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Escape))
                 _timeline.Resume();
+
+            switch (_controller.Action)
+            {
+                case ControllerAction.Down:
+                    _field.CurrentBlock.MoveDown();
+                    break;
+                case ControllerAction.Left:
+                    _field.CurrentBlock.MoveLeft();
+                    break;
+                case ControllerAction.Right:
+                    _field.CurrentBlock.MoveRight();
+                    break;
+                //case ControllerAction.Up:
+                //    _field.CurrentBlock.DropDown();
+                case ControllerAction.RotateCW:
+                    _field.CurrentBlock.RotateLeft();
+                    break;
+                case ControllerAction.RotateCCW:
+                    _field.CurrentBlock.RotateRight();
+                    break;
+                case ControllerAction.Time:
+                    break;
+            }
         }
 
         /// <summary>
@@ -137,7 +167,7 @@ namespace TimeTetris.Screens
             _spriteNextBlockBoundary.Draw(gameTime);
             _spriteNextBlock.Draw(gameTime);
 
-            this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["Default"], String.Format("{0} s", Math.Round(_timeline.CurrentTime / 1000, 2)), Vector2.One * 5, Color.White);
+            this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["Default"], String.Format("{0} s", Math.Round(_timeline.CurrentTime, 2)), Vector2.One * 5, Color.White);
             this.ScreenManager.SpriteBatch.End();
         }
     }

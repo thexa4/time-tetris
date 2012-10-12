@@ -5,7 +5,7 @@ namespace TimeTetris.Services
 {
     public interface IController
     {
-        ControllerAction Direction { get; }
+        ControllerAction Action { get; }
 
         void Initialize();
         void Update(GameTime gameTime);
