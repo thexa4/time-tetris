@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Content;
 using TimeTetris.Drawing;
 using TimeTetris.Data;
 using Microsoft.Xna.Framework.Input;
+using TimeTetris.Extension;
 
 namespace TimeTetris.Screens
 {
@@ -237,6 +238,12 @@ namespace TimeTetris.Screens
             _spriteNextBlock.Draw(gameTime);
             _spriteHoldBlockBoundary.Draw(gameTime);
             _spriteHoldBlock.Draw(gameTime);
+
+            this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Default"],
+                "Next block", _spriteNextBlockBoundary.Position - Vector2.One * 4, Color.White, Color.Black);
+
+            this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Default"],
+                "Hold block", _spriteHoldBlockBoundary.Position - Vector2.One * 4, Color.White, Color.Black);
 
             this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["Default"], 
                 String.Format("{0:0.00}ls  {3:0.00}ls/s  {1:####0} points  {2} combo  level {5} / {4} lines  ", 

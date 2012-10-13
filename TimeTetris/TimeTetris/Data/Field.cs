@@ -170,6 +170,7 @@ namespace TimeTetris.Data
             if(!HasEnded)
                 GenerateNextBlock();
 
+            // Remove full rows
             Row cur = Bottom;
             Int32 futurey = 0;
             Int32 rows = 0;
@@ -193,6 +194,7 @@ namespace TimeTetris.Data
                 }
             }
 
+            // Score process
             var clearScore = Points.ClearLines(rows, this.Level);
             var comboScore = this.CurrentCombo * Points.ClearCombo(this.Level);
             var oldComboCount = this.CurrentCombo;
@@ -217,34 +219,34 @@ namespace TimeTetris.Data
         }
 
         /// <summary>
-        /// 
+        /// Creates (introduces) a (full) row by set values
         /// </summary>
-        /// <param name="y"></param>
-        /// <param name="values"></param>
+        /// <param name="y">Insert at</param>
+        /// <param name="values">Values to insert</param>
         protected void CreateFullRow(int y, int[] values)
         {
-            Row cur = Bottom;
+            Row cur = this.Bottom;
             for (; y > 0; y--)
                 cur = cur.Next;
-            Row f = new Row(Width);
+            Row f = new Row(this.Width);
             f.Values = values;
             cur.InsertAfter(f);
 
-            Top.Prev.Remove();
+            this.Top.Prev.Remove();
         }
 
         /// <summary>
-        /// 
+        /// Removes a (full) row
         /// </summary>
-        /// <param name="y"></param>
+        /// <param name="y">Remove at</param>
         protected void RemoveRow(int y)
         {
-            Row cur = Bottom;
+            Row cur = this.Bottom;
             for (; y >= 0; y--)
                 cur = cur.Next;
             cur.Remove();
 
-            Top.Prev.InsertAfter(new Row(Width));
+            this.Top.Prev.InsertAfter(new Row(this.Width));
         }
 
         /// <summary>
@@ -301,11 +303,11 @@ namespace TimeTetris.Data
             this.CurrentBlock.Update(gameTime);
 
             if (this.Timeline.IsRewindActive)
-                this.Score -= Points.Rewind * gameTime.ElapsedGameTime.TotalSeconds;
+                this.Score -= Points.Rewind * (this.Level / 5f + 1) * gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         /// <summary>
-        /// 
+        /// Switches holding block with current
         /// </summary>
         public Boolean SwitchHoldingBlock()
         {
@@ -313,6 +315,7 @@ namespace TimeTetris.Data
                 return false;
             _holdLocked = true;
 
+            // Always drop hold blocks from the top
             var baseY = this.CurrentBlock.Field.Height - 1;
             var baseX = this.CurrentBlock.Field.Width / 2 - this.CurrentBlock.Block.Width / 2 - 1;
 
@@ -323,8 +326,10 @@ namespace TimeTetris.Data
             if (oldType == BlockType.OBlock || oldType == BlockType.JBlock || oldType == BlockType.ZBlock)
                 oldX++;
 
+            // If this is the first too hold
             if (this.HoldBlock == null)
             {
+                // We can't replace the current block, so we generate a new one
                 GenerateNextBlock();
 
                 this.Timeline.Add(new Event()
@@ -345,7 +350,7 @@ namespace TimeTetris.Data
                 return true;
             }
 
-            // New block
+            // Time to switch a block
             var newType = this.HoldBlock.Type;
             var newR = Block.GetStartRotation(newType);
 
@@ -353,6 +358,7 @@ namespace TimeTetris.Data
             if (newType == BlockType.OBlock || newType == BlockType.JBlock || newType == BlockType.ZBlock)
                 newX++;
 
+            // Switch the hold block with the current block
             this.Timeline.Add(new Event()
             {
                 Apply = () =>
