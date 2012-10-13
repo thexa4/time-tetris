@@ -16,7 +16,6 @@ namespace TimeTetris.Screens
     {
         private Data.Field _field;
 
-
         private SpriteField _spriteField;
         private Sprite _spriteNextBlockBoundary, _spriteHoldBlockBoundary;
         private SpriteBlock _spriteNextBlock;
@@ -27,6 +26,8 @@ namespace TimeTetris.Screens
         // TODO spriteset level ?
 
         protected Timeline _timeline;
+        protected Boolean _isRewinding;
+
 
         /// <summary>
         /// Initializes the screen
@@ -88,8 +89,23 @@ namespace TimeTetris.Screens
             _controller = new KeyboardController(this.Game, Keys.S, Keys.A, Keys.D, Keys.W, Keys.Q, Keys.E, Keys.Space, Keys.Enter);
             _controller.Initialize();
 
+            _field.OnGameEnded += new EventHandler(_field_OnGameEnded);
+
             // Start the level
             _timeline.Start();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _field_OnGameEnded(object sender, EventArgs e)
+        {
+            _isRewinding = true;
+            _timeline.Enabled = true;
+
+            // TODO show REPLAY? popup
         }
 
         /// <summary>
@@ -139,6 +155,16 @@ namespace TimeTetris.Screens
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+
+            if (_isRewinding)
+            {
+                _timeline.RewindFrame();
+                if (_timeline.CurrentTime <= 0.01)
+                {
+                    _timeline.Start();
+                    _isRewinding = false;
+                }
+            }
 
             _field.Update(gameTime);
             _controller.Update(gameTime);

@@ -12,7 +12,7 @@ namespace TimeTetris.Data
         /// <summary>
         /// Events that occured
         /// </summary>
-        public List<Event> Events { get; protected set; }
+        public Stack<Event> Events { get; protected set; }
 
         /// <summary>
         /// Current time
@@ -20,20 +20,20 @@ namespace TimeTetris.Data
         public Double CurrentTime { get; protected set; }
 
         /// <summary>
-        /// 
+        /// Current Rewind time left
         /// </summary>
         public Double RewindDelta { get; protected set; }
 
         /// <summary>
-        /// 
+        /// Current Rewind speed
+        /// <remarks>set sets base speed</remarks>
         /// </summary>
         public Double RewindSpeed { get { return _rewindSpeed; } protected set { _rewindBaseSpeed = value; } }
 
         /// <summary>
-        /// 
+        /// Currently rewinding
         /// </summary>
         public Boolean IsRewindActive { get { return RewindDelta > 0 || _rewindFrameWasActive; } }
-
 
         protected Double _rewindSpeed, _rewindBaseSpeed, _rewindTime;
         protected Boolean _rewindFrameActive, _rewindFrameWasActive;
@@ -58,7 +58,7 @@ namespace TimeTetris.Data
         public override void Initialize()
         {
             base.Initialize();
-            this.Events = new List<Event>();
+            this.Events = new Stack<Event>();
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace TimeTetris.Data
         {
             action.Time = this.CurrentTime;
             action.Apply();
-            this.Events.Add(action);
+            this.Events.Push(action);
 
             return action.Time;
         }
@@ -165,8 +165,8 @@ namespace TimeTetris.Data
                 _rewindSpeed *= 1 + (0.1f * gameTimePassed);
                 
                 // Pop the events and undo them
-                while (this.Events.Count > 0 && this.Events.Last().Time >= this.CurrentTime - rewind)
-                    this.Events.Pop<Event>().Undo();
+                while (this.Events.Count > 0 && this.Events.Peek().Time >= this.CurrentTime - rewind)
+                    this.Events.Pop().Undo();
 
                 this.CurrentTime -= rewind;
                 _rewindFrameActive = false;

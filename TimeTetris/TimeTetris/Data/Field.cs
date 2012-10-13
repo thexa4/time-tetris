@@ -67,6 +67,11 @@ namespace TimeTetris.Data
         public Boolean HasEnded { get; set; }
 
         /// <summary>
+        /// On Game End (game over)
+        /// </summary>
+        public event EventHandler OnGameEnded = delegate { };
+
+        /// <summary>
         /// Current score (double so we can subtract partial points)
         /// </summary>
         public Double Score { get { return _score; } protected set { _score = Math.Max(0, value); } }
@@ -142,6 +147,8 @@ namespace TimeTetris.Data
                                         // Game over!
                                         HasEnded = true;
                                         this.Timeline.Stop();
+
+                                        this.OnGameEnded.Invoke(this, EventArgs.Empty);
                                     }
                                     this[startX + x, startY - y] = color;
                                 }
