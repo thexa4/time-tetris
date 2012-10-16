@@ -43,13 +43,19 @@ float4 PixelDraw(float4 color : COLOR0, float2 texCoord: TEXCOORD0) : COLOR
 	float4 ret = tex2D(ScreenSampler, pos);
 	
 	// Glass reflection
-	float offset = 0.005;
+	float offset = 0.004;
 	float4 up = tex2D(ScreenSampler, pos + float2(offset,0));
 	float4 down = tex2D(ScreenSampler, pos - float2(offset,0));
 	float4 left = tex2D(ScreenSampler, pos + float2(0,offset));
 	float4 right = tex2D(ScreenSampler, pos - float2(0,offset));
 	float4 avg = (up + down + left + right) / 4;
 	ret += avg / 2;
+
+	// Light line
+	float4 light = 0;
+	for(int i = 0; i < 30; i++)
+		light += tex2D(ScreenSampler, pos - i * float2(offset / 2, 0));
+	float total = (light.x + light.y + light.z) / 90;
 
 	// Clip if outside
 	if(pos.x < 0)
@@ -62,7 +68,7 @@ float4 PixelDraw(float4 color : COLOR0, float2 texCoord: TEXCOORD0) : COLOR
 		discard;
 
 	// Plus add random noise (time based)
-	return ret + 0.1 * random(pos * (10 + 3.1425 * sin(frac(time / 100.0))));
+	return ret + 0.05 * random(pos * (10 + 3.1425 * sin(frac(time / 100.0)))) + total / 10;
 }
 
 technique Draw
