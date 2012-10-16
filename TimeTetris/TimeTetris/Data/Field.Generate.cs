@@ -15,9 +15,10 @@ namespace TimeTetris.Data
         /// <summary>
         /// Setups the randomizer
         /// </summary>
-        protected void SetupBlockGenerator(Boolean reset = false) 
+        protected void SetupBlockGenerator(Boolean level_reset = false) 
         {
-            if (reset) 
+            // Create empty Queue
+            if (level_reset) 
                 _blockTypeQueue.Clear();
             else
                 _blockTypeQueue = new List<BlockType>();
@@ -30,20 +31,19 @@ namespace TimeTetris.Data
                 _blockTypeQueue.Push(_blockTypeQueue.UnShift<BlockType>());
 
             // Generate as a block
-            if (reset)
+            if (level_reset)
                 this.CurrentBlock.Block.SetBlockType(_blockTypeQueue.UnShift<BlockType>());
             else
                 this.CurrentBlock = new FallingBlock(this.Game, new Block(_blockTypeQueue.UnShift<BlockType>()), this);
 
             this.CurrentBlock.Replace(
-                /*this.CurrentBlock.Field.Width / 2 - this.CurrentBlock.Block.Width / 2 - 1 + 
-                    (this.CurrentBlock.Block.Type == BlockType.JBlock ? 1 : 0)*/ 3,
+                (this.Width - this.CurrentBlock.Block.Width) / 2 + Block.GetBaseXPosition(this.CurrentBlock.Block.Type),
                 this.CurrentBlock.Field.Height - 1,
                 Block.GetStartRotation(this.CurrentBlock.Block.Type)
                 );
 
             // Set next block
-            if (reset)
+            if (level_reset)
                 this.NextBlock.SetBlockType(_blockTypeQueue.UnShift<BlockType>());
             else
                 this.NextBlock = new Block(_blockTypeQueue.UnShift<BlockType>());
@@ -52,7 +52,7 @@ namespace TimeTetris.Data
         }
 
         /// <summary>
-        /// 
+        /// Resets block generator
         /// </summary>
         public void ResetBlockGenerator()
         {
@@ -74,11 +74,10 @@ namespace TimeTetris.Data
             var newR = Block.GetStartRotation(newType);
             var nextType = _blockTypeQueue.UnShift<BlockType>();
             var newY = this.CurrentBlock.Field.Height - 1;
-            var newX = 3; //this.CurrentBlock.Field.Width / 2 - this.CurrentBlock.Block.Width / 2 - 1;
-            if (newType == BlockType.OBlock || newType == BlockType.JBlock || newType == BlockType.ZBlock)
-                newX++;
+            var newX = (this.Width - this.NextBlock.Width) / 2 + Block.GetBaseXPosition(newType);
 
-            System.Diagnostics.Debug.WriteLine(newX);
+            System.Diagnostics.Debug.WriteLine("T:{2} From {0} w/{3} to {1} w/{4}", oldX, newX, newType,
+                this.CurrentBlock.Block.Width, this.NextBlock.Width);
 
             this.Timeline.Add(new Event()
             {
@@ -87,8 +86,6 @@ namespace TimeTetris.Data
                         // Sets currentblock
                         this.CurrentBlock.Block.SetBlockType(newType);
                         this.CurrentBlock.Replace(newX, newY, newR);
-
-                        System.Diagnostics.Debug.WriteLine(newX);
 
                         // Sets the next block
                         this.NextBlock.SetBlockType(nextType);

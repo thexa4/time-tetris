@@ -77,8 +77,8 @@ namespace TimeTetris
             this.Graphics = new GraphicsDeviceManager(this);
 
             this.Graphics.PreferredBackBufferFormat = SurfaceFormat.Color;
-            this.Graphics.PreferredBackBufferHeight = 720;
-            this.Graphics.PreferredBackBufferWidth = 1280;
+            this.Graphics.PreferredBackBufferHeight = 600;
+            this.Graphics.PreferredBackBufferWidth = 800;
             this.Graphics.SupportedOrientations = DisplayOrientation.Default;
 
 #if DEBUG

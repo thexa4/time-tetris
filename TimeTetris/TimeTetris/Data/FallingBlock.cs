@@ -67,8 +67,6 @@ namespace TimeTetris.Data
 
             this.LastMoveTime = this.Field.Timeline.CurrentTime;
             this.LastMoveDownTime = this.Field.Timeline.CurrentTime;
-
-            System.Diagnostics.Debug.WriteLine(this.X);
         }
 
         /// <summary>

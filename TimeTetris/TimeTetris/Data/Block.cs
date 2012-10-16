@@ -104,7 +104,7 @@ namespace TimeTetris.Data
         }
 
         /// <summary>
-        /// 
+        /// Clones the block
         /// </summary>
         /// <returns></returns>
         public Object Clone()

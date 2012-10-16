@@ -127,16 +127,44 @@ namespace TimeTetris.Data
                 case BlockType.LBlock:
                 
                     return 1;
-                case BlockType.TBlock:
                 case BlockType.SBlock:
                     return 2;
                 case BlockType.JBlock:
                     return 3;
+                case BlockType.TBlock:
                 case BlockType.ZBlock:
                 case BlockType.OBlock:
                     return 0;
                 default:
                     return 1;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="blockType"></param>
+        /// <returns></returns>
+        internal static Int32 GetBaseXPosition(BlockType blockType)
+        {
+            switch (blockType)
+            {
+                case BlockType.IBlock:
+                    return -1;
+                case BlockType.LBlock:
+                    return 0;
+                case BlockType.SBlock:
+                    return 0;
+                case BlockType.JBlock:
+                    return 1;
+                case BlockType.TBlock:
+                    return 0;
+                case BlockType.ZBlock:
+                    return 0;
+                case BlockType.OBlock:
+                    return 0;
+                default:
+                    return 0;
             }
         }
     }

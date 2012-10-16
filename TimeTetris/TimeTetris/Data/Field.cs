@@ -324,14 +324,11 @@ namespace TimeTetris.Data
 
             // Always drop hold blocks from the top
             var baseY = this.CurrentBlock.Field.Height - 1;
-            var baseX = this.CurrentBlock.Field.Width / 2 - this.CurrentBlock.Block.Width / 2 - 1;
 
             var oldType = this.CurrentBlock.Block.Type;
             var oldR = this.CurrentBlock.Block.Rotation;
             var oldPoints = this.CurrentBlock.BlockPoints;
-            var oldX = baseX;
-            if (oldType == BlockType.OBlock || oldType == BlockType.JBlock || oldType == BlockType.ZBlock)
-                oldX++;
+            var oldX = (this.Width - this.CurrentBlock.Block.Width) / 2 + Block.GetBaseXPosition(oldType);
 
             // If this is the first too hold
             if (this.HoldBlock == null)
@@ -360,10 +357,8 @@ namespace TimeTetris.Data
             // Time to switch a block
             var newType = this.HoldBlock.Type;
             var newR = Block.GetStartRotation(newType);
+            var newX = (this.Width - Block.BlockTypes[newType].GetLength(0)) / 2 + Block.GetBaseXPosition(newType);
 
-            var newX = baseX;
-            if (newType == BlockType.OBlock || newType == BlockType.JBlock || newType == BlockType.ZBlock)
-                newX++;
 
             // Switch the hold block with the current block
             this.Timeline.Add(new Event()
