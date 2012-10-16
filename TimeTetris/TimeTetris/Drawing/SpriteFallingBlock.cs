@@ -75,11 +75,20 @@ namespace TimeTetris.Drawing
                     this.Position = this.OffsetPosition + Vector2.UnitX * SpriteField.GridCellSize * x +
                         Vector2.UnitY * SpriteField.GridCellSize * (height - 1 - y);
 
-                    if (this.Source.Block[x, y] && (this.Source.Y - height + y + 1) < this.Source.Field.Height - SpriteField.HiddenRows)
+                    if (this.Source.Block[x, y] && IsInView(y))
                         base.Draw(gameTime);
                 }
 
             this.Position = basePosition;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        protected virtual Boolean IsInView(Int32 y) {
+            return (this.Source.Y - this.Source.Block.Height + y + 1) < this.Source.Field.Height - SpriteField.HiddenRows;
         }
         
     }

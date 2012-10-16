@@ -49,5 +49,15 @@ namespace TimeTetris.Drawing
             this.OffsetPosition = this.Position + Vector2.UnitX * this.Source.X * SpriteField.GridCellSize +
                 ((this.Source.Field.Height - SpriteField.HiddenRows - 1 - (_displayY + 1)) * SpriteField.GridCellSize * Vector2.UnitY);
         }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        protected override bool IsInView(Int32 y)
+        {
+            return (this.Source.Y - this.Source.Block.Height + y + 1) < this.Source.Field.Height;
+        }
     }
 }
