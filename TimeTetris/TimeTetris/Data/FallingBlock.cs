@@ -67,6 +67,8 @@ namespace TimeTetris.Data
 
             this.LastMoveTime = this.Field.Timeline.CurrentTime;
             this.LastMoveDownTime = this.Field.Timeline.CurrentTime;
+
+            System.Diagnostics.Debug.WriteLine(this.X);
         }
 
         /// <summary>
@@ -280,7 +282,7 @@ namespace TimeTetris.Data
         /// <param name="gameTime">Snapshot of timing values</param>
         public override void Update(GameTime gameTime)
         {
-            if (this.Field.HasEnded)
+            if (this.Field.HasEnded || this.Field.Timeline.IsRewindActive)
                 return;
 
             var downElapsed = this.Field.Timeline.CurrentTime - LastMoveDownTime;

@@ -154,7 +154,7 @@ namespace TimeTetris.Data
                 // down rewinding near the start. It should be near
                 // impossible to reach the beginning and the first 
                 // minute, rewinding is "expensive".
-                rewind = Math.Min(rewind, gameTimePassed * _rewindSpeed * this.CurrentTime / 60);
+                rewind = Math.Min(rewind, Math.Max(0.01, gameTimePassed * _rewindSpeed * this.CurrentTime / 60));
 
                 // The amount of gametime will still want to rewind.
                 // This won't go under 0 if _rewindFrameActive

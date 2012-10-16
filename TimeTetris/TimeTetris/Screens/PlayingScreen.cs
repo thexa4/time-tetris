@@ -24,7 +24,6 @@ namespace TimeTetris.Screens
         private SpriteNullableBlock _spriteHoldBlock;
         private SpriteFallingBlock _spriteFallingBlock;
         private KeyboardController _controller;
-        // TODO spriteset level ?
 
         private RenderTarget2D _intermediateTarget;
         protected Effect _distortEffect;
@@ -177,6 +176,8 @@ namespace TimeTetris.Screens
                 {
                     _timeline.Start();
                     _isRewinding = false;
+
+                    _field.ResetBlockGenerator();
                 }
             }
 
