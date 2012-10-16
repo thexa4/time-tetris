@@ -9,6 +9,7 @@ using TimeTetris.Drawing;
 using TimeTetris.Data;
 using Microsoft.Xna.Framework.Input;
 using TimeTetris.Extension;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace TimeTetris.Screens
 {
@@ -24,6 +25,9 @@ namespace TimeTetris.Screens
         private SpriteFallingBlock _spriteFallingBlock;
         private KeyboardController _controller;
         // TODO spriteset level ?
+
+        private RenderTarget2D _intermediateTarget;
+        protected Effect _distortEffect;
 
         protected Timeline _timeline;
         protected Boolean _isRewinding;
@@ -137,6 +141,16 @@ namespace TimeTetris.Screens
         public override void LoadContent(ContentManager contentManager)
         {
             base.LoadContent(contentManager);
+
+            this._intermediateTarget = new RenderTarget2D(Game.GraphicsDevice, Game.GraphicsDevice.Viewport.Width, Game.GraphicsDevice.Viewport.Height);
+            this._distortEffect = contentManager.Load<Effect>("Shaders\\Distort");
+
+            //Default projection
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, this._intermediateTarget.Width, this._intermediateTarget.Height, 0, 0, 1);
+            Matrix halfPixelOffset = Matrix.CreateTranslation(-0.5f, -0.5f, 0);
+
+            this._distortEffect.Parameters["Projection"].SetValue(halfPixelOffset * projection);
+
             _spriteField.LoadContent(contentManager);
             _spriteGhostBlock.LoadContent(contentManager);
             _spriteFallingBlock.LoadContent(contentManager);
@@ -255,6 +269,10 @@ namespace TimeTetris.Screens
         {
             base.Draw(gameTime);
 
+            this.Game.GraphicsDevice.SetRenderTarget(_intermediateTarget);
+
+            this.Game.GraphicsDevice.Clear(Color.Black);
+
             this.ScreenManager.SpriteBatch.Begin();
 
             _spriteField.Draw(gameTime);
@@ -275,6 +293,13 @@ namespace TimeTetris.Screens
                 String.Format("{0:0.00}ls  {3:0.00}ls/s  {1:####0} points  {2} combo  level {5} / {4} lines  ", 
                     Math.Round(_timeline.CurrentTime, 2), _field.Score, _field.CurrentCombo, _timeline.RewindSpeed, 
                     _field.LinesCleared, _field.Level), Vector2.One * 5, Color.White);
+            this.ScreenManager.SpriteBatch.End();
+
+            this.Game.GraphicsDevice.SetRenderTarget(null);
+
+            this._distortEffect.Parameters["time"].SetValue((float)gameTime.TotalGameTime.TotalMilliseconds / 20 + 5000);
+            this.ScreenManager.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.AnisotropicClamp, null, null, this._distortEffect);
+            this.ScreenManager.SpriteBatch.Draw(this._intermediateTarget, Vector2.Zero, Color.White);
             this.ScreenManager.SpriteBatch.End();
         }
     }
