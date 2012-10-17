@@ -32,10 +32,10 @@ namespace TimeTetris.Data
         public const Int32 TSpinTripleNoKick = Points.Triple;
         
         /// <summary>
-        /// 
+        /// Gets the number of points earned for clearing lines
         /// </summary>
-        /// <param name="lines"></param>
-        /// <param name="level"></param>
+        /// <param name="lines">Number of lines</param>
+        /// <param name="level">Current level</param>
         /// <returns></returns>
         public static Int32 ClearLines(Int32 lines, Int32 level) 
         {
@@ -55,9 +55,9 @@ namespace TimeTetris.Data
         }
 
         /// <summary>
-        /// 
+        /// Gets the number of points earned for making a combo
         /// </summary>
-        /// <param name="level"></param>
+        /// <param name="level">Current level</param>
         /// <returns></returns>
         internal static Int32 ClearCombo(Int32 level)
         {

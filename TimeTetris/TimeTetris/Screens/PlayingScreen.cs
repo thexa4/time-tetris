@@ -276,7 +276,7 @@ namespace TimeTetris.Screens
                 "Hold block", _spriteHoldBlockBoundary.Position - Vector2.One * 4, Color.White, Color.Black);
 
             this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["Default"], 
-                String.Format("{0:0.00}ls  {3:0.00}ls/s  {1:####0} points  {2} combo  level {5} / {4} lines  ", 
+                String.Format("{0:0.00}ls  {3:0.00}ls/s  {1:####0} points  {2} combo  level {5} / {4} lines {6} ", 
                     Math.Round(_timeline.CurrentTime, 2), _field.Score, _field.CurrentCombo, _timeline.RewindSpeed, 
                     _field.LinesCleared, _field.Level), Vector2.One * 5, Color.White);
             this.ScreenManager.SpriteBatch.End();
