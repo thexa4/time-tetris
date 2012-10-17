@@ -33,11 +33,11 @@ namespace TimeTetris.Screens
         protected Timeline _timeline;
         protected Boolean _isRewinding;
 
-        protected PauseScreen _pauseScreen;
+        protected GameScreen _popupScreen;
         protected Double _displayScore;
         protected List<SpriteScorePopup> _spriteScorePopups;
 
-
+       
         /// <summary>
         /// Initializes the screen
         /// </summary>
@@ -55,7 +55,6 @@ namespace TimeTetris.Screens
             // Create Field
             _field = new Data.Field(this.Game, _timeline, 10, 24);
             _field.Initialize();
-            _field.OnRowsCleared += new RowsDelegate(_field_OnRowsCleared);
             DummyField dummyField = new Data.DummyField(this.Game, 5, 5 + SpriteField.HiddenRows);
 
             // Create Sprites
@@ -87,6 +86,8 @@ namespace TimeTetris.Screens
             _controller.Initialize();
 
             _field.OnGameEnded += new EventHandler(_field_OnGameEnded);
+            _field.OnRowsCleared += new RowsDelegate(_field_OnRowsCleared);
+            _field.OnPointsEarned += new PointsDelegate(_field_OnPointsEarned);
 
             // Start the level
             _timeline.Start();
@@ -95,19 +96,29 @@ namespace TimeTetris.Screens
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="rows"></param>
-        /// <param name="combo"></param>
+        /// <param name="points"></param>
+        protected void _field_OnPointsEarned(Double points)
+        {
+            
+        }
+
+        /// <summary>
+        /// Yields when a row is cleared (also on rows = 0)
+        /// </summary>
+        /// <param name="rows">number of rows</param>
+        /// <param name="combo">combo</param>
         /// <param name="tspin"></param>
         /// <param name="b2b"></param>
         protected void _field_OnRowsCleared(Int32 rows, Int32 combo, Boolean tspin, Boolean b2b)
         {
-            if (rows == 0 && !tspin)
+            if (rows == 0 && !tspin) // nothing to report
                 return;
 
             var sprite = new SpriteScorePopup(this.Game, rows, combo, tspin, b2b)
                 {
                     Position = _spriteField.Position + (Vector2.UnitX * _field.Width * SpriteField.GridCellSize +
                         Vector2.UnitY * (_field.Height - SpriteField.HiddenRows) * SpriteField.GridCellSize) / 2,
+
                     Opacity = 0.9f,
                 };
 
@@ -124,10 +135,24 @@ namespace TimeTetris.Screens
         /// <param name="e"></param>
         private void _field_OnGameEnded(object sender, EventArgs e)
         {
+            _popupScreen = new ReplayScreen(this);
+            _popupScreen.Exited += new EventHandler(_replayScreen_Exited);
+            this.ScreenManager.AddScreen(_popupScreen);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _replayScreen_Exited(object sender, EventArgs e)
+        {
+            if (this.IsExiting)
+                return;
+
             _isRewinding = true;
             _timeline.Enabled = true;
-
-            // TODO show REPLAY? popup
+            _popupScreen = null;
         }
 
         /// <summary>
@@ -191,7 +216,7 @@ namespace TimeTetris.Screens
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
-            if (_pauseScreen != null && (_pauseScreen.ScreenState == Services.ScreenState.Active || _pauseScreen.IsTransitioning))
+            if (_popupScreen != null && (_popupScreen.ScreenState == Services.ScreenState.Active || _popupScreen.IsTransitioning))
                 return;
 
             if (_isRewinding)
@@ -232,13 +257,13 @@ namespace TimeTetris.Screens
         {
             base.HandleInput(gameTime);
 
-            if (InputManager.Keyboard.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Escape) && _pauseScreen == null)
+            if (InputManager.Keyboard.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Escape) && _popupScreen == null)
             {
                 _timeline.Stop();
-                _pauseScreen = new PauseScreen(this);
-                this.ScreenManager.AddScreen(_pauseScreen);
+                _popupScreen = new PauseScreen(this);
+                this.ScreenManager.AddScreen(_popupScreen);
 
-                _pauseScreen.Exited += new EventHandler(_pauseScreen_Exited);
+                _popupScreen.Exited += new EventHandler(_pauseScreen_Exited);
                 return;
             }
 
@@ -269,10 +294,10 @@ namespace TimeTetris.Screens
                     _field.CurrentBlock.Drop();
                     break;
                 case ControllerAction.RotateCW:
-                    _field.CurrentBlock.RotateLeft();
+                    _field.CurrentBlock.RotateRight();
                     break;
                 case ControllerAction.RotateCCW:
-                    _field.CurrentBlock.RotateRight();
+                    _field.CurrentBlock.RotateLeft();
                     break;
                 case ControllerAction.Hold:
                     var oldHoldBlock = _field.HoldBlock;
@@ -305,7 +330,7 @@ namespace TimeTetris.Screens
         /// <param name="e"></param>
         private void _pauseScreen_Exited(object sender, EventArgs e)
         {
-            _pauseScreen = null;
+            _popupScreen = null;
             _timeline.Resume();
         }
 

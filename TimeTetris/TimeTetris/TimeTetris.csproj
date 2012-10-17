@@ -138,6 +138,7 @@
     <Compile Include="Extension\SpriteBatchExtensions.cs" />
     <Compile Include="Screens\PauseScreen.cs" />
     <Compile Include="Screens\PlayingScreen.cs" />
+    <Compile Include="Screens\ReplayScreen.cs" />
     <Compile Include="Screens\TitleScreen.cs" />
     <Compile Include="Screens\WallkickHelpScreen.cs" />
     <Compile Include="Services\Delegates.cs" />

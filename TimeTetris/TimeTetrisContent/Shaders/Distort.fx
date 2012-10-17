@@ -33,7 +33,7 @@ void SpriteVertexShader(inout float4 color    : COLOR0,
 
 float4 PixelDraw(float4 color : COLOR0, float2 texCoord: TEXCOORD0) : COLOR
 {
-	// Monitor distort
+		// Monitor distort
 	float2 pos = texCoord - 0.5;
 	pos.x *= (1 + pow(abs(texCoord.y - 0.5),3.6));
 	pos.y *= (1 + pow(abs(texCoord.x - 0.5),3.6));
@@ -69,6 +69,7 @@ float4 PixelDraw(float4 color : COLOR0, float2 texCoord: TEXCOORD0) : COLOR
 
 	// Plus add random noise (time based)
 	return ret + 0.05 * random(pos * (10 + 3.1425 * sin(frac(time / 100.0)))) + total / 10;
+
 }
 
 technique Draw

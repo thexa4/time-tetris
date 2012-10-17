@@ -9,10 +9,7 @@ namespace TimeTetris.Drawing
 {
     public class SpriteScorePopup : Sprite
     {
-        private int _rows;
-        private int _combo;
-        private bool _tspin;
-        private bool _b2b;
+        protected String _rowText;
 
         protected Double _timeAlive;
 
@@ -27,11 +24,7 @@ namespace TimeTetris.Drawing
         public SpriteScorePopup(Game game, Int32 rows, Int32 combo, Boolean tspin, Boolean b2b)
             : base(game)
         {
-            _rows = rows;
-            _combo = combo;
-            _tspin = tspin;
-            _b2b = b2b;
-
+            _rowText = RowText(rows, combo, tspin, b2b);
             this.TextureName = "Graphics/blank";
         }
 
@@ -49,7 +42,7 @@ namespace TimeTetris.Drawing
  	        base.LoadContent(manager);
 
             this.ScreenManager.SpriteFonts.LoadFont("PopFont", "Fonts/Small");
-            this.Size = this.ScreenManager.SpriteFonts["PopFont"].MeasureString(RowText);
+            this.Size = this.ScreenManager.SpriteFonts["PopFont"].MeasureString(_rowText);
         }
 
         /// <summary>
@@ -74,7 +67,7 @@ namespace TimeTetris.Drawing
             // Draw font
             this.ScreenManager.SpriteBatch.DrawShadowedString(
                 this.ScreenManager.SpriteFonts["PopFont"],
-                this.RowText,
+                _rowText,
                 this.Position - this.Size / 2 + offset * Vector2.UnitY,
                 this.Color * this.Opacity * alpha,
                 Microsoft.Xna.Framework.Color.Black * this.Opacity * alpha
@@ -97,13 +90,12 @@ namespace TimeTetris.Drawing
         /// <summary>
         /// Gets the text to show
         /// </summary>
-        public String RowText {
-            get
-            {
+        public String RowText(Int32 rows, Int32 combo, Boolean tspin, Boolean b2b) {
+ 
                 var ret = "";
-                if (_tspin)
+                if (tspin)
                     ret += "TSpin! ";
-                switch (_rows)
+                switch (rows)
                 {
                     case 1:
                         ret += "Single";
@@ -118,20 +110,19 @@ namespace TimeTetris.Drawing
                         ret += "Tetris";
                         break;
                 }
-                if (_combo > 0)
+                if (combo > 0)
                 {
                     if (ret != "")
                         ret += "\n";
-                    ret += "Combo: " + (_combo + 1).ToString();
+                    ret += "Combo " + (combo + 1).ToString() + "x";
                 }
-                if (_b2b)
+                if (b2b)
                 {
                     if (ret != "")
                         ret += "\n";
                     ret += "Back-2-Back!";
                 }
                 return ret;
-            }
         }
     }
 }

@@ -72,9 +72,14 @@ namespace TimeTetris.Data
         public event EventHandler OnGameEnded = delegate { };
 
         /// <summary>
-        /// 
+        /// On Rows cleared
         /// </summary>
         public event RowsDelegate OnRowsCleared = delegate { };
+
+        /// <summary>
+        /// On Points earned
+        /// </summary>
+        public event PointsDelegate OnPointsEarned = delegate { };
 
         /// <summary>
         /// Current score (double so we can subtract partial points)
@@ -147,6 +152,7 @@ namespace TimeTetris.Data
                 Apply = () =>
                     {
                         this.Score += score;
+                        this.OnPointsEarned(score);
 
                         for (Int32 x = 0; x < block.Width; x++)
                             for (Int32 y = 0; y < block.Height; y++)
@@ -234,6 +240,7 @@ namespace TimeTetris.Data
 
                         this.IsBackToBackEnabled = (rows == 0) ? oldB2B : (isTetris || isTSpin);
                         this.OnRowsCleared(rows, (rows == 0) ? 0 : oldComboCount, isTSpin, isB2b);
+                        this.OnPointsEarned(actionScore);
                     },
                     Undo = () => 
                     {
