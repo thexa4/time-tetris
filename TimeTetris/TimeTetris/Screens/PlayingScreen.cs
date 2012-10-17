@@ -36,6 +36,7 @@ namespace TimeTetris.Screens
 
         protected GameScreen _popupScreen;
         protected Double _displayScore;
+        protected Double _scoreIncrement;
         protected List<SpriteScorePopup> _spriteScorePopups;
 
         protected SoundEffectInstance _rotateSound;
@@ -103,7 +104,7 @@ namespace TimeTetris.Screens
         /// <param name="points"></param>
         protected void _field_OnPointsEarned(Double points)
         {
-            
+            _scoreIncrement += points;
         }
 
         /// <summary>
@@ -213,6 +214,9 @@ namespace TimeTetris.Screens
 
             _rotateSound = this.AudioManager.Load("blip", "rotate", 0.6f, 0);
             _lockSound = this.AudioManager.Load("blip", "lock", 0.6f, -.5f);
+
+            this.ScreenManager.SpriteFonts.LoadFont("SmallInfo", "Fonts/Default");
+            this.ScreenManager.SpriteFonts.LoadFont("Small", "Fonts/Small");
         }
 
         /// <summary>
@@ -256,7 +260,11 @@ namespace TimeTetris.Screens
             _spriteScorePopups.ForEach(a => { a.Update(gameTime); if (a.IsFinished) removablePopups.Add(a); });
             removablePopups.ForEach(a => _spriteScorePopups.Remove(a));
 
-            _displayScore = MathHelper.Lerp((Single)_displayScore, (Single)_field.Score, (Single)gameTime.ElapsedGameTime.TotalSeconds);
+            var deltaScore = Math.Min((_field.Score - _displayScore), 
+                Math.Max((Single)(100 * gameTime.ElapsedGameTime.TotalSeconds), 
+                    (Single)((_field.Score - _displayScore) * gameTime.ElapsedGameTime.TotalSeconds)));
+            _displayScore = _displayScore + deltaScore;
+            _scoreIncrement = Math.Min(_scoreIncrement, (_field.Score - _displayScore));
         }
 
         /// <summary>
@@ -378,15 +386,33 @@ namespace TimeTetris.Screens
             _spriteScorePopups.ForEach(a => a.Draw(gameTime));
 
             // Strings to do
-            this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Default"],
+            this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["SmallInfo"],
                 "Next block", _spriteNextBlockBoundary.Position - Vector2.One * 5, Color.White, Color.Black);
-            this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Default"],
+            this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["SmallInfo"],
                 "Hold block", _spriteHoldBlockBoundary.Position - Vector2.One * 5, Color.White, Color.Black);
-            this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["Default"], 
+            this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["SmallInfo"], 
                 String.Format("{0:0.00}ls   {3:0.00}ls/s   {1:####0} points   {2} combo   level {5} / {4} lines   BTB is {6}",
                     Math.Round(_timeline.CurrentTime, 2), _displayScore, _field.CurrentCombo, _timeline.RewindSpeed, 
                     _field.LinesCleared, _field.Level, _field.IsBackToBackEnabled ? "enabled" : "not enabled"), Vector2.One * 5, Color.White);
             
+            this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Small"],
+                String.Format("{0:####0} points", _displayScore), _spriteHoldBlockBoundary.Position +
+                    7 * SpriteField.GridCellSize * Vector2.UnitY, Color.White, Color.Black);
+
+            if (_scoreIncrement > 0)
+                this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Small"],
+                    String.Format("+{0:####0}", _scoreIncrement), _spriteHoldBlockBoundary.Position +
+                        8 * SpriteField.GridCellSize * Vector2.UnitY, Color.White, Color.Black);
+
+            this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Small"],
+                    String.Format("Level {0:####0}", _field.Level), _spriteHoldBlockBoundary.Position +
+                        10 * SpriteField.GridCellSize * Vector2.UnitY, Color.White, Color.Black);
+            this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Small"],
+                    String.Format("{0:####0} lines left", _field.Level * 10 - _field.LinesCleared), _spriteHoldBlockBoundary.Position +
+                        11 * SpriteField.GridCellSize * Vector2.UnitY, Color.White, Color.Black);
+            
+                    
+
             this.ScreenManager.SpriteBatch.End();
 
             // Distort effect
