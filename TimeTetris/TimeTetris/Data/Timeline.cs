@@ -139,7 +139,7 @@ namespace TimeTetris.Data
             base.Update(gameTime);
 
             if (!this.Game.IsActive)
-                return
+                return;
 
             var gameTimePassed = gameTime.ElapsedGameTime.TotalSeconds;
             if (this.RewindDelta <= 0 && !_rewindFrameActive)

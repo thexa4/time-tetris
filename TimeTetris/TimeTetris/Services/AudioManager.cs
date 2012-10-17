@@ -10,6 +10,16 @@ namespace TimeTetris.Services
     {
         private Dictionary<String, SoundEffectInstance> _sounds;
         private ContentManager _contentManager;
+        private Queue<SoundEffectInstance> _queue;
+        private SoundEffectInstance _queuePlaying;
+
+
+        public delegate void SoundQueueDelegate(SoundEffectInstance sfx);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public event SoundQueueDelegate OnQueuedFinished = delegate { };
 
         /// <summary>
         /// Creates a new CollisionManager, detects collisions and moves actors around based on velocity
@@ -30,6 +40,8 @@ namespace TimeTetris.Services
         public override void Initialize()
         {
             _sounds = new Dictionary<string, SoundEffectInstance>();
+            _queue = new Queue<SoundEffectInstance>();
+            _queuePlaying = null;
 
             base.Initialize();
         }
@@ -102,6 +114,52 @@ namespace TimeTetris.Services
                 instance.IsLooped = true;
 
             Play(instanceName);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="instanceName"></param>
+        public void QueuePlay(String instanceName)
+        {
+            SoundEffectInstance instance;
+            if (_sounds.TryGetValue(instanceName, out instance))
+                QueuePlay(instance);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="instance"></param>
+        public void QueuePlay(SoundEffectInstance instance)
+        {
+            _queue.Enqueue(instance);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void QueuePlayNext()
+        {
+            if (_queuePlaying != null)
+                this.OnQueuedFinished.Invoke(_queuePlaying);
+
+            if (_queue.Count > 0)
+            {
+                _queuePlaying = _queue.Dequeue();
+                _queuePlaying.Play();
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            if (_queue.Count > 0 && (_queuePlaying == null || _queuePlaying.State == SoundState.Stopped))
+                QueuePlayNext();
         }
     }
 }

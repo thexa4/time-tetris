@@ -144,8 +144,23 @@ namespace TimeTetris
             this.ScreenManager.SpriteFonts.LoadFont("Framerate", "Fonts/Default");
 
             this.AudioManager.Load("Tetris_A", "Tetris_A");
-            this.AudioManager.PlayLoop("Tetris_A");
+            this.AudioManager.Load("Tetris_B", "Tetris_B", 0.8f);
 
+            for (int i = 0; i < 5; i++ )
+                this.AudioManager.QueuePlay("Tetris_A");
+            for (int i = 0; i < 3; i++)
+                this.AudioManager.QueuePlay("Tetris_B");
+            
+            this.AudioManager.OnQueuedFinished += new TimeTetris.Services.AudioManager.SoundQueueDelegate(AudioManager_OnQueuedFinished);
+        }
+
+        /// <summary>
+        /// Requeue each item after it's done playing
+        /// </summary>
+        /// <param name="sfx"></param>
+        private void AudioManager_OnQueuedFinished(Microsoft.Xna.Framework.Audio.SoundEffectInstance sfx)
+        {
+            this.AudioManager.QueuePlay(sfx);
         }
 
         /// <summary>

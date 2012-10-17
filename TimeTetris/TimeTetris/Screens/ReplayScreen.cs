@@ -29,7 +29,12 @@ namespace TimeTetris.Screens
             _parent.Exiting += new EventHandler(_parent_Exiting);
         }
 
-        void _parent_Exiting(object sender, EventArgs e)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _parent_Exiting(object sender, EventArgs e)
         {
             this.ExitScreen();
         }

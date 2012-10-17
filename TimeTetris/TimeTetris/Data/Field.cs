@@ -154,20 +154,25 @@ namespace TimeTetris.Data
                         this.Score += score;
                         this.OnPointsEarned(score);
 
+                        var dead = false;
+
                         for (Int32 x = 0; x < block.Width; x++)
                             for (Int32 y = 0; y < block.Height; y++)
                                 if (block[x, block.Height - 1 - y])
                                 {
                                     if (startY - y >= Height - SpriteField.HiddenRows)
-                                    {
-                                        // Game over!
-                                        HasEnded = true;
-                                        this.Timeline.Stop();
-
-                                        this.OnGameEnded.Invoke(this, EventArgs.Empty);
-                                    }
+                                        dead = true;
                                     this[startX + x, startY - y] = color;
                                 }
+
+                        if (dead)
+                        {
+                            // Game over!
+                            HasEnded = true;
+                            this.Timeline.Stop();
+
+                            this.OnGameEnded.Invoke(this, EventArgs.Empty);
+                        }
                     },
 
                 // Removes the block from the grid
@@ -175,18 +180,23 @@ namespace TimeTetris.Data
                     {
                         this.Score -= score;
 
+                        var died = false;
+
                         for (Int32 x = 0; x < block.Width; x++)
                             for (Int32 y = 0; y < block.Height; y++)
                                 if (block[x, block.Height - 1 - y])
                                 {
                                     if (startY - y >= Height - SpriteField.HiddenRows)
-                                    {
-                                        // Game un-over
-                                        HasEnded = false;
-                                        this.Timeline.Resume();
-                                    }
+                                        died = true;
                                     this[startX + x, startY - y] = 0;
                                 }
+
+                        // Game un-over
+                        if (died)
+                        {
+                            HasEnded = false;
+                            this.Timeline.Resume();
+                        }
                     }
             });
 
