@@ -20,22 +20,19 @@ namespace TimeTetris.Screens
         protected Int32 _menuIndex;
         
         protected Texture2D _texture;
+        protected GameScreen _parent;
 
-        public PauseScreen()
+        public PauseScreen(GameScreen parent) 
+            : base()
         {
-
+            _parent = parent;
+            _parent.Exiting += new EventHandler(_parent_Exiting);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void Screen_Exiting(object sender, EventArgs e)
+        void _parent_Exiting(object sender, EventArgs e)
         {
             this.ExitScreen();
         }
-
 
         /// <summary>
         /// Initializes the screen
@@ -50,16 +47,6 @@ namespace TimeTetris.Screens
             this.IsPopup = true;
             this.IsCapturingInput = true;
             base.Initialize();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void PauseScreen_Exiting(object sender, EventArgs e)
-        {
-
         }
 
         /// <summary>
@@ -119,7 +106,8 @@ namespace TimeTetris.Screens
                         break;
 
                     case 2:
-                        
+                        _parent.Next = new TitleScreen();
+                        _parent.ExitScreenAnd();
                         break;
                 }
 
@@ -152,17 +140,19 @@ namespace TimeTetris.Screens
             if (!this.IsTransitioning && this.ScreenState != Services.ScreenState.Active)
                 return;
 
+            var alpha = 1 - this.TransitionPosition;
+
             base.Draw(gameTime);
 
             this.ScreenManager.SpriteBatch.Begin();
-            this.ScreenManager.SpriteBatch.Draw(_texture, new Rectangle(0, 0, this.ScreenManager.ScreenWidth, this.ScreenManager.ScreenHeight), Color.Black * 0.5f);
-            this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Title"], TitleString, _positionTitle, Color.White, Color.Black);
+            this.ScreenManager.SpriteBatch.Draw(_texture, new Rectangle(0, 0, this.ScreenManager.ScreenWidth, this.ScreenManager.ScreenHeight), Color.Black * 0.5f * alpha);
+            this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Title"], TitleString, _positionTitle, Color.White * alpha, Color.Black * alpha);
             var position = _positionMenu;
             for (Int32 i = 0; i < Options.Length; i++)
             {
                 var measurement = this.ScreenManager.SpriteFonts["Menu"].MeasureString(Options[i]);
                 this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Menu"], Options[i], position,
-                    Color.White, (_menuIndex == i ? Color.Gray : Color.Black), 0,
+                    Color.White * alpha, (_menuIndex == i ? Color.Gray : Color.Black) * alpha, 0,
                     (Single)Math.Round(measurement.X / 2) * Vector2.UnitX + (Single)Math.Round(measurement.Y / 2) * Vector2.UnitY,
                     1, SpriteEffects.None, 0);
                 position = position + Vector2.UnitY * 15;

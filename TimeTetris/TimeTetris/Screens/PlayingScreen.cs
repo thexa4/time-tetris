@@ -194,7 +194,7 @@ namespace TimeTetris.Screens
             if (InputManager.Keyboard.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Escape) && _pauseScreen == null)
             {
                 _timeline.Stop();
-                _pauseScreen = new PauseScreen();
+                _pauseScreen = new PauseScreen(this);
                 this.ScreenManager.AddScreen(_pauseScreen);
 
                 _pauseScreen.Exited += new EventHandler(_pauseScreen_Exited);
