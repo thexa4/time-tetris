@@ -26,7 +26,9 @@ namespace TimeTetris.Screens
         private KeyboardController _controller;
 
         private RenderTarget2D _intermediateTarget;
+        private RenderTarget2D _distortTarget;
         protected Effect _distortEffect;
+        protected Texture2D _retroTv;
 
         protected Timeline _timeline;
         protected Boolean _isRewinding;
@@ -126,7 +128,8 @@ namespace TimeTetris.Screens
         {
             base.LoadContent(contentManager);
 
-            this._intermediateTarget = new RenderTarget2D(Game.GraphicsDevice, Game.GraphicsDevice.Viewport.Width, Game.GraphicsDevice.Viewport.Height);
+            this._intermediateTarget = new RenderTarget2D(Game.GraphicsDevice, 800, 600);
+            this._distortTarget = new RenderTarget2D(Game.GraphicsDevice, 800, 600);
             this._distortEffect = contentManager.Load<Effect>("Shaders\\Distort");
 
             //Default projection
@@ -135,6 +138,8 @@ namespace TimeTetris.Screens
 
             this._distortEffect.Parameters["Projection"].SetValue(halfPixelOffset * projection);
 
+            this._retroTv = contentManager.Load<Texture2D>("Graphics\\retrotv");
+            
             _spriteField.LoadContent(contentManager);
             _spriteGhostBlock.LoadContent(contentManager);
             _spriteFallingBlock.LoadContent(contentManager);
@@ -257,7 +262,7 @@ namespace TimeTetris.Screens
 
             this.Game.GraphicsDevice.SetRenderTarget(_intermediateTarget);
 
-            this.Game.GraphicsDevice.Clear(Color.Black);
+            this.Game.GraphicsDevice.Clear(new Color(0.0f, 0.0f, 0.0f, 0.6f));
 
             this.ScreenManager.SpriteBatch.Begin();
 
@@ -278,14 +283,22 @@ namespace TimeTetris.Screens
             this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["Default"], 
                 String.Format("{0:0.00}ls  {3:0.00}ls/s  {1:####0} points  {2} combo  level {5} / {4} lines {6} ", 
                     Math.Round(_timeline.CurrentTime, 2), _field.Score, _field.CurrentCombo, _timeline.RewindSpeed, 
-                    _field.LinesCleared, _field.Level), Vector2.One * 5, Color.White);
+                    _field.LinesCleared, _field.Level, 0), Vector2.One * 5, Color.White);
+            this.ScreenManager.SpriteBatch.End();
+
+            this.Game.GraphicsDevice.SetRenderTarget(_distortTarget);
+
+            this.Game.GraphicsDevice.Clear(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+            this.ScreenManager.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.AnisotropicClamp, null, null, this._distortEffect);
+            this.ScreenManager.SpriteBatch.Draw(this._intermediateTarget, Vector2.Zero, Color.White);
             this.ScreenManager.SpriteBatch.End();
 
             this.Game.GraphicsDevice.SetRenderTarget(null);
 
             this._distortEffect.Parameters["time"].SetValue((float)gameTime.TotalGameTime.TotalMilliseconds / 20 + 5000);
-            this.ScreenManager.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.AnisotropicClamp, null, null, this._distortEffect);
-            this.ScreenManager.SpriteBatch.Draw(this._intermediateTarget, Vector2.Zero, Color.White);
+            this.ScreenManager.SpriteBatch.Begin();
+            this.ScreenManager.SpriteBatch.Draw(this._retroTv, Vector2.Zero, Color.White);
+            this.ScreenManager.SpriteBatch.Draw(this._distortTarget, new Rectangle(114, 95, 680, 510), Color.White);
             this.ScreenManager.SpriteBatch.End();
         }
     }
