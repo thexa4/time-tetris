@@ -6,6 +6,6 @@ using TimeTetris.Data;
 
 namespace TimeTetris.Services
 {
-    public delegate void BlockTypeDelegate(BlockType b);
-    public delegate void CountDelegate(Int32 c);
+    public delegate void BlockTypeDelegate(BlockType type);
+    public delegate void RowsDelegate(Int32 rows, Int32 combo, Boolean tspin, Boolean b2b);
 }

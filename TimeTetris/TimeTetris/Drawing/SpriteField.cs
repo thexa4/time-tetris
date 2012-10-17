@@ -56,6 +56,8 @@ namespace TimeTetris.Drawing
 
                     this.Color = Data.Block.GetColor(this.Source[x, y]);
                     base.Draw(gameTime);
+
+                    //this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["Default"], String.Format("[{0}:{1}]", x, y), this.Position, Color.White);
                 }
 
             this.Position = basePosition;

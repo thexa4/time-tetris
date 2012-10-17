@@ -8,6 +8,10 @@ namespace TimeTetris.Data
 {
     public class FallingBlock : GameComponent
     {
+        public const Int32 MaxDownSpeed = 60;
+        public const Single MaxLockTime = 1.5f;
+        public const Single MinLockTime = 0.5f;
+
         /// <summary>
         /// Block blueprint
         /// </summary>
@@ -302,7 +306,7 @@ namespace TimeTetris.Data
                     return false;
 
                 var centerX = this.X + 1;
-                var centerY = this.Y + 1;
+                var centerY = this.Y - 1;
 
                 var count = 0;
                 if (this.Field[centerX + 1, centerY + 1] != 0)
@@ -328,11 +332,11 @@ namespace TimeTetris.Data
                 return;
 
             var downElapsed = this.Field.Timeline.CurrentTime - LastMoveDownTime;
-            if (downElapsed > 1.0 / Math.Min(20, Field.Level)) // 20 G max
+            if (downElapsed > 1.0 / Math.Min(FallingBlock.MaxDownSpeed, Field.Level)) // 20 G max
                 MoveDown();
 
             var lockElapsed = this.Field.Timeline.CurrentTime - LastMoveTime;
-            if (lockElapsed > Math.Max(0.5f, 3.0 / Field.Level)) 
+            if (lockElapsed > Math.Max(FallingBlock.MinLockTime, FallingBlock.MaxLockTime / Field.Level)) 
                 this.Field.LockFalling();
         }
 

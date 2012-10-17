@@ -74,7 +74,7 @@ namespace TimeTetris.Data
         /// <summary>
         /// 
         /// </summary>
-        public event CountDelegate OnRowsCleared = delegate { };
+        public event RowsDelegate OnRowsCleared = delegate { };
 
         /// <summary>
         /// Current score (double so we can subtract partial points)
@@ -212,12 +212,13 @@ namespace TimeTetris.Data
 
             var isTSpin = this.CurrentBlock.LastMoveIsRotation && this.CurrentBlock.IsTAndImmobileThree;
             var isTetris = rows == 4;
+            var isB2b = this.IsBackToBackEnabled && (isTetris || isTSpin);
 
             var clearScore = Points.ClearLines(rows, this.Level);
             var comboScore = rows == 0 ? 0 : this.CurrentCombo * Points.ClearCombo(this.Level);
             var tspinScore = isTSpin ? Points.TSpin(rows, this.Level, this.CurrentBlock.LastMoveIsKick) : 0;
             var actionScore = clearScore + comboScore + tspinScore;
-            if (this.IsBackToBackEnabled && (isTetris || isTSpin))
+            if (isB2b)
                 actionScore = (Int32)Math.Round((3 / 2d) * actionScore);
             
             this.IsBackToBackEnabled = isTetris || isTSpin;
@@ -230,7 +231,8 @@ namespace TimeTetris.Data
                         this.CurrentCombo = (rows == 0) ? 0 : oldComboCount + 1;
                         this.Score += actionScore;
                         this.LinesCleared += rows;
-                        this.OnRowsCleared(rows);
+
+                        this.OnRowsCleared(rows, (rows == 0) ? 0 : oldComboCount, isTSpin, isB2b);
                     },
                     Undo = () => 
                     {
@@ -329,7 +331,7 @@ namespace TimeTetris.Data
             this.CurrentBlock.Update(gameTime);
 
             if (this.Timeline.IsRewindActive)
-                this.Score -= Points.Rewind * (this.Level / 5f + 1) * gameTime.ElapsedGameTime.TotalSeconds;
+                this.Score -= Points.Rewind * (this.Level / Points.RewindLevelTax + 1) * gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         /// <summary>

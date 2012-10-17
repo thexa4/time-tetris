@@ -17,6 +17,7 @@ namespace TimeTetris.Data
 
         public const Int32 Combo = 50;
         public const Int32 Rewind = 100;
+        public const Int32 RewindLevelTax = 5;
 
         // T-Spin system used = 3-corner-T
         // Wallkick/Rotation system: SRS

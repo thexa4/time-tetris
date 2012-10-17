@@ -66,7 +66,7 @@ namespace TimeTetris.Data
                 case BlockType.JBlock:
                     return Color.Blue;
                 case BlockType.LBlock:
-                    return Color.Orange;
+                    return Color.DarkOrange;
                 case BlockType.OBlock:
                     return Color.Yellow;
                 case BlockType.SBlock:

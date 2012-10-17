@@ -76,9 +76,6 @@ namespace TimeTetris.Data
             var newY = this.CurrentBlock.Field.Height - 1;
             var newX = (this.Width - this.NextBlock.Width) / 2 + Block.GetBaseXPosition(newType);
 
-            System.Diagnostics.Debug.WriteLine("T:{2} From {0} w/{3} to {1} w/{4}", oldX, newX, newType,
-                this.CurrentBlock.Block.Width, this.NextBlock.Width);
-
             this.Timeline.Add(new Event()
             {
                 Apply = () =>
