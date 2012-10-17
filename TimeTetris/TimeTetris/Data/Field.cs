@@ -220,8 +220,8 @@ namespace TimeTetris.Data
             var actionScore = clearScore + comboScore + tspinScore;
             if (isB2b)
                 actionScore = (Int32)Math.Round((3 / 2d) * actionScore);
-            
-            this.IsBackToBackEnabled = isTetris || isTSpin;
+
+            var oldB2B = this.IsBackToBackEnabled;
             var oldComboCount = this.CurrentCombo;
 
             this.Timeline.Add(new Event()
@@ -232,6 +232,7 @@ namespace TimeTetris.Data
                         this.Score += actionScore;
                         this.LinesCleared += rows;
 
+                        this.IsBackToBackEnabled = (rows == 0) ? oldB2B : (isTetris || isTSpin);
                         this.OnRowsCleared(rows, (rows == 0) ? 0 : oldComboCount, isTSpin, isB2b);
                     },
                     Undo = () => 
@@ -239,6 +240,7 @@ namespace TimeTetris.Data
                         this.CurrentCombo = oldComboCount;
                         this.Score -= actionScore;
                         this.LinesCleared -= rows;
+                        this.IsBackToBackEnabled = oldB2B;
                     },
                 });
 

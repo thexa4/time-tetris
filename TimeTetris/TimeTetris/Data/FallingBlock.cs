@@ -166,8 +166,6 @@ namespace TimeTetris.Data
             });
             this.LastMoveDownTime = this.LastMoveTime;
 
-            
-
             return result;
         }
 
@@ -197,13 +195,20 @@ namespace TimeTetris.Data
             Event e = new Event();
             Int32 prevx = X;
             Int32 prevy = Y;
-            Double prevtime = LastMoveTime;
-            Double newtime = Field.Timeline.CurrentTime;
+            Double prevtime = this.LastMoveTime;
+            Double newtime = this.Field.Timeline.CurrentTime;
+
+            var wasRot = this.LastMoveIsRotation;
+            var wasKick = this.LastMoveIsKick;
+
             e.Undo = () =>
             {
                 this.Field.CurrentBlock.X = prevx;
                 this.Field.CurrentBlock.Y = prevy;
-                LastMoveTime = prevtime;
+                this.LastMoveTime = prevtime;
+
+                this.LastMoveIsRotation = wasRot;
+                this.LastMoveIsKick = wasKick;
             };
 
             Int32 newx = X + xoff;
@@ -212,12 +217,13 @@ namespace TimeTetris.Data
             {
                 this.Field.CurrentBlock.X = newx;
                 this.Field.CurrentBlock.Y = newy;
-                LastMoveTime = newtime;
+                this.LastMoveTime = newtime;
+
+                this.LastMoveIsRotation = false;
+                this.LastMoveIsKick = false;
             };
 
             this.Field.Timeline.Add(e);
-            this.LastMoveIsRotation = false;
-            this.LastMoveIsKick = false;
             return true;
         }
 
@@ -261,6 +267,9 @@ namespace TimeTetris.Data
                 Int32 prevy = Y;
                 Double prevtime = this.LastMoveTime;
                 Double newtime = Field.Timeline.CurrentTime;
+                
+                var wasRot = this.LastMoveIsRotation;
+                var wasKick = this.LastMoveIsKick;
 
                 e.Undo = () =>
                 {
@@ -268,6 +277,9 @@ namespace TimeTetris.Data
                     this.Y = prevy;
                     this.Block.Rotation = rot;
                     this.LastMoveTime = prevtime;
+
+                    this.LastMoveIsRotation = wasRot;
+                    this.LastMoveIsKick = wasKick;
                 };
 
                 Int32 newx = X + wallkicks[i, 0];
@@ -279,12 +291,12 @@ namespace TimeTetris.Data
                     this.Field.CurrentBlock.Y = newy;
                     this.Field.CurrentBlock.Block.Rotation = newrot;
                     this.LastMoveTime = newtime;
+
+                    this.LastMoveIsRotation = true;
+                    this.LastMoveIsKick = i > 0;
                 };
 
                 this.Field.Timeline.Add(e);
-
-                this.LastMoveIsRotation = true;
-                this.LastMoveIsKick = i > 0;
                 return true;
             }
 

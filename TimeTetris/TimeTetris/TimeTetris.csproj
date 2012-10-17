@@ -132,6 +132,7 @@
     <Compile Include="Drawing\SpriteField.cs" />
     <Compile Include="Drawing\SpriteGhostBlock.cs" />
     <Compile Include="Drawing\SpriteNullableBlock.cs" />
+    <Compile Include="Drawing\SpriteScorePopup.cs" />
     <Compile Include="Drawing\SpritesetWallkick.cs" />
     <Compile Include="Extension\ListExtensions.cs" />
     <Compile Include="Extension\SpriteBatchExtensions.cs" />

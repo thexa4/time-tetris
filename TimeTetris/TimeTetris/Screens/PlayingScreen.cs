@@ -34,6 +34,8 @@ namespace TimeTetris.Screens
         protected Boolean _isRewinding;
 
         protected PauseScreen _pauseScreen;
+        protected Double _displayScore;
+        protected List<SpriteScorePopup> _spriteScorePopups;
 
 
         /// <summary>
@@ -53,6 +55,7 @@ namespace TimeTetris.Screens
             // Create Field
             _field = new Data.Field(this.Game, _timeline, 10, 24);
             _field.Initialize();
+            _field.OnRowsCleared += new RowsDelegate(_field_OnRowsCleared);
             DummyField dummyField = new Data.DummyField(this.Game, 5, 5 + SpriteField.HiddenRows);
 
             // Create Sprites
@@ -62,7 +65,7 @@ namespace TimeTetris.Screens
 
             // Next Block and HoldBlock Boundaries
             _spriteNextBlockBoundary = new SpriteField(this.Game, dummyField) { Position = _spriteField.Position + (Vector2.UnitX * (_field.Width + 2)) * SpriteField.GridCellSize, };
-            _spriteHoldBlockBoundary = new SpriteField(this.Game, dummyField) { Position = _spriteField.Position + (Vector2.UnitX * (_field.Width + 2) + Vector2.UnitY * (6 + 2)) * SpriteField.GridCellSize, };
+            _spriteHoldBlockBoundary = new SpriteField(this.Game, dummyField) { Position = _spriteField.Position + (Vector2.UnitX * (_field.Width + 2) + Vector2.UnitY * (6 + 1)) * SpriteField.GridCellSize, };
            
             // Next BLock
             _spriteNextBlock = new SpriteBlock(this.Game, _field.NextBlock) { Position = _spriteNextBlockBoundary.Position + Vector2.One * SpriteField.GridCellSize, };
@@ -77,6 +80,8 @@ namespace TimeTetris.Screens
             _spriteNextBlock.Initialize();
             _spriteHoldBlock.Initialize();
 
+            _spriteScorePopups = new List<SpriteScorePopup>();
+
             // Player controller
             _controller = new KeyboardController(this.Game, Keys.S, Keys.A, Keys.D, Keys.W, Keys.Q, Keys.E, Keys.Space, Keys.Enter);
             _controller.Initialize();
@@ -85,6 +90,31 @@ namespace TimeTetris.Screens
 
             // Start the level
             _timeline.Start();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rows"></param>
+        /// <param name="combo"></param>
+        /// <param name="tspin"></param>
+        /// <param name="b2b"></param>
+        protected void _field_OnRowsCleared(Int32 rows, Int32 combo, Boolean tspin, Boolean b2b)
+        {
+            if (rows == 0 && !tspin)
+                return;
+
+            var sprite = new SpriteScorePopup(this.Game, rows, combo, tspin, b2b)
+                {
+                    Position = _spriteField.Position + (Vector2.UnitX * _field.Width * SpriteField.GridCellSize +
+                        Vector2.UnitY * (_field.Height - SpriteField.HiddenRows) * SpriteField.GridCellSize) / 2,
+                    Opacity = 0.9f,
+                };
+
+            sprite.Initialize();
+            sprite.LoadContent(this.ContentManager);
+
+            _spriteScorePopups.Add(sprite);
         }
 
         /// <summary>
@@ -186,6 +216,12 @@ namespace TimeTetris.Screens
             _spriteNextBlockBoundary.Update(gameTime);
             _spriteHoldBlock.Update(gameTime);
             _spriteHoldBlockBoundary.Update(gameTime);
+
+            var removablePopups = new List<SpriteScorePopup>();
+            _spriteScorePopups.ForEach(a => { a.Update(gameTime); if (a.IsFinished) removablePopups.Add(a); });
+            removablePopups.ForEach(a => _spriteScorePopups.Remove(a));
+
+            _displayScore = MathHelper.Lerp((Single)_displayScore, (Single)_field.Score, (Single)gameTime.ElapsedGameTime.TotalSeconds);
         }
 
         /// <summary>
@@ -283,6 +319,7 @@ namespace TimeTetris.Screens
 
             this.Game.GraphicsDevice.SetRenderTarget(_intermediateTarget);
 
+            // Clear the graphics device, making the background somewhat translucent
             this.Game.GraphicsDevice.Clear(new Color(0.0f, 0.0f, 0.0f, 0.6f));
 
             this.ScreenManager.SpriteBatch.Begin();
@@ -295,6 +332,8 @@ namespace TimeTetris.Screens
             _spriteHoldBlockBoundary.Draw(gameTime);
             _spriteHoldBlock.Draw(gameTime);
 
+            _spriteScorePopups.ForEach(a => a.Draw(gameTime));
+
             this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Default"],
                 "Next block", _spriteNextBlockBoundary.Position - Vector2.One * 4, Color.White, Color.Black);
 
@@ -302,9 +341,9 @@ namespace TimeTetris.Screens
                 "Hold block", _spriteHoldBlockBoundary.Position - Vector2.One * 4, Color.White, Color.Black);
 
             this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["Default"], 
-                String.Format("{0:0.00}ls  {3:0.00}ls/s  {1:####0} points  {2} combo  level {5} / {4} lines {6} ", 
-                    Math.Round(_timeline.CurrentTime, 2), _field.Score, _field.CurrentCombo, _timeline.RewindSpeed, 
-                    _field.LinesCleared, _field.Level, 0), Vector2.One * 5, Color.White);
+                String.Format("{0:0.00}ls   {3:0.00}ls/s   {1:####0} points   {2} combo   level {5} / {4} lines   BTB is {6}",
+                    Math.Round(_timeline.CurrentTime, 2), _displayScore, _field.CurrentCombo, _timeline.RewindSpeed, 
+                    _field.LinesCleared, _field.Level, _field.IsBackToBackEnabled ? "enabled" : "not enabled"), Vector2.One * 5, Color.White);
             this.ScreenManager.SpriteBatch.End();
 
             this.Game.GraphicsDevice.SetRenderTarget(_distortTarget);
