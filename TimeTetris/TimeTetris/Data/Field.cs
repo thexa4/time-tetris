@@ -72,6 +72,11 @@ namespace TimeTetris.Data
         public event EventHandler OnGameEnded = delegate { };
 
         /// <summary>
+        /// 
+        /// </summary>
+        public event CountDelegate OnRowsCleared = delegate { };
+
+        /// <summary>
         /// Current score (double so we can subtract partial points)
         /// </summary>
         public Double Score { get { return _score; } protected set { _score = Math.Max(0, value); } }
@@ -174,9 +179,6 @@ namespace TimeTetris.Data
                     }
             });
 
-            if(!HasEnded)
-                GenerateNextBlock();
-
             // Remove full rows
             Row cur = Bottom;
             Int32 futurey = 0;
@@ -213,6 +215,7 @@ namespace TimeTetris.Data
                         this.CurrentCombo = (rows == 0) ? 0 : oldComboCount + 1;
                         this.Score += clearScore + ((rows == 0) ? 0 : comboScore);
                         this.LinesCleared += rows;
+                        this.OnRowsCleared(rows);
                     },
                     Undo = () => 
                     {
@@ -221,8 +224,9 @@ namespace TimeTetris.Data
                         this.LinesCleared -= rows;
                     },
                 });
-            
-            
+
+            if (!HasEnded)
+                GenerateNextBlock();
         }
 
         /// <summary>

@@ -11,7 +11,7 @@ namespace TimeTetris.Services
     /// many times (each screen, each instance). The global contentmanager holds the loaded fonts, so individual
     /// screen-contentmanagers can easily be disposed without the risk of triggering an ContentDisposedException.
     /// </summary>
-    public class FontManager : DrawableGameComponent
+    public class FontCache : DrawableGameComponent
     {
         #region Private fields
 
@@ -26,7 +26,7 @@ namespace TimeTetris.Services
         /// Constructor for the FontCollector
         /// </summary>
         /// <param name="game"></param>
-        public FontManager(Game game)
+        public FontCache(Game game)
             : base(game)
         {
             _contentManager = game.Content;
@@ -35,7 +35,7 @@ namespace TimeTetris.Services
             _spritefontDictionairy = new Dictionary<String, SpriteFont>();
 
             // Add this as service to the services container
-            game.Services.AddService(typeof(FontManager), this);
+            game.Services.AddService(typeof(FontCache), this);
         }
 
         /// <summary>

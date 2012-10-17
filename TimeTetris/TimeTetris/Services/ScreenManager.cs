@@ -21,7 +21,7 @@ namespace TimeTetris.Services
         private static IGraphicsDeviceService _graphicsDeviceService;
         private static List<GameScreen> _screens = new List<GameScreen>();
         private static List<GameScreen> _screensToUpdate = new List<GameScreen>();
-        private static FontManager _spriteFonts;
+        private static FontCache _spriteFonts;
         private Int32 _screenWidth, _screenHeight;
 
         #endregion
@@ -48,7 +48,7 @@ namespace TimeTetris.Services
             this.DrawOrder = 50;
 
             // Add the spriteFonts Component
-            _spriteFonts = new FontManager(this.Game);
+            _spriteFonts = new FontCache(this.Game);
             this.Game.Components.Add(_spriteFonts);
 
             // Add Exiting Handler
@@ -80,7 +80,7 @@ namespace TimeTetris.Services
         /// <summary>
         /// Property that returns the FontCollector Object
         /// </summary>
-        public FontManager SpriteFonts
+        public FontCache SpriteFonts
         {
             get { return _spriteFonts; }
         }

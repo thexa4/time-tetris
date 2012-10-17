@@ -19,7 +19,7 @@ namespace TimeTetris.Drawing
             : base(game, source)
         {
             this.Opacity = 0.2f;
-            this.Source.Block.OnTypeChanged += new Data.BlockTypeDelegate(Block_OnTypeChanged);
+            this.Source.Block.OnTypeChanged += new Services.BlockTypeDelegate(Block_OnTypeChanged);
         }
 
         /// <summary>
