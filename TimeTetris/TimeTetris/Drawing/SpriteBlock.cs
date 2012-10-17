@@ -24,7 +24,7 @@ namespace TimeTetris.Drawing
             if (_source != null)
             {
                 this.Color = Data.Block.GetColor(source.Type);
-                _source.OnTypeChanged += new Data.BlockTypeDelegate(_source_OnTypeChanged);
+                _source.OnTypeChanged += new Services.BlockTypeDelegate(_source_OnTypeChanged);
             }
         }
 

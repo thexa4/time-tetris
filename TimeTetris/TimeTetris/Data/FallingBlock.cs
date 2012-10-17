@@ -31,12 +31,22 @@ namespace TimeTetris.Data
         /// <summary>
         /// Timeline time last move succeeded
         /// </summary>
-        public double LastMoveTime { get; protected set; }
+        public Double LastMoveTime { get; protected set; }
 
         /// <summary>
         /// Timeline time last move down succeeded
         /// </summary>
         public Double LastMoveDownTime { get; protected set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Boolean LastMoveIsRotation { get; protected set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Boolean LastMoveIsKick { get; protected set; }
 
         /// <summary>
         /// Points accumulated by block
@@ -202,6 +212,8 @@ namespace TimeTetris.Data
             };
 
             this.Field.Timeline.Add(e);
+            this.LastMoveIsRotation = false;
+            this.LastMoveIsKick = false;
             return true;
         }
 
@@ -266,13 +278,44 @@ namespace TimeTetris.Data
                 };
 
                 this.Field.Timeline.Add(e);
-                
+
+                this.LastMoveIsRotation = true;
+                this.LastMoveIsKick = i > 0;
                 return true;
             }
 
             // Rotation failed
             this.Block.Rotation -= dir;
             return false;
+        }        
+        
+        /// <summary>
+        /// Checks if the block is a T and is immobile and has at least 3 of the 4 
+        /// spaces diagonal of the center are occupied.
+        /// </summary>
+        /// <returns></returns>
+        internal Boolean IsTAndImmobileThree
+        {
+            get
+            {
+                if (this.Block.Type != BlockType.TBlock)
+                    return false;
+
+                var centerX = this.X + 1;
+                var centerY = this.Y + 1;
+
+                var count = 0;
+                if (this.Field[centerX + 1, centerY + 1] != 0)
+                    count++;
+                if (this.Field[centerX + 1, centerY - 1] != 0)
+                    count++;
+                if (this.Field[centerX - 1, centerY + 1] != 0)
+                    count++;
+                if (this.Field[centerX - 1, centerY - 1] != 0)
+                    count++;
+
+                return count >= 3;
+            }
         }
 
         /// <summary>
@@ -292,5 +335,7 @@ namespace TimeTetris.Data
             if (lockElapsed > Math.Max(0.5f, 3.0 / Field.Level)) 
                 this.Field.LockFalling();
         }
+
+
     }
 }

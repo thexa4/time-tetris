@@ -17,8 +17,18 @@ namespace TimeTetris.Data
 
         public const Int32 Combo = 50;
         public const Int32 Rewind = 100;
-        
-        // TODO T-Spin
+
+        // T-Spin system used = 3-corner-T
+        // Wallkick/Rotation system: SRS
+
+        public const Int32 TSpinNoLineKick = 100;
+        public const Int32 TSpinNoLineNoKick = 0;
+        public const Int32 TSpinSingleKick = 200;
+        public const Int32 TSpinSingleNoKick = Points.Single;
+        public const Int32 TSpinDoubleKick = 1200;
+        public const Int32 TSpinDoubleNoKick = Points.Double;
+        public const Int32 TSpinTripleKick = 1600;
+        public const Int32 TSpinTripleNoKick = Points.Triple;
         
         /// <summary>
         /// 
@@ -53,5 +63,41 @@ namespace TimeTetris.Data
             return Points.Combo * level;
         }
 
+        /// <summary>
+        /// Determines T-Spin score
+        /// </summary>
+        /// <param name="rows">Number of rows cleared</param>
+        /// <param name="level">Current level</param>
+        /// <param name="kick">Was the block kicked</param>
+        /// <returns>Points earned</returns>
+        internal static Int32 TSpin(Int32 rows, Int32 level, Boolean kick)
+        {
+            if (kick)
+                switch (rows)
+                {
+                    case 0:
+                        return TSpinNoLineKick * level;
+                    case 1:
+                        return TSpinSingleKick * level;
+                    case 2:
+                        return TSpinDoubleKick * level;
+                    case 3:
+                        return TSpinTripleKick * level;
+                }
+            
+            switch (rows)
+            {
+                case 0:
+                    return TSpinNoLineNoKick * level;
+                case 1:
+                    return TSpinSingleNoKick * level;
+                case 2:
+                    return TSpinDoubleNoKick * level;
+                case 3:
+                    return TSpinTripleNoKick * level;
+            }
+
+            return 0;
+        }
     }
 }

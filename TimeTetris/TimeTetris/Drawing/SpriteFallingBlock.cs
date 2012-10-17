@@ -34,7 +34,7 @@ namespace TimeTetris.Drawing
             this.Size = (SpriteField.GridCellSize - 1) * Vector2.One;
             this.Color = Data.Block.GetColor(source.Block.Type);
 
-            source.Block.OnTypeChanged += new Data.BlockTypeDelegate(source_Block_OnTypeChanged);
+            source.Block.OnTypeChanged += new Services.BlockTypeDelegate(source_Block_OnTypeChanged);
         }
 
         /// <summary>

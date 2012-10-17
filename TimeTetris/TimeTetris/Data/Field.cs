@@ -54,7 +54,7 @@ namespace TimeTetris.Data
         /// <summary>
         /// Current Level
         /// </summary>
-        public Int32 Level { get { return this.LinesCleared / 10; } }
+        public Int32 Level { get { return this.LinesCleared / 10 + 1; } }
 
         /// <summary>
         /// Number of lines cleared
@@ -86,6 +86,11 @@ namespace TimeTetris.Data
         /// Current Combo count
         /// </summary>
         public Int32 CurrentCombo { get; protected set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Boolean IsBackToBackEnabled { get; protected set; }
 
         /// <summary>
         /// Creates a new field
@@ -204,8 +209,18 @@ namespace TimeTetris.Data
             }
 
             // Score process
+
+            var isTSpin = this.CurrentBlock.LastMoveIsRotation && this.CurrentBlock.IsTAndImmobileThree;
+            var isTetris = rows == 4;
+
             var clearScore = Points.ClearLines(rows, this.Level);
-            var comboScore = this.CurrentCombo * Points.ClearCombo(this.Level);
+            var comboScore = rows == 0 ? 0 : this.CurrentCombo * Points.ClearCombo(this.Level);
+            var tspinScore = isTSpin ? Points.TSpin(rows, this.Level, this.CurrentBlock.LastMoveIsKick) : 0;
+            var actionScore = clearScore + comboScore + tspinScore;
+            if (this.IsBackToBackEnabled && (isTetris || isTSpin))
+                actionScore = (Int32)Math.Round((3 / 2d) * actionScore);
+            
+            this.IsBackToBackEnabled = isTetris || isTSpin;
             var oldComboCount = this.CurrentCombo;
 
             this.Timeline.Add(new Event()
@@ -213,14 +228,14 @@ namespace TimeTetris.Data
                     Apply = () => 
                     { 
                         this.CurrentCombo = (rows == 0) ? 0 : oldComboCount + 1;
-                        this.Score += clearScore + ((rows == 0) ? 0 : comboScore);
+                        this.Score += actionScore;
                         this.LinesCleared += rows;
                         this.OnRowsCleared(rows);
                     },
                     Undo = () => 
                     {
                         this.CurrentCombo = oldComboCount;
-                        this.Score -= clearScore + ((rows == 0) ? 0 : comboScore);
+                        this.Score -= actionScore;
                         this.LinesCleared -= rows;
                     },
                 });
