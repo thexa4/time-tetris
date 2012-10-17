@@ -54,10 +54,11 @@ namespace TimeTetris.Data
         }
 
         /// <summary>
-        /// 
+        /// Re-Places the block on new coords
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
+        /// <param name="r"></param>
         public void Replace(Int32 x, Int32 y, Int32 r) 
         {
             this.X = x;
@@ -157,7 +158,7 @@ namespace TimeTetris.Data
         }
 
         /// <summary>
-        /// 
+        /// Drops a block down (effectivly 20 G)
         /// </summary>
         /// <returns></returns>
         public Boolean Drop()

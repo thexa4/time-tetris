@@ -93,7 +93,7 @@ namespace TimeTetris.Data
             : base(game)
         {
             this.Timeline = timeline;
-            this.LinesCleared = 30;
+            this.LinesCleared = 0;
 
             this.Width = width;
             this.Height = height;

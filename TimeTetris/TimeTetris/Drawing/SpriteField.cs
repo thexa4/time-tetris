@@ -9,7 +9,7 @@ namespace TimeTetris.Drawing
     public class SpriteField : Sprite
     {
         public const Int32 HiddenRows = 4;
-        public const Int32 GridCellSize = 16;
+        public const Int32 GridCellSize = 24;
 
         /// <summary>
         /// Data Field

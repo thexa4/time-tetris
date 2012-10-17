@@ -49,36 +49,21 @@ namespace TimeTetris.Screens
             // Create Field
             _field = new Data.Field(this.Game, _timeline, 10, 24);
             _field.Initialize();
+            DummyField dummyField = new Data.DummyField(this.Game, 5, 5 + SpriteField.HiddenRows);
 
             // Create Sprites
-            _spriteField = new SpriteField(this.Game, _field) { Position = Vector2.One * SpriteField.GridCellSize * 5 };
+            _spriteField = new SpriteField(this.Game, _field) { Position = Vector2.One * SpriteField.GridCellSize * 3 };
             _spriteGhostBlock = new SpriteGhostBlock(this.Game, _field.CurrentBlock) { Position = _spriteField.Position };
             _spriteFallingBlock = new SpriteFallingBlock(this.Game, _field.CurrentBlock) { Position = _spriteField.Position };
 
             // Next Block and HoldBlock Boundaries
-            _spriteNextBlockBoundary = new Sprite(this.Game)
-                {
-                    TextureName = "Graphics/blank",
-                    Size = Vector2.One * SpriteField.GridCellSize * _field.NextBlock.Width,
-                    Position = _spriteField.Position + Vector2.UnitX * (_field.Width + 2) * SpriteField.GridCellSize,
-                    Opacity = 0.2f,
-                    Color = Color.White,
-                };
-
-            _spriteHoldBlockBoundary = new Sprite(this.Game)
-                {
-                    TextureName = "Graphics/blank",
-                    Size = Vector2.One * SpriteField.GridCellSize * (_field.HoldBlock != null ? _field.HoldBlock.Width : 4),
-                    Position = _spriteField.Position + (Vector2.UnitX * (_field.Width + 2) + Vector2.UnitY * (4 + 2)) * SpriteField.GridCellSize,
-                    Opacity = 0.2f,
-                    Color = Color.White,
-                };
-            
-
+            _spriteNextBlockBoundary = new SpriteField(this.Game, dummyField) { Position = _spriteField.Position + (Vector2.UnitX * (_field.Width + 2)) * SpriteField.GridCellSize, };
+            _spriteHoldBlockBoundary = new SpriteField(this.Game, dummyField) { Position = _spriteField.Position + (Vector2.UnitX * (_field.Width + 2) + Vector2.UnitY * (6 + 2)) * SpriteField.GridCellSize, };
+           
             // Next BLock
-            _spriteNextBlock = new SpriteBlock(this.Game, _field.NextBlock) { Position = _spriteNextBlockBoundary.Position, };
+            _spriteNextBlock = new SpriteBlock(this.Game, _field.NextBlock) { Position = _spriteNextBlockBoundary.Position + Vector2.One * SpriteField.GridCellSize, };
             _field.NextBlock.OnTypeChanged += new BlockTypeDelegate(NextBlock_OnTypeChanged);
-            _spriteHoldBlock = new SpriteNullableBlock(this.Game) { Position = _spriteHoldBlockBoundary.Position, };
+            _spriteHoldBlock = new SpriteNullableBlock(this.Game) { Position = _spriteHoldBlockBoundary.Position + Vector2.One * SpriteField.GridCellSize, };
             
             _spriteField.Initialize();
             _spriteGhostBlock.Initialize();
@@ -117,9 +102,9 @@ namespace TimeTetris.Screens
         /// <param name="b"></param>
         private void NextBlock_OnTypeChanged(BlockType block)
         {
-            _spriteNextBlockBoundary.Size = Vector2.One * SpriteField.GridCellSize * _field.NextBlock.Width;
-            _spriteNextBlockBoundary.Scale = _spriteNextBlockBoundary.Size.X / _spriteNextBlockBoundary.SourceRectangle.Width * Vector2.UnitX + 
-                _spriteNextBlockBoundary.Size.Y / _spriteNextBlockBoundary.SourceRectangle.Height * Vector2.UnitY;
+            //_spriteNextBlockBoundary.Size = Vector2.One * SpriteField.GridCellSize * _field.NextBlock.Width;
+            //_spriteNextBlockBoundary.Scale = _spriteNextBlockBoundary.Size.X / _spriteNextBlockBoundary.SourceRectangle.Width * Vector2.UnitX + 
+                //_spriteNextBlockBoundary.Size.Y / _spriteNextBlockBoundary.SourceRectangle.Height * Vector2.UnitY;
         }
 
         /// <summary>
@@ -128,9 +113,9 @@ namespace TimeTetris.Screens
         /// <param name="block"></param>
         private void HoldBlock_OnTypeChanged(BlockType block)
         {
-            _spriteHoldBlockBoundary.Size = Vector2.One * SpriteField.GridCellSize * _field.HoldBlock.Width;
-            _spriteHoldBlockBoundary.Scale = _spriteHoldBlockBoundary.Size.X / _spriteHoldBlockBoundary.SourceRectangle.Width * Vector2.UnitX +
-                _spriteHoldBlockBoundary.Size.Y / _spriteHoldBlockBoundary.SourceRectangle.Height * Vector2.UnitY;
+            //_spriteHoldBlockBoundary.Size = Vector2.One * SpriteField.GridCellSize * _field.HoldBlock.Width;
+            //_spriteHoldBlockBoundary.Scale = _spriteHoldBlockBoundary.Size.X / _spriteHoldBlockBoundary.SourceRectangle.Width * Vector2.UnitX +
+                //_spriteHoldBlockBoundary.Size.Y / _spriteHoldBlockBoundary.SourceRectangle.Height * Vector2.UnitY;
         }
 
         /// <summary>
