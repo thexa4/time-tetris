@@ -365,6 +365,7 @@ namespace TimeTetris.Screens
 
             this.ScreenManager.SpriteBatch.Begin();
 
+            // Draw the blocks and field and so on
             _spriteField.Draw(gameTime);
             _spriteGhostBlock.Draw(gameTime);
             _spriteFallingBlock.Draw(gameTime);
@@ -373,20 +374,22 @@ namespace TimeTetris.Screens
             _spriteHoldBlockBoundary.Draw(gameTime);
             _spriteHoldBlock.Draw(gameTime);
 
+            // Popups
             _spriteScorePopups.ForEach(a => a.Draw(gameTime));
 
+            // Strings to do
             this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Default"],
-                "Next block", _spriteNextBlockBoundary.Position - Vector2.One * 4, Color.White, Color.Black);
-
+                "Next block", _spriteNextBlockBoundary.Position - Vector2.One * 5, Color.White, Color.Black);
             this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Default"],
-                "Hold block", _spriteHoldBlockBoundary.Position - Vector2.One * 4, Color.White, Color.Black);
-
+                "Hold block", _spriteHoldBlockBoundary.Position - Vector2.One * 5, Color.White, Color.Black);
             this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["Default"], 
                 String.Format("{0:0.00}ls   {3:0.00}ls/s   {1:####0} points   {2} combo   level {5} / {4} lines   BTB is {6}",
                     Math.Round(_timeline.CurrentTime, 2), _displayScore, _field.CurrentCombo, _timeline.RewindSpeed, 
                     _field.LinesCleared, _field.Level, _field.IsBackToBackEnabled ? "enabled" : "not enabled"), Vector2.One * 5, Color.White);
+            
             this.ScreenManager.SpriteBatch.End();
 
+            // Distort effect
             this.Game.GraphicsDevice.SetRenderTarget(_distortTarget);
 
             this.Game.GraphicsDevice.Clear(new Color(0.0f, 0.0f, 0.0f, 0.0f));
@@ -394,6 +397,7 @@ namespace TimeTetris.Screens
             this.ScreenManager.SpriteBatch.Draw(this._intermediateTarget, Vector2.Zero, Color.White);
             this.ScreenManager.SpriteBatch.End();
 
+            // Draw distort scene in the tv
             this.Game.GraphicsDevice.SetRenderTarget(null);
 
             this._distortEffect.Parameters["time"].SetValue((float)gameTime.TotalGameTime.TotalMilliseconds / 20 + 5000);

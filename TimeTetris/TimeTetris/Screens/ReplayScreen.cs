@@ -14,8 +14,8 @@ namespace TimeTetris.Screens
     /// </summary>
     public class ReplayScreen : GameScreen
     {
-        private const String TitleString = "Time Tetris Replay?";
-        private readonly String[] Options = new String[] { "YES PLEASE!", "Maybe Not" };
+        private const String TitleString = "Time Tetris Rewind?";
+        private readonly String[] Options = new String[] { "YES PLEASE!", "Maybe Not..." };
         protected Vector2 _positionTitle, _positionMenu;
         protected Int32 _menuIndex;
 

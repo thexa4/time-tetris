@@ -219,7 +219,7 @@ namespace TimeTetris
 
             this.SpriteBatch.Begin();
             this.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Framerate"], framerateString, 
-                Vector2.One * 5 + Vector2.UnitX * (1280 - 10 - this.ScreenManager.SpriteFonts["Framerate"].MeasureString(framerateString).X), Color.White, Color.Black);
+                Vector2.One * 5 + Vector2.UnitX * (1024 - 10 - this.ScreenManager.SpriteFonts["Framerate"].MeasureString(framerateString).X), Color.White, Color.Black);
             this.SpriteBatch.End();
         }
     }
