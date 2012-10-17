@@ -40,8 +40,8 @@ namespace TimeTetris.Drawing
             for (Int32 x = 0; x < this.Source.Width; x++)
                 for (Int32 y = 0; y < this.Source.Height - HiddenRows; y++)
                 {
-                    this.Position = basePosition + (x * GridCellSize * Vector2.UnitX) + 
-                        ((this.Source.Height - HiddenRows - 1 - y) * GridCellSize * Vector2.UnitY);
+                    this.Position = basePosition + (x * SpriteField.GridCellSize * Vector2.UnitX) +
+                        ((this.Source.Height - HiddenRows - 1 - y) * SpriteField.GridCellSize * Vector2.UnitY);
 
                     this.Color = Color.White * 0.1f;
                     this.Size += Vector2.One;

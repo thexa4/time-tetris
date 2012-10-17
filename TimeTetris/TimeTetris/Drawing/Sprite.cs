@@ -139,8 +139,9 @@ namespace TimeTetris.Drawing
 					    this.Size = new Vector2(_texture.Bounds.Width, _texture.Bounds.Height);
                     if (this.SourceRectangle == Rectangle.Empty)
 					    this.SourceRectangle = new Rectangle(0, 0, _texture.Bounds.Width, _texture.Bounds.Height);
-                    if (this.Scale == Vector2.One)
-                        this.Scale = this.Size.X / this.SourceRectangle.Width * Vector2.UnitX + this.Size.Y / this.SourceRectangle.Height * Vector2.UnitY;
+
+                    this.Scale = this.Scale.X * this.Size.X / this.SourceRectangle.Width * Vector2.UnitX + 
+                        this.Scale.Y * this.Size.Y / this.SourceRectangle.Height * Vector2.UnitY;
 				}
 			}
 		}

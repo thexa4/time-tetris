@@ -31,6 +31,8 @@ namespace TimeTetris.Screens
         protected Timeline _timeline;
         protected Boolean _isRewinding;
 
+        protected PauseScreen _pauseScreen;
+
 
         /// <summary>
         /// Initializes the screen
@@ -154,6 +156,9 @@ namespace TimeTetris.Screens
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
+            if (_pauseScreen != null && (_pauseScreen.ScreenState == Services.ScreenState.Active || _pauseScreen.IsTransitioning))
+                return;
+
             if (_isRewinding)
             {
                 _timeline.RewindFrame();
@@ -186,10 +191,15 @@ namespace TimeTetris.Screens
         {
             base.HandleInput(gameTime);
 
-            if (InputManager.Keyboard.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Escape))
+            if (InputManager.Keyboard.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Escape) && _pauseScreen == null)
+            {
                 _timeline.Stop();
-            else if (InputManager.Keyboard.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Escape))
-                _timeline.Resume();
+                _pauseScreen = new PauseScreen();
+                this.ScreenManager.AddScreen(_pauseScreen);
+
+                _pauseScreen.Exited += new EventHandler(_pauseScreen_Exited);
+                return;
+            }
 
             // Don't process game if ended
             if (_field.HasEnded)
@@ -248,6 +258,17 @@ namespace TimeTetris.Screens
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _pauseScreen_Exited(object sender, EventArgs e)
+        {
+            _pauseScreen = null;
+            _timeline.Resume();
+        }
+
+        /// <summary>
         /// Draw frame
         /// </summary>
         /// <param name="gameTime">Snapshot of timing values</param>
@@ -278,7 +299,7 @@ namespace TimeTetris.Screens
             this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["Default"], 
                 String.Format("{0:0.00}ls  {3:0.00}ls/s  {1:####0} points  {2} combo  level {5} / {4} lines {6} ", 
                     Math.Round(_timeline.CurrentTime, 2), _field.Score, _field.CurrentCombo, _timeline.RewindSpeed, 
-                    _field.LinesCleared, _field.Level), Vector2.One * 5, Color.White);
+                    _field.LinesCleared, _field.Level, 0), Vector2.One * 5, Color.White);
             this.ScreenManager.SpriteBatch.End();
 
             this.Game.GraphicsDevice.SetRenderTarget(null);
