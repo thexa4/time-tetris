@@ -35,8 +35,8 @@ float4 PixelDraw(float4 color : COLOR0, float2 texCoord: TEXCOORD0) : COLOR
 {
 	// Monitor distort
 	float2 pos = texCoord - 0.5;
-	pos.x *= (1 + pow(abs(texCoord.y - 0.5),4));
-	pos.y *= (1 + pow(abs(texCoord.x - 0.5),4));
+	pos.x *= (1 + pow(abs(texCoord.y - 0.5),3.6));
+	pos.y *= (1 + pow(abs(texCoord.x - 0.5),3.6));
 	pos += 0.5;
 
 	// Original color
