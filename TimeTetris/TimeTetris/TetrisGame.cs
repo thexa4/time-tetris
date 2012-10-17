@@ -143,6 +143,9 @@ namespace TimeTetris
             // Loads font
             this.ScreenManager.SpriteFonts.LoadFont("Framerate", "Fonts/Default");
 
+            this.AudioManager.Load("Tetris_A", "Tetris_A");
+            this.AudioManager.PlayLoop("Tetris_A");
+
         }
 
         /// <summary>

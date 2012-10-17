@@ -190,6 +190,9 @@ namespace TimeTetris.Data
                     }
             });
 
+            // TSpin check before rows are gone
+            var isTSpin = this.CurrentBlock.LastMoveIsRotation && this.CurrentBlock.IsTAndImmobileThree;
+
             // Remove full rows
             Row cur = Bottom;
             Int32 futurey = 0;
@@ -216,7 +219,6 @@ namespace TimeTetris.Data
 
             // Score process
 
-            var isTSpin = this.CurrentBlock.LastMoveIsRotation && this.CurrentBlock.IsTAndImmobileThree;
             var isTetris = rows == 4;
             var isB2b = this.IsBackToBackEnabled && (isTetris || isTSpin);
 

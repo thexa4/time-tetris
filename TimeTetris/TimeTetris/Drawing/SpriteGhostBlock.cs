@@ -18,7 +18,7 @@ namespace TimeTetris.Drawing
         public SpriteGhostBlock(Game game, Data.FallingBlock source)
             : base(game, source)
         {
-            this.Opacity = 0.2f;
+            this.Opacity = 0.1f;
             this.Source.Block.OnTypeChanged += new Services.BlockTypeDelegate(Block_OnTypeChanged);
         }
 

@@ -53,7 +53,7 @@ namespace TimeTetris.Screens
 
             this.ScreenManager.SpriteFonts.LoadFont("Title", "Fonts/Title");
             this.ScreenManager.SpriteFonts.LoadFont("Help", "Fonts/Default");
-            this.AudioManager.Load("blip", "confirm", 1f, .5f);
+            this.AudioManager.Load("blip", "confirm", 0.6f, .5f);
 
             //var titleMeasurement = this.ScreenManager.SpriteFonts["Title"].MeasureString(TitleString);
             //var helpMeasurement = this.ScreenManager.SpriteFonts["Help"].MeasureString(HelpString);

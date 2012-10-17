@@ -10,6 +10,7 @@ using TimeTetris.Data;
 using Microsoft.Xna.Framework.Input;
 using TimeTetris.Extension;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace TimeTetris.Screens
 {
@@ -36,6 +37,9 @@ namespace TimeTetris.Screens
         protected GameScreen _popupScreen;
         protected Double _displayScore;
         protected List<SpriteScorePopup> _spriteScorePopups;
+
+        protected SoundEffectInstance _rotateSound;
+        protected SoundEffectInstance _lockSound;
 
        
         /// <summary>
@@ -111,6 +115,8 @@ namespace TimeTetris.Screens
         /// <param name="b2b"></param>
         protected void _field_OnRowsCleared(Int32 rows, Int32 combo, Boolean tspin, Boolean b2b)
         {
+            _lockSound.Play();
+
             if (rows == 0 && !tspin) // nothing to report
                 return;
 
@@ -204,6 +210,9 @@ namespace TimeTetris.Screens
             _spriteHoldBlock.LoadContent(contentManager);
             _spriteNextBlockBoundary.LoadContent(contentManager);
             _spriteHoldBlockBoundary.LoadContent(contentManager);
+
+            _rotateSound = this.AudioManager.Load("blip", "rotate", 0.6f, 0);
+            _lockSound = this.AudioManager.Load("blip", "lock", 0.6f, -.5f);
         }
 
         /// <summary>
@@ -216,7 +225,8 @@ namespace TimeTetris.Screens
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
-            if (_popupScreen != null && (_popupScreen.ScreenState == Services.ScreenState.Active || _popupScreen.IsTransitioning))
+            if ((_popupScreen != null && (_popupScreen.ScreenState == Services.ScreenState.Active || _popupScreen.IsTransitioning))
+                || otherScreenHasFocus)
                 return;
 
             if (_isRewinding)
@@ -286,6 +296,7 @@ namespace TimeTetris.Screens
                     break;
                 case ControllerAction.Left:
                     _field.CurrentBlock.MoveLeft();
+                        
                     break;
                 case ControllerAction.Right:
                     _field.CurrentBlock.MoveRight();
@@ -294,10 +305,12 @@ namespace TimeTetris.Screens
                     _field.CurrentBlock.Drop();
                     break;
                 case ControllerAction.RotateCW:
-                    _field.CurrentBlock.RotateRight();
+                    if (_field.CurrentBlock.RotateRight())
+                        _rotateSound.Play();
                     break;
                 case ControllerAction.RotateCCW:
-                    _field.CurrentBlock.RotateLeft();
+                    if (_field.CurrentBlock.RotateLeft())
+                        _rotateSound.Play();
                     break;
                 case ControllerAction.Hold:
                     var oldHoldBlock = _field.HoldBlock;
@@ -340,6 +353,9 @@ namespace TimeTetris.Screens
         /// <param name="gameTime">Snapshot of timing values</param>
         public override void Draw(GameTime gameTime)
         {
+            if (!this.IsTransitioning && this.ScreenState != Services.ScreenState.Active)
+                return;
+
             base.Draw(gameTime);
 
             this.Game.GraphicsDevice.SetRenderTarget(_intermediateTarget);
@@ -385,6 +401,8 @@ namespace TimeTetris.Screens
             this.ScreenManager.SpriteBatch.Draw(this._retroTv, Vector2.Zero, Color.White);
             this.ScreenManager.SpriteBatch.Draw(this._distortTarget, new Rectangle(114, 95, 680, 510), Color.White);
             this.ScreenManager.SpriteBatch.End();
+
+            this.ScreenManager.FadeBackBufferToBlack((Byte)(255 - this.TransitionAlpha));
         }
     }
 }

@@ -91,5 +91,17 @@ namespace TimeTetris.Services
             _sounds.Clear();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="instanceName"></param>
+        public void PlayLoop(String instanceName)
+        {
+            SoundEffectInstance instance;
+            if (_sounds.TryGetValue(instanceName, out instance))
+                instance.IsLooped = true;
+
+            Play(instanceName);
+        }
     }
 }

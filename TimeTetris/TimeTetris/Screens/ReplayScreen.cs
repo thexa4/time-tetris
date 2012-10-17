@@ -60,8 +60,8 @@ namespace TimeTetris.Screens
             this.ScreenManager.SpriteFonts.LoadFont("Title", "Fonts/Title");
             this.ScreenManager.SpriteFonts.LoadFont("Menu", "Fonts/Default");
             _texture = this.ContentManager.Load<Texture2D>("Graphics/Blank");
-            this.AudioManager.Load("blip", "confirm", 1f, .5f);
-            this.AudioManager.Load("blip", "blip", 1f, .2f);
+            this.AudioManager.Load("blip", "confirm", 0.6f, .5f);
+            this.AudioManager.Load("blip", "blip", 0.6f, .2f);
 
             var titleMeasurement = this.ScreenManager.SpriteFonts["Title"].MeasureString(TitleString);
             var menuMeasurement = Options.Sum(a => this.ScreenManager.SpriteFonts["Menu"].MeasureString(a).Y + 15) - 15;
