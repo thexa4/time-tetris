@@ -41,7 +41,7 @@ namespace TimeTetris.Drawing
         {
  	        base.LoadContent(manager);
 
-            this.ScreenManager.SpriteFonts.LoadFont("PopFont", "Fonts/Small");
+            this.ScreenManager.SpriteFonts.LoadFont("PopFont", "Fonts/ScorePop");
             this.Size = this.ScreenManager.SpriteFonts["PopFont"].MeasureString(_rowText);
         }
 
@@ -68,7 +68,8 @@ namespace TimeTetris.Drawing
             this.ScreenManager.SpriteBatch.DrawShadowedString(
                 this.ScreenManager.SpriteFonts["PopFont"],
                 _rowText,
-                this.Position - this.Size / 2 + offset * Vector2.UnitY,
+                (Single)Math.Round(this.Position.X - this.Size.X / 2) * Vector2.UnitX + 
+                    (Single)Math.Round(this.Position.Y - this.Size.Y / 2 + offset) * Vector2.UnitY,
                 this.Color * this.Opacity * alpha,
                 Microsoft.Xna.Framework.Color.Black * this.Opacity * alpha
                 );

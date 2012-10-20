@@ -215,7 +215,7 @@ namespace TimeTetris.Screens
             _rotateSound = this.AudioManager.Load("blip", "rotate", 0.6f, 0);
             _lockSound = this.AudioManager.Load("blip", "lock", 0.6f, -.5f);
 
-            this.ScreenManager.SpriteFonts.LoadFont("SmallInfo", "Fonts/Default");
+            this.ScreenManager.SpriteFonts.LoadFont("SmallInfo", "Fonts/Small");
             this.ScreenManager.SpriteFonts.LoadFont("Small", "Fonts/Small");
         }
 
@@ -401,7 +401,7 @@ namespace TimeTetris.Screens
 
             if (_scoreIncrement > 0)
                 this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Small"],
-                    String.Format("+{0:####0}", _scoreIncrement), _spriteHoldBlockBoundary.Position +
+                    String.Format("+{0:0,0}", _scoreIncrement), _spriteHoldBlockBoundary.Position +
                         8 * SpriteField.GridCellSize * Vector2.UnitY, Color.White, Color.Black);
 
             this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Small"],

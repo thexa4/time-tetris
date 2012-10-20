@@ -108,11 +108,11 @@ namespace TimeTetris.Data
             : base(game)
         {
             this.Timeline = timeline;
-            this.LinesCleared = 0;
+            this.LinesCleared = 600;
 
             this.Width = width;
             this.Height = height;
-
+            
             this.Bottom = new Row(width);
             this.Top = new Row(width);
             this.Bottom.Next = Top;
