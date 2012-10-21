@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using TimeTetris.Extension;
 using TimeTetris.Services;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace TimeTetris.Screens
 {
@@ -21,6 +22,7 @@ namespace TimeTetris.Screens
         protected Single _sinusAlpha;
         protected SoundEffect _menuSound;
         protected SoundEffectInstance _menuSoundInstance;
+        protected Texture2D _logo;
 
         /// <summary>
         /// Initializes the screen
@@ -53,6 +55,8 @@ namespace TimeTetris.Screens
                Vector2.UnitY * (Single)Math.Round((720f - height) / 2);
             _positionHelp = Vector2.UnitX * (Int32)Math.Round((1280f - helpMeasurement.X) / 2) +
                 Vector2.UnitY * (Single)(Math.Round((720f - height) / 2) + Math.Round(titleMeasurement.Y));
+
+            _logo = contentManager.Load<Texture2D>("Graphics\\logo");
         }
 
         /// <summary>
@@ -102,6 +106,7 @@ namespace TimeTetris.Screens
             base.Draw(gameTime);
 
             this.ScreenManager.SpriteBatch.Begin();
+            this.ScreenManager.SpriteBatch.Draw(_logo, new Vector2(250, 310), Color.White);
             this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Title"], TitleString, _positionTitle, Color.White, _shadowColor);
             this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Help"], HelpString, _positionHelp, Color.White * _sinusAlpha, _shadowColor * _sinusAlpha);            
             this.ScreenManager.SpriteBatch.End();
