@@ -391,12 +391,12 @@ namespace TimeTetris.Screens
             this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["SmallInfo"],
                 "Hold block", _spriteHoldBlockBoundary.Position - Vector2.One * 5, Color.White, Color.Black);
             this.ScreenManager.SpriteBatch.DrawString(this.ScreenManager.SpriteFonts["SmallInfo"], 
-                String.Format("{0:0.00}ls   {3:0.00}ls/s   {1:####0} points   {2} combo   level {5} / {4} lines   BTB is {6}",
+                String.Format("{0:0.00}ls   {3:0.00}ls/s   {1:N0} points   {2} combo   level {5} / {4} lines   BTB is {6}",
                     Math.Round(_timeline.CurrentTime, 2), _displayScore, _field.CurrentCombo, _timeline.RewindSpeed, 
                     _field.LinesCleared, _field.Level, _field.IsBackToBackEnabled ? "enabled" : "not enabled"), Vector2.One * 5, Color.White);
             
             this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Small"],
-                String.Format("{0:####0} points", _displayScore), _spriteHoldBlockBoundary.Position +
+                String.Format("{0:N0} points", _displayScore), _spriteHoldBlockBoundary.Position +
                     7 * SpriteField.GridCellSize * Vector2.UnitY, Color.White, Color.Black);
 
             if (_scoreIncrement > 0)
