@@ -39,6 +39,72 @@ namespace TimeTetris.Services
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public Keys this[ControllerAction index] {
+            get
+            {
+                switch (index)
+                {
+                    case ControllerAction.Left:
+                        return _left;
+                    case ControllerAction.Right:
+                        return _right;
+                    case ControllerAction.Down:
+                        return _down;
+                    case ControllerAction.Hold:
+                        return _hold;
+                    case ControllerAction.Drop:
+                        return _drop;
+                    case ControllerAction.Time:
+                        return _time;
+                    case ControllerAction.RotateCCW:
+                        return _rotateLeft;
+                    case ControllerAction.RotateCW:
+                        return _rotateRight;
+                    default:
+                        return Keys.None;
+                }
+            }
+
+            set
+            {
+                switch (index)
+                {
+                    case ControllerAction.Left:
+                        _left = value;
+                        break;
+                    case ControllerAction.Right:
+                        _right = value;
+                        break;
+                    case ControllerAction.Down:
+                        _down = value;
+                        break;
+                    case ControllerAction.Hold:
+                        _hold = value;
+                        break;
+                    case ControllerAction.Drop:
+                        _drop = value;
+                        break;
+                    case ControllerAction.Time:
+                        _time = value;
+                        break;
+                    case ControllerAction.RotateCCW:
+                        _rotateLeft = value;
+                        break;
+                    case ControllerAction.RotateCW:
+                        _rotateRight = value;
+                        break;
+                    default:
+                        return;
+                }
+            }
+            
+        }
+
+        /// <summary>
         /// Initializes controller
         /// </summary>
         public override void Initialize()

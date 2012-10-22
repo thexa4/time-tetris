@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TimeTetris.Services
 {
-    public enum ControllerAction
+    public enum ControllerAction : int
     {
         None = 0,
 

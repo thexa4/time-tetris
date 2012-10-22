@@ -275,10 +275,10 @@ namespace TimeTetris.Screens
         {
             base.HandleInput(gameTime);
 
-            if (InputManager.Keyboard.IsKeyReleased(Microsoft.Xna.Framework.Input.Keys.Escape) && _popupScreen == null)
+            if (InputManager.Keyboard.IsKeyReleased(Keys.Escape) && _popupScreen == null)
             {
                 _timeline.Stop();
-                _popupScreen = new PauseScreen(this);
+                _popupScreen = new PauseScreen(this, _controller);
                 this.ScreenManager.AddScreen(_popupScreen);
 
                 _popupScreen.Exited += new EventHandler(_pauseScreen_Exited);

@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System.Runtime.Remoting.Contexts;
 
 namespace TimeTetris.Services
 {
@@ -120,6 +121,35 @@ namespace TimeTetris.Services
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public Keys[] PressedKeys
+        {
+            get {
+                
+                // If we are not in the correct context, we need to schedule updating the
+                // get pressed key on the other context. We can only call void targets so
+                // a private function will update the array. If we update on the wrong context
+                // the array will simply be empty.
+
+                if (Thread.CurrentContext != _executingThread)
+                    _executingThread.DoCallBack(new CrossContextDelegate(UpdatePressedKeys));
+                else
+                    UpdatePressedKeys();
+
+                return _pressedKeys; }
+            set {
+                _pressedKeys = value;
+            }
+        }
+
+        private Keys[] _pressedKeys;
+        private void UpdatePressedKeys()
+        {
+            PressedKeys = _currentState.GetPressedKeys();
+        }
+
+        /// <summary>
         /// KeyboardComponent Constructor
         /// </summary>
         /// <param name="game">Game to bind to</param>
@@ -149,7 +179,11 @@ namespace TimeTetris.Services
             _triggers = new Dictionary<Keys, TriggerKey>();
             foreach (Keys key in this.DEFAULTWATCHING)
                 Watch(key);
+
+            _executingThread = Thread.CurrentContext;
         }
+
+        private Context _executingThread;
 
         /// <summary>
         /// Frame Renewal

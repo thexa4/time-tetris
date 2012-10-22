@@ -1,41 +1,61 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TimeTetris.Extension;
 using TimeTetris.Services;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace TimeTetris.Screens
 {
     /// <summary>
     /// 
     /// </summary>
-    public class PauseScreen : GameScreen
+    public class KeyBindingsScreen : GameScreen
     {
-        private const String TitleString = "Time Tetris Pause";
-        private readonly String[] Options = new String[] { "Resume Session", "Options", "End Session" };
+        private const String TitleString = "Time Tetris Key Bindings";
+
+        private readonly String ExitOption = "Return";
+        private readonly Dictionary<ControllerAction, String> Options = new Dictionary<ControllerAction, String> 
+        { 
+            { ControllerAction.Left, "Move Left" },
+            { ControllerAction.Right, "Move Right" },
+            { ControllerAction.Down, "Soft Drop" },
+            { ControllerAction.Drop, "Hard Drop" },
+            { ControllerAction.Hold, "Switch with Hold" },
+            { ControllerAction.RotateCCW, "Rotate Left (CCW)" },
+            { ControllerAction.RotateCW, "Rotate Right (CW)" },
+            { ControllerAction.Time, "Reverse Time" },
+            
+        };
+
         protected Vector2 _positionTitle, _positionMenu;
         protected Int32 _menuIndex;
-        
+
         protected Texture2D _texture;
         protected GameScreen _parent;
-        protected GameScreen _popup;
         protected KeyboardController _controller;
+        protected Task<Keys> _bindKeyTask;
+        protected CancellationTokenSource _bindKeyTaskCancel;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="parent"></param>
-        /// <param name="controller"></param>
-        public PauseScreen(GameScreen parent, KeyboardController controller) 
+        public KeyBindingsScreen(GameScreen parent, KeyboardController controller)
             : base()
         {
             _parent = parent;
             _parent.Exiting += new EventHandler(_parent_Exiting);
 
             _controller = controller;
+
+            _bindKeyTaskCancel = new CancellationTokenSource();
+            _bindKeyTask = Task<Keys>.Factory.StartNew(() => { return Keys.None; }, _bindKeyTaskCancel.Token);
         }
 
         /// <summary>
@@ -78,7 +98,8 @@ namespace TimeTetris.Screens
             this.AudioManager.Load("blip", "blip", 0.6f, .2f);
 
             var titleMeasurement = this.ScreenManager.SpriteFonts["Title"].MeasureString(TitleString);
-            var menuMeasurement = Options.Sum(a => this.ScreenManager.SpriteFonts["Menu"].MeasureString(a).Y + 15) - 15;
+            var menuMeasurement = Options.Values.Sum(a => this.ScreenManager.SpriteFonts["Menu"].MeasureString(a).Y + 15) - 15;
+            menuMeasurement += this.ScreenManager.SpriteFonts["Menu"].MeasureString(ExitOption).Y;
             var height = titleMeasurement.Y + 10 + menuMeasurement;
 
             _positionTitle = Vector2.UnitX * (Int32)Math.Round((1280 - titleMeasurement.X) / 2) +
@@ -105,34 +126,58 @@ namespace TimeTetris.Screens
         public override void HandleInput(GameTime gameTime)
         {
             base.HandleInput(gameTime);
+            var maxIndex = Options.Values.Count;
 
-            if (_popup != null && (_popup.ScreenState == Services.ScreenState.Active || _popup.ScreenState == Services.ScreenState.WaitingForTransition))
+            if (_bindKeyTask != null && !(_bindKeyTask.IsCanceled || _bindKeyTask.IsCompleted || _bindKeyTask.IsFaulted))
                 return;
 
             if (this.InputManager.Keyboard.IsKeyReleased(Keys.Enter))
             {
-                //
-                switch (_menuIndex)
-                {
-                    case 0:
-                        this.ExitScreen();
-                        break;
-
-                    case 1:
-                        if (_popup == null)
-                        {
-                            _popup = new KeyBindingsScreen(this, _controller);
-                            this.ScreenManager.AddScreen(_popup);
-                            _popup.Exited += new EventHandler(_popup_Exited);
-                        }
-                        break;
-
-                    case 2:
-                        _parent.Next = new TitleScreen();
-                        _parent.ExitScreenAnd();
-                        break;
+                if (_menuIndex == maxIndex) {
+                    ExitScreen();
+                    return;
                 }
 
+                var enterIndex = _menuIndex;
+                var pressed = _inputManager.Keyboard.PressedKeys;
+
+                _bindKeyTaskCancel = new CancellationTokenSource();
+                _bindKeyTask = Task.Factory.StartNew<Keys>(() =>
+                {
+                    // Wait for a key to be pressed
+                    var nowPressed = _inputManager.Keyboard.PressedKeys;
+                    while (!nowPressed.Any(a => !pressed.Contains(a)) && !_bindKeyTaskCancel.IsCancellationRequested)
+                    {
+                        nowPressed = _inputManager.Keyboard.PressedKeys;
+                        Thread.Sleep(10);
+                        Thread.MemoryBarrier();
+                    }
+
+                    // Cancel if cancellation keys
+                    var keyPressed = nowPressed.First(a => !pressed.Contains(a));
+                    if (keyPressed == Keys.Escape)
+                        _bindKeyTaskCancel.Cancel();
+
+                    //_bindKeyTaskCancel.Token.ThrowIfCancellationRequested();
+                    if (_bindKeyTaskCancel.IsCancellationRequested)
+                        return Keys.None;
+
+                    // Reset all that match
+                    var actions = (ControllerAction[])System.Enum.GetValues(typeof(ControllerAction));
+
+                    foreach (var action in actions)
+                        if (_controller[action] == keyPressed)
+                            _controller[action] = Keys.None;
+
+                    Thread.Sleep(100);
+                    Thread.MemoryBarrier();
+
+                    // Set the new one
+                    _controller[Options.Keys.ElementAt(enterIndex)] = keyPressed;
+                    return _controller[Options.Keys.ElementAt(enterIndex)];
+
+                }, _bindKeyTaskCancel.Token);
+                
                 this.AudioManager.Play("confirm");
             }
             else if (this.InputManager.Keyboard.IsKeyReleased(Keys.Escape))
@@ -143,19 +188,14 @@ namespace TimeTetris.Screens
 
             if (this.InputManager.Keyboard.IsKeyTriggerd(Keys.Down))
             {
-                _menuIndex = (_menuIndex + 1) % Options.Length;
+                _menuIndex = (_menuIndex + 1) % (Options.Values.Count + 1);
                 this.AudioManager.Play("blip");
             }
             else if (this.InputManager.Keyboard.IsKeyTriggerd(Keys.Up))
             {
-                _menuIndex = (_menuIndex == 0 ? Options.Length - 1 : _menuIndex - 1);
+                _menuIndex = (_menuIndex == 0 ? (Options.Values.Count + 1) - 1 : _menuIndex - 1);
                 this.AudioManager.Play("blip");
             }
-        }
-
-        void _popup_Exited(object sender, EventArgs e)
-        {
-            _popup = null;
         }
 
         /// <summary>
@@ -167,7 +207,7 @@ namespace TimeTetris.Screens
             if (!this.IsTransitioning && this.ScreenState != Services.ScreenState.Active)
                 return;
 
-            var alpha = 1 - this.TransitionPosition - (_popup == null ? 0 : 1 - _popup.TransitionPosition);
+            var alpha = 1 - this.TransitionPosition;
 
             base.Draw(gameTime);
 
@@ -175,15 +215,25 @@ namespace TimeTetris.Screens
             this.ScreenManager.SpriteBatch.Draw(_texture, new Rectangle(0, 0, this.ScreenManager.ScreenWidth, this.ScreenManager.ScreenHeight), Color.Black * 0.5f * alpha);
             this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Title"], TitleString, _positionTitle, Color.White * alpha, Color.Black * alpha);
             var position = _positionMenu;
-            for (Int32 i = 0; i < Options.Length; i++)
+            var activeTask = _bindKeyTask != null && !(_bindKeyTask.IsCanceled || _bindKeyTask.IsCompleted || _bindKeyTask.IsFaulted);
+            
+            for (Int32 i = 0; i < Options.Values.Count; i++)
             {
-                var measurement = this.ScreenManager.SpriteFonts["Menu"].MeasureString(Options[i]);
-                this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Menu"], Options[i], position,
-                    Color.White * alpha, (_menuIndex == i ? Color.Gray : Color.Black) * alpha, 0,
+                var optionString = Options.Values.ElementAt(i) + ": " + _controller[Options.Keys.ElementAt(i)].ToString();
+                var measurement = this.ScreenManager.SpriteFonts["Menu"].MeasureString(optionString);
+                this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Menu"], optionString, position,
+                    (_controller[Options.Keys.ElementAt(i)] == Keys.None ? Color.Red : Color.White) * alpha,
+                        (_menuIndex == i ? (activeTask ? Color.Green : Color.Gray) : Color.Black) * alpha, 0,
                     (Single)Math.Round(measurement.X / 2) * Vector2.UnitX + (Single)Math.Round(measurement.Y / 2) * Vector2.UnitY,
                     1, SpriteEffects.None, 0);
                 position = position + Vector2.UnitY * 15;
             }
+
+            var measurementExit = this.ScreenManager.SpriteFonts["Menu"].MeasureString(ExitOption);
+            this.ScreenManager.SpriteBatch.DrawShadowedString(this.ScreenManager.SpriteFonts["Menu"], ExitOption, position, Color.White * alpha, 
+                (_menuIndex == Options.Values.Count ? Color.Gray : Color.Black) * alpha, 0,
+                  (Single)Math.Round(measurementExit.X / 2) * Vector2.UnitX + (Single)Math.Round(measurementExit.Y / 2) * Vector2.UnitY,
+                    1, SpriteEffects.None, 0);
             this.ScreenManager.SpriteBatch.End();
         }
     }
