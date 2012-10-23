@@ -31,9 +31,17 @@
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>http://tetris.derk-jan.org/xna/</InstallUrl>
     <UpdateUrl>http://tetris.derk-jan.org/xna/</UpdateUrl>
-    <ApplicationRevision>1</ApplicationRevision>
+    <SupportUrl>http://tetris.derk-jan.org</SupportUrl>
+    <ErrorReportUrl>http://tetris.derk-jan.org</ErrorReportUrl>
+    <ProductName>Time Tetris</ProductName>
+    <PublisherName>Derk-Jan Karrenbeld &amp; Max Maton</PublisherName>
+    <SuiteName>Time Tetris</SuiteName>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <WebPage>publish.html</WebPage>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -122,9 +130,6 @@
     <Reference Include="System.Net">
       <Private>False</Private>
     </Reference>
-    <Reference Include="Telerik.WinControls, Version=2012.2.912.40, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL" />
-    <Reference Include="Telerik.WinControls.UI, Version=2012.2.912.40, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL" />
-    <Reference Include="TelerikCommon, Version=2012.2.912.40, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Block.Blueprint.cs" />
