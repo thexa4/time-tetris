@@ -30,7 +30,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>http://tetris.derk-jan.org/xna-reach/</InstallUrl>
-    <UpdateUrl>http://tetris.derk-jan.org/xna/</UpdateUrl>
+    <UpdateUrl>http://tetris.derk-jan.org/xna-reach/</UpdateUrl>
     <SupportUrl>http://tetris.derk-jan.org</SupportUrl>
     <ErrorReportUrl>http://tetris.derk-jan.org</ErrorReportUrl>
     <ProductName>Time Tetris %28Reach%29</ProductName>
@@ -38,7 +38,7 @@
     <SuiteName>Time Tetris</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.html</WebPage>
-    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationRevision>8</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
