@@ -19,7 +19,7 @@
     <ApplicationIcon>Game.ico</ApplicationIcon>
     <Thumbnail>GameThumbnail.png</Thumbnail>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>C:\Users\Derk-Jan\My Websites\root.derk-jan.org\tetris\files\xna\</PublishUrl>
+    <PublishUrl>C:\Users\Derk-Jan\My Websites\root.derk-jan.org\tetris\files\xna-reach\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -29,7 +29,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://tetris.derk-jan.org/xna/</InstallUrl>
+    <InstallUrl>http://tetris.derk-jan.org/xna-reach/</InstallUrl>
     <UpdateUrl>http://tetris.derk-jan.org/xna/</UpdateUrl>
     <SupportUrl>http://tetris.derk-jan.org</SupportUrl>
     <ErrorReportUrl>http://tetris.derk-jan.org</ErrorReportUrl>
@@ -38,7 +38,7 @@
     <SuiteName>Time Tetris</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.html</WebPage>
-    <ApplicationRevision>5</ApplicationRevision>
+    <ApplicationRevision>6</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
