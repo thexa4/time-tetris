@@ -53,9 +53,9 @@ float4 PixelDraw(float4 color : COLOR0, float2 texCoord: TEXCOORD0) : COLOR
 
 	// Light line
 	float4 light = 0;
-	for(int i = 0; i < 30; i++)
-		light += tex2D(ScreenSampler, pos - i * float2(offset / 2, 0));
-	float total = (light.x + light.y + light.z) / 90;
+	for(int i = 0; i < 5; i++)
+		light += tex2D(ScreenSampler, pos - i * 4 * float2(offset / 2, 0)); // i * 6 
+	float total = (light.x + light.y + light.z) / ( 90 / 4 ); // 90 / 6
 
 	// Clip if outside
 	if(pos.x < 0)
@@ -76,7 +76,7 @@ technique Draw
 {
 	pass Pass1
 	{
-		VertexShader = compile vs_3_0 SpriteVertexShader();
-		PixelShader = compile ps_3_0 PixelDraw();
+		VertexShader = compile vs_2_0 SpriteVertexShader();
+		PixelShader = compile ps_2_0 PixelDraw();
 	}
 }
